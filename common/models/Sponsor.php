@@ -25,36 +25,34 @@ use Yii;
  * @property string $DOC
  * @property string $DOU
  */
-class Sponsor extends \yii\db\ActiveRecord
-{
+class Sponsor extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'sponsor';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['address', 'comment'], 'string'],
-            [['status', 'CB', 'UB'], 'integer'],
-            [['DOC', 'DOU'], 'safe'],
-            [['name', 'reference_code', 'email', 'phone_number', 'address'], 'required'],
-            [['name', 'reference_code', 'email', 'emirate_id', 'passport', 'family_book', 'photo', 'others'], 'string', 'max' => 100],
-            [['phone_number'], 'string', 'max' => 25],
+                [['address', 'comment'], 'string'],
+                [['status', 'CB', 'UB'], 'integer'],
+                [['DOC', 'DOU'], 'safe'],
+                [['name', 'reference_code', 'email', 'phone_number', 'address'], 'required'],
+                [['name', 'reference_code', 'email', 'emirate_id', 'passport', 'family_book', 'photo', 'others'], 'string', 'max' => 100],
+                [['phone_number'], 'string', 'max' => 25],
+                [['emirate_id'], 'file', 'extensions' => 'jpg, png,jpeg'],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'name' => 'Name',
@@ -75,4 +73,5 @@ class Sponsor extends \yii\db\ActiveRecord
             'DOU' => 'D O U',
         ];
     }
+
 }

@@ -186,3 +186,8 @@ label#upload-cv {
 label#upload-cv input[type="file"] {
     display: none;
 }
+.uplod-file-span{
+    position: absolute;
+    top: 5px;
+    right: 35px;
+}
