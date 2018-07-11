@@ -1080,12 +1080,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "9d03709ae5efbdfb366ba367c82d2d19b40ce567"
+                "reference": "30798ab0ca3e47681468384292f24a2b914ff599"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/9d03709ae5efbdfb366ba367c82d2d19b40ce567",
-                "reference": "9d03709ae5efbdfb366ba367c82d2d19b40ce567",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/30798ab0ca3e47681468384292f24a2b914ff599",
+                "reference": "30798ab0ca3e47681468384292f24a2b914ff599",
                 "shasum": ""
             },
             "require": {
@@ -1122,7 +1122,7 @@
                 "faker",
                 "fixtures"
             ],
-            "time": "2018-07-04T06:58:59+00:00"
+            "time": "2018-07-09T11:46:49+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -2585,12 +2585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "766e49de630b5bccc916905a75dbd2089af9a4d4"
+                "reference": "bc94f134ea70606e7c875e6a5f9d19b286754075"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/766e49de630b5bccc916905a75dbd2089af9a4d4",
-                "reference": "766e49de630b5bccc916905a75dbd2089af9a4d4",
+                "url": "https://api.github.com/repos/symfony/console/zipball/bc94f134ea70606e7c875e6a5f9d19b286754075",
+                "reference": "bc94f134ea70606e7c875e6a5f9d19b286754075",
                 "shasum": ""
             },
             "require": {
@@ -2646,7 +2646,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2018-07-07T15:54:55+00:00"
+            "time": "2018-07-09T13:25:43+00:00"
         },
         {
             "name": "symfony/css-selector",

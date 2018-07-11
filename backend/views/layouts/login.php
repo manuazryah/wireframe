@@ -27,7 +27,7 @@ AppAssetLogin::register($this);
             <!-- /.login-logo -->
             <div class="login-box-body">
                 <div class="login-logo">
-                    <a href="../../index2.html"><b>Admin</b>LTE</a>
+                    <img width="" class="img-fluid" src="<?= Yii::$app->homeUrl; ?>img/ublcsp-logo.png"/>
                 </div>
                 <p class="login-box-msg">Dear user, log in to access the admin area!</p>
                 <?= $content ?>

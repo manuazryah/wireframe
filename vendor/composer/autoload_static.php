@@ -236,13 +236,6 @@ class ComposerStaticInit5efbc713b32d388c41825eb01bde1874
                 0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
             ),
         ),
-        'D' => 
-        array (
-            'Diff' => 
-            array (
-                0 => __DIR__ . '/..' . '/phpspec/php-diff/lib',
-            ),
-        ),
         'B' => 
         array (
             'Behat\\Gherkin' => 

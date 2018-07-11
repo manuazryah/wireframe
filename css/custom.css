@@ -51,3 +51,21 @@ and open the template in the editor.
 .box-title{
     font-weight: 600;
 }
+.skin-blue .main-header .logo {
+    background-color: #c5c4c4;
+}
+.skin-blue .main-header .logo:hover {
+    background-color: #c5c4c4;
+}
+.skin-blue .main-header .navbar {
+    background-color: #e0e0e0;
+}
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+    background-color: #c5c4c4;
+}
+.skin-blue .main-header .navbar .sidebar-toggle {
+    color: #1b2227;
+}
+.skin-blue .main-header .navbar .nav>li>a {
+    color: #1b2227;
+}

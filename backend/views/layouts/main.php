@@ -28,11 +28,8 @@ AppAsset::register($this);
         <div class="wrapper">
             <header class="main-header">
                 <!-- Logo -->
-                <a href="../../index2.html" class="logo">
-                    <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><b>Yii</b>2</span>
-                    <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg"><b>Admin</b>Template</span>
+                <a href="" class="logo">
+                    <img width="200" class="img-fluid" src="<?= Yii::$app->homeUrl; ?>img/ublcsp-logo.png"/>
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">
