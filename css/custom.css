@@ -171,3 +171,18 @@ and open the template in the editor.
     font-size: 16px;
     color: #1280ca;
 }
+label#upload-cv {
+    width: 100%;
+    -webkit-border-radius: 5px;
+    border: 1px solid #d2d6df;
+    padding: 6px 12px;
+    background-color: transparent;
+    color: #555;
+    text-align: left;
+    margin-bottom: 30px;
+    font-weight: 400;
+    max-height: 34px;
+}
+label#upload-cv input[type="file"] {
+    display: none;
+}

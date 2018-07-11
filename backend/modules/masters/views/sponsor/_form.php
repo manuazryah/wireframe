@@ -47,6 +47,11 @@ use yii\widgets\ActiveForm;
     <span class="sub-head">Attachments</span>
     <hr>
     <div class="row">
+        <div class="col-md-4 col-xs-12 left_padd">
+            <label id="upload-cv"> Upload your CV, portfolio...
+                  <?= $form->field($model, 'emirate_id')->fileInput(['maxlength' => true])->label(FALSE) ?>
+            </label> 
+        </div>
         <div class='col-md-4 col-xs-12 left_padd'>   
             <?= $form->field($model, 'emirate_id')->fileInput(['maxlength' => true])->label(FALSE) ?>
 
