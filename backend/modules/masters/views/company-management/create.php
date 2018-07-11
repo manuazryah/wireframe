@@ -4,10 +4,10 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\AdminPosts */
+/* @var $model common\models\CompanyManagement */
 
-$this->title = 'Create Admin Posts';
-$this->params['breadcrumbs'][] = ['label' => 'Admin Posts', 'url' => ['index']];
+$this->title = 'Add Company Details';
+$this->params['breadcrumbs'][] = ['label' => 'Company Managements', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <!-- Default box -->
@@ -16,8 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
-        <?=  Html::a('<span> Manage Admin Posts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
-        <div class="admin-posts-create">
+        <?=  Html::a('<span> Manage Company Details</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+        <div class="company-management-create">
             <?= $this->render('_form', [
             'model' => $model,
             ]) ?>

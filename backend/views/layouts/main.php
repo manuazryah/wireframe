@@ -14,6 +14,7 @@ AppAsset::register($this);
         <meta charset="<?= Yii::$app->charset ?>">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="<?= Yii::$app->homeUrl; ?>img/favicon.ico" type="image/x-icon">
         <?php $this->registerCsrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
         <script src="<?= Yii::$app->homeUrl; ?>js/jquery.min.js"></script>
@@ -45,33 +46,15 @@ AppAsset::register($this);
                         <ul class="nav navbar-nav">
                             <!-- User Account: style can be found in dropdown.less -->
                             <li class="dropdown user user-menu">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="<?= Yii::$app->homeUrl; ?>img/user2-160x160.jpg" class="user-image" alt="User Image">
-                                    <span class="hidden-xs">Azryah Networks </span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <!-- User image -->
-                                    <li class="user-header">
-                                        <img src="<?= Yii::$app->homeUrl; ?>img/user2-160x160.jpg" class="img-circle" alt="User Image">
-                                    </li>
-                                    <!-- Menu Footer-->
-                                    <li class="user-footer">
-                                        <div class="pull-left">
-                                            <?= Html::a('Profile', ['/admin/admin-users/update', 'id' => Yii::$app->user->identity->id], ['class' => 'btn btn-default btn-flat']) ?>
-                                        </div>
-                                        <div class="pull-right">
-                                            <?php
-                                            echo ''
-                                            . Html::beginForm(['/site/logout'], 'post', ['style' => 'margin-bottom: 0px;']) . '<a>'
-                                            . Html::submitButton(
-                                                    'Sign out', ['class' => 'btn btn-default btn-flat', 'style' => 'border: 1px solid #a09f9f;']
-                                            ) . '</a>'
-                                            . Html::endForm()
-                                            . '';
-                                            ?>
-                                        </div>
-                                    </li>
-                                </ul>
+                                <?php
+                                echo ''
+                                . Html::beginForm(['/site/logout'], 'post', ['style' => '']) . '<a>'
+                                . Html::submitButton(
+                                        '<i class="fa fa-sign-out" aria-hidden="true"></i> Sign out', ['class' => 'signout-btn', 'style' => '']
+                                ) . '</a>'
+                                . Html::endForm()
+                                . '';
+                                ?>
                             </li>
                         </ul>
                     </div>
@@ -102,6 +85,27 @@ AppAsset::register($this);
                                 </li>
                             </ul>
                         </li>
+                        <li class="treeview">
+                            <a href="">
+                                <i class="fa fa-database"></i>
+                                <span>Masters</span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Debtors', ['/masters/debtor/index'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Company Management', ['/masters/company-management/index'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Sponsor Management', ['/masters/sponsor/index'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Nationality', ['/masters/country/index'], ['class' => 'title']) ?>
+                                </li>
+
+                            </ul>
+                        </li>
                     </ul>
                 </section>
                 <!-- /.sidebar -->
@@ -116,7 +120,6 @@ AppAsset::register($this);
             </div>
             <footer class="main-footer">
                 <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.4.0
                 </div>
                 <strong>Copyright &copy; 2018-2019 <a href="http://azryah.com/">Azryah.com</a>.</strong> All rights
                 reserved.

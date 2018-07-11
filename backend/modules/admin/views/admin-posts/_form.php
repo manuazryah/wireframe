@@ -13,26 +13,27 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class='col-md-3 col-xs-12'>
-            <?= $form->field($model, 'post_name')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'post_name')->textInput(['maxlength' => true, 'placeholder' => 'Post Name'])->label(FALSE) ?>
 
         </div>
         <div class='col-md-3 col-xs-12'>
-            <?= $form->field($model, 'admin')->dropDownList(['1' => 'Yes', '0' => 'No']) ?>
+            <?= $form->field($model, 'admin')->dropDownList(['1' => 'Yes', '0' => 'No'],['prompt' => 'Admin  Module Permission'])->label(FALSE) ?>
 
         </div>
         <div class='col-md-3 col-xs-12'>
-            <?= $form->field($model, 'masters')->dropDownList(['1' => 'Yes', '0' => 'No']) ?>
+            <?= $form->field($model, 'masters')->dropDownList(['1' => 'Yes', '0' => 'No'],['prompt' => 'Masters  Module Permission'])->label(FALSE) ?>
 
         </div>
         <div class='col-md-3 col-xs-12'>
-            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
+            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled'],['prompt' => 'Select Status'])->label(FALSE) ?>
 
         </div>
     </div>
 
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-success']) ?>
+    <div class="form-group action-btn-right">
+        <?= Html::a('<span> Cancel</span>', ['index'], ['class' => 'btn btn-block cancel-btn']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-success create-btn']) ?>
     </div>
 
 

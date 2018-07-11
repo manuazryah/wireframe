@@ -11,49 +11,46 @@ use common\models\AdminPosts;
 ?>
 
 <div class="admin-users-form form-inline">
-    <?= \common\widgets\Alert::widget(); ?>
+    <?= \common\components\AlertMessageWidget::widget() ?>
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
-        <div class='col-md-4 col-xs-12'>
+        <div class='col-md-4 col-sm-6 col-xs-12'>
             <?php $posts = ArrayHelper::map(AdminPosts::findAll(['status' => 1]), 'id', 'post_name'); ?>
-            <?= $form->field($model, 'post_id')->dropDownList($posts, ['prompt' => '-Choose a Post-']) ?>
-
-        </div>
-        <div class='col-md-4 col-xs-12'>
-            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
-        </div>
-        <div class='col-md-4 col-xs-12'>
-            <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'post_id')->dropDownList($posts, ['prompt' => '-Choose a Post-'])->label(FALSE) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12'>
-            <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => 'Name'])->label(FALSE) ?>
+
+        </div>
+        <div class='col-md-4 col-sm-6 col-xs-12'>
+            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => 'email'])->label(FALSE) ?>
+
+        </div>
+        <div class='col-md-4 col-sm-6 col-xs-12'>
+            <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'placeholder' => 'Phone number'])->label(FALSE) ?>
 
         </div>
         <?php if ($model->isNewRecord) { ?>
             <div class='col-md-4 col-sm-6 col-xs-12'>
 
-                <?= $form->field($model, 'user_name')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'user_name')->textInput(['maxlength' => true, 'placeholder' => 'User Name'])->label(FALSE) ?>
 
             </div>
         <?php } ?>
         <?php if ($model->isNewRecord) { ?>
             <div class='col-md-4 col-sm-6 col-xs-12'>
 
-                <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'placeholder' => 'password'])->label(FALSE) ?>
 
 
             </div>
         <?php } ?>
 
-        <div class='col-md-4 col-sm-6 col-xs-12'>
-            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
-
-        </div>
     </div>
-    <div class="form-group ">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-success']) ?>
+    <div class="form-group action-btn-right">
+        <?= Html::a('<span> Cancel</span>', ['index'], ['class' => 'btn btn-block cancel-btn']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-success create-btn']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

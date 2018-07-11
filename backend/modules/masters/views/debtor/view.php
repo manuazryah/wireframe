@@ -4,20 +4,20 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\AdminUsers */
+/* @var $model common\models\Debtor */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Admin Users', 'url' => ['index']];
+$this->title = $model->company_name;
+$this->params['breadcrumbs'][] = ['label' => 'Debtors', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <!-- Default box -->
 <div class="box">
-    <div class="admin-users-view">
+    <div class="debtor-view">
         <div class="box-header with-border">
             <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
         </div>
         <div class="box-body">
-            <?= Html::a('<span> Manage Admin Users</span>', ['index'], ['class' => 'btn btn-warning mrg-bot-15']) ?>
+            <?= Html::a('<span> Manage Debtor</span>', ['index'], ['class' => 'btn btn-warning mrg-bot-15']) ?>
             <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary mrg-bot-15']) ?>
             <?=
             Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -34,18 +34,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 'model' => $model,
                 'attributes' => [
                     'id',
+                    'company_name',
+                    'reference_code',
+                    'email:email',
+                    'phone_number',
+                    'address:ntext',
+                    'contact_person',
+                    'contact_person_email:email',
+                    'contact_person_phone',
                     [
-                        'attribute' => 'post_id',
+                        'attribute' => 'nationality',
                         'value' => call_user_func(function($model) {
-                                    if ($model->post_id != '') {
-                                        return \common\models\AdminPosts::findOne($model->post_id)->post_name;
+                                    if ($model->nationality != '') {
+                                        return \common\models\Country::findOne($model->nationality)->country_name;
                                     }
                                 }, $model),
                     ],
-                    'user_name',
-                    'name',
-                    'email:email',
-                    'phone_number',
+                    'comment:ntext',
+                    'TRN',
                     [
                         'attribute' => 'status',
                         'value' => call_user_func(function($model) {

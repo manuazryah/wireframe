@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box-body">
             <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-            <?= Html::a('<span> Create Admin Users</span>', ['create'], ['class' => 'btn btn-block btn-warning']) ?>
+            <?= Html::a('<span> Create Admin Users</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
             <?=
             GridView::widget([
                 'dataProvider' => $dataProvider,

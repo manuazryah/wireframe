@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
-        <?=  Html::a('<span> Manage Admin Users</span>', ['index'], ['class' => 'btn btn-block btn-warning']) ?>
+        <?=  Html::a('<span> Manage Admin Users</span>', ['index'], ['class' => 'btn btn-block btn-warning manage-btn']) ?>
         <div class="admin-users-create">
             <?= $this->render('_form', [
             'model' => $model,
