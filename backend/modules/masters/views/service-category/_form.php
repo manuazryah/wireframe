@@ -4,22 +4,28 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Country */
+/* @var $model common\models\ServiceCategory */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="country-form form-inline">
+<div class="service-category-form form-inline">
     <?= \common\components\AlertMessageWidget::widget() ?>
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
-        <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>   
-            <?= $form->field($model, 'country_name')->textInput(['maxlength' => true, 'placeholder' => 'Country Name']) ?>
+        <div class='col-md-4 col-xs-12 left_padd'>   
+            <?= $form->field($model, 'category_name')->textInput(['maxlength' => true]) ?>
 
-        </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-            <?= $form->field($model, 'country_code')->textInput(['maxlength' => true, 'placeholder' => 'Country Code']) ?>
+        </div>
+        <div class='col-md-4 col-xs-12 left_padd'>    
+            <?= $form->field($model, 'category_code')->textInput(['maxlength' => true]) ?>
 
-        </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>   
+        </div>
+        <div class='col-md-4 col-xs-12 left_padd'>    
             <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled'], ['prompt' => 'Select Status']) ?>
+
+        </div>
+        <div class='col-md-8 col-xs-12 left_padd'>    
+            <?= $form->field($model, 'comment')->textarea(['rows' => 3]) ?>
 
         </div>
     </div>

@@ -64,6 +64,9 @@ and open the template in the editor.
 .box-title{
     font-weight: 600;
 }
+.box-header.with-border {
+    border-bottom: 2px solid #7f7f7f;
+}
 .skin-blue .main-header .logo {
     background-color: #fff;
     padding-left: 10px;
@@ -171,7 +174,7 @@ and open the template in the editor.
     font-size: 16px;
     color: #1280ca;
 }
-label#upload-cv {
+label.upload-cv {
     width: 100%;
     -webkit-border-radius: 5px;
     border: 1px solid #d2d6df;
@@ -182,12 +185,48 @@ label#upload-cv {
     margin-bottom: 30px;
     font-weight: 400;
     max-height: 34px;
+    position: relative;
 }
-label#upload-cv input[type="file"] {
+label.upload-cv input[type="file"] {
     display: none;
 }
 .uplod-file-span{
     position: absolute;
     top: 5px;
-    right: 35px;
+    color: #b1b1b1;
+}
+.attachment_tbl label.upload-cv{
+    margin-bottom: 0px;
+}
+.attachment_link{
+    position: absolute;
+    top: 32px;
+    right: 22px;
+}
+.attachment_tbl{
+    margin-top: 10px;
+}
+.attachment_tbl .fa-trash-o{
+    color: red;
+    margin-left: 5px;
+}
+.attachment_tbl .fa-eye{
+    color: green;
+    margin-left: 5px;
+}
+.sub-tbl{
+    margin-top: 10px;
+}
+.table-bordered {
+    border: 1px solid #bbb9b9;
+}
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
+    border: 1px solid #bbb9b9;
+}
+.control-label{
+   color: #4c4b4b;
+    font-weight: 600;
+}
+.form-control input::placeholder, .form-control select::placeholder, .form-control textarea::placeholder{
+    color: #8c8c8c;
 }

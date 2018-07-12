@@ -16,32 +16,32 @@ use common\models\AdminPosts;
     <div class="row">
         <div class='col-md-4 col-sm-6 col-xs-12'>
             <?php $posts = ArrayHelper::map(AdminPosts::findAll(['status' => 1]), 'id', 'post_name'); ?>
-            <?= $form->field($model, 'post_id')->dropDownList($posts, ['prompt' => '-Choose a Post-'])->label(FALSE) ?>
+            <?= $form->field($model, 'post_id')->dropDownList($posts, ['prompt' => '-Choose a Post-']) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12'>
-            <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => 'Name'])->label(FALSE) ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => 'Name']) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12'>
-            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => 'email'])->label(FALSE) ?>
+            <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => 'email']) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12'>
-            <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'placeholder' => 'Phone number'])->label(FALSE) ?>
+            <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'placeholder' => 'Phone number']) ?>
 
         </div>
         <?php if ($model->isNewRecord) { ?>
             <div class='col-md-4 col-sm-6 col-xs-12'>
 
-                <?= $form->field($model, 'user_name')->textInput(['maxlength' => true, 'placeholder' => 'User Name'])->label(FALSE) ?>
+                <?= $form->field($model, 'user_name')->textInput(['maxlength' => true, 'placeholder' => 'User Name']) ?>
 
             </div>
         <?php } ?>
         <?php if ($model->isNewRecord) { ?>
             <div class='col-md-4 col-sm-6 col-xs-12'>
 
-                <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'placeholder' => 'password'])->label(FALSE) ?>
+                <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'placeholder' => 'password']) ?>
 
 
             </div>
