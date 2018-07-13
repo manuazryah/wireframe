@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Services;
+use common\models\Supplier;
 
 /**
- * ServicesSearch represents the model behind the search form about `common\models\Services`.
+ * SupplierSearch represents the model behind the search form about `common\models\Supplier`.
  */
-class ServicesSearch extends Services
+class SupplierSearch extends Supplier
 {
     /**
      * @inheritdoc
@@ -18,9 +18,8 @@ class ServicesSearch extends Services
     public function rules()
     {
         return [
-            [['id', 'service_category', 'type', 'supplier', 'tax_id', 'tax_percentage', 'status', 'CB', 'UB'], 'integer'],
-            [['service_name', 'service_code', 'comment', 'DOC', 'DOU'], 'safe'],
-            [['estimated_cost'], 'number'],
+            [['id', 'status', 'CB', 'UB'], 'integer'],
+            [['company_name', 'phone', 'address', 'contact_person', 'phone1', 'phone2', 'comment', 'DOC', 'DOU'], 'safe'],
         ];
     }
 
@@ -42,7 +41,7 @@ class ServicesSearch extends Services
      */
     public function search($params)
     {
-        $query = Services::find();
+        $query = Supplier::find();
 
         // add conditions that should always apply here
 
@@ -61,12 +60,6 @@ class ServicesSearch extends Services
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'service_category' => $this->service_category,
-            'type' => $this->type,
-            'supplier' => $this->supplier,
-            'estimated_cost' => $this->estimated_cost,
-            'tax_id' => $this->tax_id,
-            'tax_percentage' => $this->tax_percentage,
             'status' => $this->status,
             'CB' => $this->CB,
             'UB' => $this->UB,
@@ -74,8 +67,12 @@ class ServicesSearch extends Services
             'DOU' => $this->DOU,
         ]);
 
-        $query->andFilterWhere(['like', 'service_name', $this->service_name])
-            ->andFilterWhere(['like', 'service_code', $this->service_code])
+        $query->andFilterWhere(['like', 'company_name', $this->company_name])
+            ->andFilterWhere(['like', 'phone', $this->phone])
+            ->andFilterWhere(['like', 'address', $this->address])
+            ->andFilterWhere(['like', 'contact_person', $this->contact_person])
+            ->andFilterWhere(['like', 'phone1', $this->phone1])
+            ->andFilterWhere(['like', 'phone2', $this->phone2])
             ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;

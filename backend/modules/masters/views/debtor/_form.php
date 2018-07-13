@@ -62,7 +62,7 @@ use common\models\Country;
                 <?= $form->field($model, 'TRN')->textInput(['maxlength' => true, 'placeholder' => 'TRN']) ?>
             </div>
             <div class='col-md-12 col-xs-12 pad-0'> 
-                <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled'], ['prompt' => 'Select Status']) ?>
+                <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
             </div>
         </div>
         <div class='col-md-4 col-xs-12 left_padd'>    

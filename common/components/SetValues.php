@@ -175,5 +175,12 @@ class SetValues extends Component {
         }
         return;
     }
+    public function Number() {
+        $number_array = array();
+        for ($i = 1; $i <= 10; $i++) {
+            $number_array[$i] = $i;
+        }
+        return $number_array;
+    }
 
 }

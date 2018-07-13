@@ -104,7 +104,13 @@ AppAsset::register($this);
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Service Category', ['/masters/service-category/index'], ['class' => 'title']) ?>
                                 </li>
                                 <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Suppliers', ['/masters/supplier/index'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Services', ['/masters/services/index'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Real Estate Management', ['/masters/real-estate-master/index'], ['class' => 'title']) ?>
                                 </li>
                                 <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Nationality', ['/masters/country/index'], ['class' => 'title']) ?>

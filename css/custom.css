@@ -224,14 +224,14 @@ label.upload-cv input[type="file"] {
     border: 1px solid #bbb9b9;
 }
 .control-label{
-   color: #4c4b4b;
+    color: #4c4b4b;
     font-weight: 600;
 }
 .form-control input::placeholder, .form-control select::placeholder, .form-control textarea::placeholder{
     color: #8c8c8c;
 }
 .treeview-menu>li>a {
-    padding: 13px 5px 5px 15px;
+    padding: 10px 5px 10px 15px;
     display: block;
     font-size: 14px;
     border-bottom: 1px solid;
@@ -260,4 +260,22 @@ label.upload-cv input[type="file"] {
     -o-transform: rotate(0deg);
     -ms-transform: rotate(0deg);
     transform: rotate(0deg);
+}
+.horizontal_line{
+    border: 1px solid #bfbbbb;
+    margin: 2px 0px 15px 0px;
+}
+.sub-heading{
+    font-size: 16px;
+    font-weight: 600;
+    color: #4e4d4d;
+}
+.sub-tbl2 td{
+    border-top:none !important;
+}
+.sub-tbl2 .fa-trash-o{
+    color:red;
+}
+.sub-tbl2{
+    margin-top: 10px;
 }

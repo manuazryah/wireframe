@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use common\models\Tax;
 use common\models\ServiceType;
 use common\models\ServiceCategory;
+use common\models\Supplier;
 
 
 /* @var $this yii\web\View */
@@ -35,8 +36,9 @@ use common\models\ServiceCategory;
             <?= $form->field($model, 'service_code')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-            <?= $form->field($model, 'supplier')->textInput(['maxlength' => true]) ?>
+        <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
+            <?php $suppliers = ArrayHelper::map(Supplier::findAll(['status' => 1]), 'id', 'company_name'); ?>
+            <?= $form->field($model, 'supplier')->dropDownList($suppliers, ['prompt' => 'Supplier']) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
