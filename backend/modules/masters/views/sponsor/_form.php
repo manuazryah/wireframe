@@ -46,8 +46,8 @@ use yii\widgets\ActiveForm;
     </div>
     <span class="sub-head">Attachments</span>
     <div class="row">
-        <div class="col-md-12">
-            <table class="table table-bordered attachment_tbl">
+        <div class="col-md-12 table-responsive">
+            <table class="table table-bordered attachment_tbl table-responsive">
                 <thead>
                     <tr>
                         <th style="width: 20%">Title</th>
@@ -156,7 +156,7 @@ use yii\widgets\ActiveForm;
                             if (count(glob("{$path}/*")) > 0) {
                                 $k = 0;
                                 ?>
-                                <table class="table table-bordered sub-tbl">
+                                <table class="table table-bordered table-responsive sub-tbl">
                                     <tbody>
                                         <?php
                                         foreach (glob("{$path}/*") as $file) {
