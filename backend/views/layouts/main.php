@@ -87,6 +87,17 @@ AppAsset::register($this);
                         </li>
                         <li class="treeview">
                             <a href="">
+                                <i class="fa fa-dashboard"></i>
+                                <span>Appointment</span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Appointment', ['/appointment/appointment/index'], ['class' => 'title']) ?>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="">
                                 <i class="fa fa-database"></i>
                                 <span>Masters</span>
                             </a>

@@ -80,6 +80,7 @@ class SponsorController extends Controller {
             if (!empty($photo)) {
                 $model->photo = $photo->extension;
             }
+            $model->others = '';
             if ($model->save()) {
                 $paths = Yii::$app->basePath . '/../uploads/sponsers/' . $model->id;
                 $this->Upload($files, $emirate_id, $passport, $family_book, $photo, $paths);
@@ -194,6 +195,7 @@ class SponsorController extends Controller {
             } else {
                 $model->photo = $photo_;
             }
+            $model->others = '';
             if ($model->save()) {
                 $paths = Yii::$app->basePath . '/../uploads/sponsers/' . $model->id;
                 $this->Upload($files, $emirate_id, $passport, $family_book, $photo, $paths);

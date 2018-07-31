@@ -81,23 +81,23 @@ class RealEstateMasterController extends Controller {
 
     public function EstateDetails($model) {
         if ($model->number_of_license >= 1) {
-            for ($i = 0; $i < $model->number_of_license; $i++) {
-                $this->SaveEstateDetails($model, 1);
+            for ($i = 1; $i <= $model->number_of_license; $i++) {
+                $this->SaveEstateDetails($model, 1,$i);
             }
         }
         if ($model->number_of_plots >= 1) {
-            for ($i = 0; $i < $model->number_of_plots; $i++) {
-                $this->SaveEstateDetails($model, 2);
+            for ($i = 1; $i <= $model->number_of_plots; $i++) {
+                $this->SaveEstateDetails($model, 2,$i);
             }
         }
         return;
     }
 
-    public function SaveEstateDetails($model_master, $category) {
+    public function SaveEstateDetails($model_master, $category,$code) {
         $model = new \common\models\RealEstateDetails();
         $model->master_id = $model_master->id;
         $model->category = $category;
-        Yii::$app->SetValues->Attributes($model);
+        $model->code = Yii::$app->SetValues->NumberAlphabet($code);
         $model->save();
         return;
     }

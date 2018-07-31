@@ -19,7 +19,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'country_code')->textInput(['maxlength' => true, 'placeholder' => 'Country Code']) ?>
 
         </div><div class='col-md-4 col-sm-6 col-xs-12 left_padd'>   
-            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled'], ['prompt' => 'Select Status']) ?>
+            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
 
         </div>
     </div>
