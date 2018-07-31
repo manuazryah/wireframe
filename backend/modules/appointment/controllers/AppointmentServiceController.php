@@ -66,19 +66,20 @@ class AppointmentServiceController extends Controller {
         } else {
             $model = $this->findModel($prfrma_id);
         }
-        if ($model->load(Yii::$app->request->post()) && $this->SetValues($model, $id)) {
-            $model->epda = $model->unit_rate * $model->unit;
-            $service_category = Services::findOne(['id' => $model->service_id]);
-            $model->service_category = $service_category->category_id;
-            if (isset($model->service_id) && $model->service_id != '') {
-                $service = \common\models\Services::find()->where(['id' => $model->service_id])->one();
-                if ($service->tax != '' && $service->tax > 0 && $model->epda != '' && $model->epda > 0) {
-                    $tax_rate = TaxMaster::findOne($service->tax)->value;
-                    if ($tax_rate > 0) {
-                        $model->tax_amount = ($tax_rate / 100) * $model->epda;
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
+            $model->appointment_id = $id;
+            $tax_amount = 0;
+            if ($model->tax != '') {
+                $tax_data = \common\models\Tax::find()->where(['id' => $model->tax])->one();
+                $model->tax_percentage = $tax_data->value;
+                if ($model->amount > 0) {
+                    if ($tax_data->value != '' && $tax_data->value > 0) {
+                        $tax_amount = ($model->amount * $tax_data->value) / 100;
                     }
                 }
+                $model->tax_amount = $tax_amount;
             }
+            $model->total = $model->amount + $tax_amount;
             if ($model->save()) {
                 return $this->redirect(['add', 'id' => $id]);
             }
@@ -151,6 +152,27 @@ class AppointmentServiceController extends Controller {
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionGetTax() {
+        $data = '';
+        if (Yii::$app->request->isAjax) {
+            $tax_id = $_POST['tax'];
+            $tax_data = \common\models\Tax::find()->where(['id' => $tax_id])->one();
+            if (!empty($tax_data)) {
+                $data = $tax_data->value;
+            }
+        }
+        return $data;
+    }
+
+    /*
+     * This function delete services based on the esimate id
+     */
+
+    public function actionDeletePerforma($id) {
+        $this->findModel($id)->delete();
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
 }
