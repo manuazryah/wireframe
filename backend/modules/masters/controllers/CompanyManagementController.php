@@ -87,10 +87,11 @@ class CompanyManagementController extends Controller
             Yii::$app->session->setFlash('success', "Company Details Updated Successfully");
             return $this->redirect(['update', 'id' => $model->id]);
         } else {
-            return $this->render('update', [
+            var_dump($model->getErrors());exit;
+        }
+        return $this->render('update', [
                         'model' => $model,
             ]);
-        }
     }
 
     /**

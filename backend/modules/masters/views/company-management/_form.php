@@ -9,7 +9,7 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="company-management-form form-inline">
-
+    <?= \common\components\AlertMessageWidget::widget() ?>
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>   
@@ -39,11 +39,16 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class='col-md-8 col-sm-6 col-xs-12 left_padd'>    
-            <?= $form->field($model, 'comment')->textarea(['rows' => 3, 'placeholder' => 'Comment']) ?>
+            <?= $form->field($model, 'comment')->textarea(['rows' => 6, 'placeholder' => 'Comment']) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-           <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled'], ['prompt' => 'Select Status']) ?>
+            <div class='col-md-12 col-xs-12 pad-0'> 
+                <?= $form->field($model, 'trn_no')->textInput(['maxlength' => true, 'placeholder' => 'TRN Number']) ?>
+            </div>
+            <div class='col-md-12 col-xs-12 pad-0'> 
+                <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
+            </div>
 
         </div>
     </div>

@@ -38,9 +38,9 @@ class CompanyManagement extends \yii\db\ActiveRecord
     {
         return [
             [['address', 'comment'], 'string'],
-            [['contact_person','address','company_name','reference_code', 'email','phone_number'], 'required'],
+            [['address','company_name','email','phone_number'], 'required'],
             [['status', 'CB', 'UB'], 'integer'],
-            [['DOC', 'DOU'], 'safe'],
+            [['DOC', 'DOU','trn_no'], 'safe'],
             [['company_name'], 'string', 'max' => 200],
             [['reference_code', 'email', 'contact_person'], 'string', 'max' => 100],
             [['phone_number'], 'string', 'max' => 25],
@@ -62,6 +62,7 @@ class CompanyManagement extends \yii\db\ActiveRecord
             'contact_person' => 'Contact Person',
             'comment' => 'Comment',
             'status' => 'Status',
+            'trn_no' => 'TRN Number',
             'CB' => 'C B',
             'UB' => 'U B',
             'DOC' => 'D O C',

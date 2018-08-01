@@ -51,6 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
         </div>
+        <?= Html::a('<span> Generate Quotation</span>', ['quotation','id'=>$appointment->id], ['class' => 'btn btn-block manage-btn','style'=>'float:right;','target'=>'_blank']) ?>
         <div class="appointment-service-create">
             <table class="table table-bordered table-responsive">
                 <thead>

@@ -174,5 +174,19 @@ class AppointmentServiceController extends Controller {
         $this->findModel($id)->delete();
         return $this->redirect(Yii::$app->request->referrer);
     }
+    
+    /*
+     * This function generate quotation
+     */
+
+    public function actionQuotation($id) {
+        $apointment = Appointment::findOne($id);
+        $services = AppointmentService::find()->where(['appointment_id'=>$id])->all();
+        echo $this->renderPartial('report', [
+            'apointment' => $apointment,
+            'services' => $services,
+        ]);
+        exit;
+    }
 
 }

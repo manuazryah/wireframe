@@ -87,7 +87,18 @@ AppAsset::register($this);
                         </li>
                         <li class="treeview">
                             <a href="">
-                                <i class="fa fa-dashboard"></i>
+                                <i class="fa fa-building-o"></i>
+                                <span>Estate Management</span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Real Estate Management', ['/masters/real-estate-master/index'], ['class' => 'title']) ?>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="">
+                                <i class="fa fa-file"></i>
                                 <span>Appointment</span>
                             </a>
                             <ul class="treeview-menu">
@@ -119,9 +130,6 @@ AppAsset::register($this);
                                 </li>
                                 <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Services', ['/masters/services/index'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Real Estate Management', ['/masters/real-estate-master/index'], ['class' => 'title']) ?>
                                 </li>
                                 <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Nationality', ['/masters/country/index'], ['class' => 'title']) ?>

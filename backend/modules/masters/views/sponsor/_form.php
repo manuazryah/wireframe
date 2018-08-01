@@ -34,13 +34,17 @@ use yii\widgets\ActiveForm;
 
         </div>
         <div class='col-md-4 col-xs-12 left_padd'>
-            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled'], ['prompt' => 'Select Status']) ?>
+            <?= $form->field($model, 'yearly_charge')->textInput(['maxlength' => true, 'placeholder' => 'Yearly Charge']) ?>
 
         </div>
     </div>
     <div class="row">
         <div class='col-md-8 col-xs-12 left_padd'>
             <?= $form->field($model, 'comment')->textarea(['rows' => 2, 'placeholder' => 'Comment']) ?>
+
+        </div>
+         <div class='col-md-4 col-xs-12 left_padd'>
+            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
 
         </div>
     </div>
@@ -71,7 +75,7 @@ use yii\widgets\ActiveForm;
                                 if (file_exists($dirPath)) {
                                     ?>
                                     <a class="" href="<?= Yii::$app->homeUrl ?>uploads/sponsers/<?= $model->id; ?>/emirate_id.<?= $model->emirate_id; ?>?<?= rand() ?>" target="_blank"><i class="fa fa-eye"></i></a>
-                                    <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'path' => Yii::$app->basePath . '/../uploads/sponsers/' . $model->id . '/emirate_id.' . $model->emirate_id, 'id' => $model->id, 'type' => 1], ['class' => 'gal-img-remove']) ?>
+                                    <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'id' => $model->id, 'type' => 1], ['class' => 'gal-img-remove']) ?>
                                     <?php
                                 }
                             }
@@ -93,7 +97,7 @@ use yii\widgets\ActiveForm;
                                 if (file_exists($dirPath)) {
                                     ?>
                                     <a class="" href="<?= Yii::$app->homeUrl ?>uploads/sponsers/<?= $model->id; ?>/passport.<?= $model->passport; ?>?<?= rand() ?>" target="_blank"><i class="fa fa-eye"></i></a>
-                                    <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'path' => Yii::$app->basePath . '/../uploads/sponsers/' . $model->id . '/passport.' . $model->passport, 'id' => $model->id, 'type' => 2], ['class' => 'gal-img-remove']) ?>
+                                    <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'id' => $model->id, 'type' => 2], ['class' => 'gal-img-remove']) ?>
                                     <?php
                                 }
                             }
@@ -115,7 +119,7 @@ use yii\widgets\ActiveForm;
                                 if (file_exists($dirPath)) {
                                     ?>
                                     <a class="" href="<?= Yii::$app->homeUrl ?>uploads/sponsers/<?= $model->id; ?>/family_book.<?= $model->family_book; ?>?<?= rand() ?>" target="_blank"><i class="fa fa-eye"></i></a>
-                                    <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'path' => Yii::$app->basePath . '/../uploads/sponsers/' . $model->id . '/family_book.' . $model->family_book, 'id' => $model->id, 'type' => 3], ['class' => 'gal-img-remove']) ?>
+                                    <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'id' => $model->id, 'type' => 3], ['class' => 'gal-img-remove']) ?>
                                     <?php
                                 }
                             }
@@ -137,7 +141,7 @@ use yii\widgets\ActiveForm;
                                 if (file_exists($dirPath)) {
                                     ?>
                                     <a class="" href="<?= Yii::$app->homeUrl ?>uploads/sponsers/<?= $model->id; ?>/photo.<?= $model->photo; ?>?<?= rand() ?>" target="_blank"><i class="fa fa-eye"></i></a>
-                                    <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'path' => Yii::$app->basePath . '/../uploads/sponsers/' . $model->id . '/photo.' . $model->photo, 'id' => $model->id, 'type' => 4], ['class' => 'gal-img-remove']) ?>
+                                    <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'id' => $model->id, 'type' => 4], ['class' => 'gal-img-remove']) ?>
                                     <?php
                                 }
                             }
@@ -171,7 +175,7 @@ use yii\widgets\ActiveForm;
                                                     <td><?= end($arry) ?></td>
                                                     <td style="width: 10%;">
                                                         <a class="" href="<?= Yii::$app->homeUrl ?>uploads/sponsers/<?= $model->id; ?>/others/<?= end($arry); ?>?<?= rand() ?>" target="_blank"><i class="fa fa-eye"></i></a>
-                                                        <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove', 'path' => Yii::$app->basePath . '/../uploads/sponsers/' . $model->id . '/others/' . end($arry), 'id' => $model->id, 'type' => 5], ['class' => 'gal-img-remove']) ?>
+                                                        <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/sponsor/remove-other', 'file' => end($arry), 'id' => $model->id], ['class' => 'gal-img-remove']) ?>
                                                     </td>
                                                 </tr>
                                                 <?php

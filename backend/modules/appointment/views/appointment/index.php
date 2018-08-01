@@ -2,6 +2,10 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
+use common\models\Debtor;
+use common\models\AppointmentServices;
+use common\models\Sponsor;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\AppointmentSearch */
@@ -27,10 +31,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
 //                            'id',
-                    'customer',
-                    'service_type',
+                    [
+                        'attribute' => 'customer',
+                        'value' => 'customer0.company_name',
+                        'filter' => ArrayHelper::map(Debtor::find()->asArray()->all(), 'id', 'company_name'),
+                    ],
+                    [
+                        'attribute' => 'service_type',
+                        'value' => 'serviceType.service',
+                        'filter' => ArrayHelper::map(AppointmentServices::find()->asArray()->all(), 'id', 'service'),
+                    ],
                     'service_id',
-                    'sponsor',
+                    [
+                        'attribute' => 'sponsor',
+                        'value' => 'sponsor0.name',
+                        'filter' => ArrayHelper::map(Sponsor::find()->asArray()->all(), 'id', 'name'),
+                    ],
 //            'plot',
 //            'space_for_license',
                     // 'estimated_cost',
@@ -42,7 +58,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     // 'UB',
                     // 'DOC',
                     // 'DOU',
-                    ['class' => 'yii\grid\ActionColumn'],
+                   ['class' => 'yii\grid\ActionColumn',
+                        'template' => '{update}',
+                    ],
                 ],
             ]);
             ?>

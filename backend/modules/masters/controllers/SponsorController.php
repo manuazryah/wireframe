@@ -134,24 +134,41 @@ class SponsorController extends Controller {
         }
     }
 
-    public function actionRemove($path,$id,$type) {
+    public function actionRemove($id, $type) {
         $model = $this->findModel($id);
+        $dir = Yii::$app->basePath . '/../uploads/sponsers/' . $id . '/';
+        if ($type == 1) {
+            $path = $dir.'emirate_id.'.$model->emirate_id;
+        } elseif ($type == 2) {
+            $path = $dir.'passport.'.$model->passport;
+        } elseif ($type == 3) {
+            $path = $dir.'family_book.'.$model->family_book;
+        } elseif ($type == 4) {
+            $path = $dir.'photo.'.$model->photo;
+        }
         if (file_exists($path)) {
             unlink($path);
-            if(!empty($model)){
-                if($type == 1){
+            if (!empty($model)) {
+                if ($type == 1) {
                     $model->emirate_id = '';
-                }elseif($type == 2){
+                } elseif ($type == 2) {
                     $model->passport = '';
-                }
-                elseif($type == 3){
+                } elseif ($type == 3) {
                     $model->family_book = '';
-                }
-                elseif($type == 4){
+                } elseif ($type == 4) {
                     $model->photo = '';
                 }
                 $model->update();
             }
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+    
+    public function actionRemoveOther($file,$id) {
+        $model = $this->findModel($id);
+        $path = Yii::$app->basePath . '/../uploads/sponsers/' . $id . '/others/'.$file;
+        if (file_exists($path)) {
+            unlink($path);
         }
         return $this->redirect(Yii::$app->request->referrer);
     }
