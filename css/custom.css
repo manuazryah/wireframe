@@ -68,8 +68,8 @@ and open the template in the editor.
     border-bottom: 2px solid #7f7f7f;
 }
 .skin-blue .main-header .logo {
-    background-color: #fff;
-    padding-left: 10px;
+    background-color: #232d33;
+    padding-left: 0px;
 }
 .signout-btn{
     padding: 13px 18px;
@@ -86,7 +86,7 @@ and open the template in the editor.
     background: rgba(255, 255, 255, 0.1);
 }
 .skin-blue .main-header .logo:hover {
-    background-color: #c5c4c4;
+    background-color: #232d33;
 }
 .skin-blue .main-header .navbar {
     background-color: #232d33;
@@ -236,31 +236,6 @@ label.upload-cv input[type="file"] {
     font-size: 14px;
     border-bottom: 1px solid;
 }
-.skin-blue .sidebar-menu>li>a:before {
-    position: relative;
-    display: inline-block;
-    font-family: FontAwesome;
-    content: '\f107';
-    float: right;
-    color: #6d747a;
-    margin-left: 10px;
-    -webkit-transform: rotate(-90deg);
-    -moz-transform: rotate(-90deg);
-    -o-transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
-    transform: rotate(-90deg);
-    -webkit-transition: all 150ms ease-in-out;
-    -moz-transition: all 150ms ease-in-out;
-    -o-transition: all 150ms ease-in-out;
-    transition: all 150ms ease-in-out;
-}
-.skin-blue .sidebar-menu>li:hover>a, .skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li.menu-open>a:before {
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    transform: rotate(0deg);
-}
 .horizontal_line{
     border: 1px solid #bfbbbb;
     margin: 2px 0px 15px 0px;
@@ -280,7 +255,7 @@ label.upload-cv input[type="file"] {
     margin-top: 10px;
 }
 .app-nav{
-   margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 .app-nav .nav-tabs>li {
     width: 50%;
@@ -296,13 +271,13 @@ label.upload-cv input[type="file"] {
     border: 1px solid #ddd;
 }
 @media (min-width: 768px){
-.app-nav .nav-tabs-justified>li>a {
-    border: 1px solid #ddd;
-    border-radius: 4px 4px 0 0;
-}
+    .app-nav .nav-tabs-justified>li>a {
+        border: 1px solid #ddd;
+        border-radius: 4px 4px 0 0;
+    }
 }
 .appointment-history table{
-        border: 1px solid #e4e4e4;
+    border: 1px solid #e4e4e4;
 }
 .appointment-history .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
     border-top: none;

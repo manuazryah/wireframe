@@ -17,7 +17,7 @@ AppAssetLogin::register($this);
         <link rel="shortcut icon" href="<?= Yii::$app->homeUrl; ?>img/favicon.ico" type="image/x-icon">
         <?php $this->registerCsrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
-         <script src="<?= Yii::$app->homeUrl; ?>js/jquery.min.js"></script>
+        <script src="<?= Yii::$app->homeUrl; ?>js/jquery.min.js"></script>
         <script type="text/javascript">
             var homeUrl = '<?= Yii::$app->homeUrl; ?>';
         </script>
@@ -29,7 +29,7 @@ AppAssetLogin::register($this);
             <!-- /.login-logo -->
             <div class="login-box-body">
                 <div class="login-logo">
-                    <img width="" class="img-fluid" src="<?= Yii::$app->homeUrl; ?>img/ublcsp-logo.png"/>
+                    <img width="100" class="img-fluid" src="<?= Yii::$app->homeUrl; ?>img/ublcsp-logo.png"/>
                 </div>
                 <p class="login-box-msg">Dear user, log in to access the admin area!</p>
                 <?= $content ?>

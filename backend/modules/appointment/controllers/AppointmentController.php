@@ -63,10 +63,24 @@ class AppointmentController extends Controller {
 
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
             Yii::$app->session->setFlash('success', "Appointment Created Successfully");
+            $this->updateEstateManagement($model);
             return $this->redirect(['/appointment/appointment-service/add', 'id' => $model->id]);
         } return $this->render('create', [
                     'model' => $model,
         ]);
+    }
+
+    public function updateEstateManagement($model) {
+        if ($model->plot != '') {
+            $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $model->plot])->one();
+            $estate_details->availability = 0;
+            $estate_details->update();
+        }
+        if ($model->space_for_license != '') {
+            $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $model->space_for_license])->one();
+            $estate_details->availability = 0;
+            $estate_details->update();
+        }
     }
 
     /**

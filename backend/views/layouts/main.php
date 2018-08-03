@@ -23,14 +23,14 @@ AppAsset::register($this);
         </script>
         <?php $this->head() ?>
     </head>
-    <body class="hold-transition skin-blue fixed sidebar-mini">
+    <body class="skin-blue fixed sidebar-mini sidebar-mini-expand-feature sidebar-collapse">
         <?php $this->beginBody() ?>
 
         <div class="wrapper">
             <header class="main-header">
                 <!-- Logo -->
                 <a href="" class="logo">
-                    <img width="200" class="img-fluid" src="<?= Yii::$app->homeUrl; ?>img/ublcsp-logo.png"/>
+                    <img width="50" class="img-fluid" src="<?= Yii::$app->homeUrl; ?>img/ublcsp-logo.png"/>
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">
@@ -74,6 +74,9 @@ AppAsset::register($this);
                             <a href="">
                                 <i class="fa fa-dashboard"></i>
                                 <span>Administration</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
                             </a>
                             <ul class="treeview-menu">
                                 <li>
@@ -83,34 +86,24 @@ AppAsset::register($this);
                                 <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Admin Users', ['/admin/admin-users/index'], ['class' => 'title']) ?>
                                 </li>
-                            </ul>
-                        </li>
-                        <li class="treeview">
-                            <a href="">
-                                <i class="fa fa-building-o"></i>
-                                <span>Estate Management</span>
-                            </a>
-                            <ul class="treeview-menu">
                                 <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Real Estate Management', ['/masters/real-estate-master/index'], ['class' => 'title']) ?>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Design', ['/admin/test/index'], ['class' => 'title']) ?>
                                 </li>
                             </ul>
                         </li>
-                        <li class="treeview">
-                            <a href="">
-                                <i class="fa fa-file"></i>
-                                <span>Appointment</span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Appointment', ['/appointment/appointment/index'], ['class' => 'title']) ?>
-                                </li>
-                            </ul>
+                        <li>
+                            <?= Html::a('<i class="fa fa-building-o"></i> <span>Real Estate Management</span>', ['/masters/real-estate-master/index'], ['class' => '']) ?>
+                        </li>
+                        <li>
+                            <?= Html::a('<i class="fa fa-file"></i> <span>Appointment</span>', ['/appointment/appointment/index'], ['class' => '']) ?>
                         </li>
                         <li class="treeview">
                             <a href="">
                                 <i class="fa fa-database"></i>
                                 <span>Masters</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
                             </a>
                             <ul class="treeview-menu">
                                 <li>
@@ -152,7 +145,7 @@ AppAsset::register($this);
             <footer class="main-footer">
                 <div class="pull-right hidden-xs">
                 </div>
-                <strong>Copyright &copy; 2018-2019 <a href="http://azryah.com/">Azryah.com</a>.</strong> All rights
+                <strong>Copyright &copy; 2018-2019 <a href="http://azryah.com/">epitome.ae</a>.</strong> All rights
                 reserved.
             </footer>
             <div class="control-sidebar-bg"></div>

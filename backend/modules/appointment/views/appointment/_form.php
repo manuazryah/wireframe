@@ -31,20 +31,34 @@ use common\models\RealEstateMaster;
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  
             <?php
-            $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2])->all(), 'id', function($model) {
-                        return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                    }
-            );
+            if ($model->isNewRecord) {
+                $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1])->all(), 'id', function($model) {
+                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                        }
+                );
+            } else {
+                $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2])->all(), 'id', function($model) {
+                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                        }
+                );
+            }
             ?>
             <?= $form->field($model, 'plot')->dropDownList($plots, ['prompt' => 'Choose a Plot']) ?>
 
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>  
             <?php
-            $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1])->all(), 'id', function($model) {
-                        return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                    }
-            );
+            if ($model->isNewRecord) {
+                $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1])->all(), 'id', function($model) {
+                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                        }
+                );
+            } else {
+                $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1])->all(), 'id', function($model) {
+                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                        }
+                );
+            }
             ?>
             <?= $form->field($model, 'space_for_license')->dropDownList($licenses, ['prompt' => 'Space for License']) ?>
 
@@ -81,7 +95,7 @@ use common\models\RealEstateMaster;
 
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    
-           <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
+            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
 
         </div>
     </div>
@@ -96,3 +110,22 @@ use common\models\RealEstateMaster;
     <?php ActiveForm::end(); ?>
 
 </div>
+<script>
+    $("document").ready(function () {
+        $(document).on('change', '#appointment-service_type', function (e) {
+            $("#appointment-plot").val('');
+            $("#appointment-space_for_license").val('');
+            var type = $(this).val();
+            if (type == 1) {
+                $("#appointment-plot").prop("disabled", false);
+                $("#appointment-space_for_license").prop("disabled", true);
+            } else if (type == 2) {
+                $("#appointment-plot").prop("disabled", true);
+                $("#appointment-space_for_license").prop("disabled", false);
+            } else if (type == 3) {
+                $("#appointment-plot").prop("disabled", false);
+                $("#appointment-space_for_license").prop("disabled", false);
+            }
+        });
+    });
+</script>

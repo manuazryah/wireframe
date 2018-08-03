@@ -66,4 +66,13 @@ return array (
       '@yii/debug' => $vendorDir . '/yiisoft/yii2-debug/src',
     ),
   ),
+  '2amigos/yii2-select2-widget' => 
+  array (
+    'name' => '2amigos/yii2-select2-widget',
+    'version' => '9999999-dev',
+    'alias' => 
+    array (
+      '@dosamigos/select2' => $vendorDir . '/2amigos/yii2-select2-widget/src',
+    ),
+  ),
 );
