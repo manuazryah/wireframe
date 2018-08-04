@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\AppointmentService;
+use common\models\Appointment;
 
 /**
- * AppointmentServiceSearch represents the model behind the search form about `common\models\AppointmentService`.
+ * AppointmentSearch represents the model behind the search form about `common\models\Appointment`.
  */
-class AppointmentServiceSearch extends AppointmentService
+class AppointmentSearch extends Appointment
 {
     /**
      * @inheritdoc
@@ -18,9 +18,9 @@ class AppointmentServiceSearch extends AppointmentService
     public function rules()
     {
         return [
-            [['id', 'appointment_id', 'service', 'tax', 'type', 'tax_percentage', 'payment_type', 'status', 'CB', 'UB'], 'integer'],
-            [['comment', 'due_amount', 'amount_paid', 'DOC', 'DOU'], 'safe'],
-            [['amount', 'total', 'tax_amount'], 'number'],
+            [['id', 'customer', 'service_type', 'plot', 'space_for_license', 'sponsor', 'tax', 'supplier', 'status', 'CB', 'UB'], 'integer'],
+            [['service_id', 'comment', 'DOC', 'DOU'], 'safe'],
+            [['estimated_cost'], 'number'],
         ];
     }
 
@@ -42,7 +42,7 @@ class AppointmentServiceSearch extends AppointmentService
      */
     public function search($params)
     {
-        $query = AppointmentService::find();
+        $query = Appointment::find();
 
         // add conditions that should always apply here
 
@@ -61,15 +61,14 @@ class AppointmentServiceSearch extends AppointmentService
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'appointment_id' => $this->appointment_id,
-            'service' => $this->service,
-            'amount' => $this->amount,
+            'customer' => $this->customer,
+            'service_type' => $this->service_type,
+            'plot' => $this->plot,
+            'space_for_license' => $this->space_for_license,
+            'estimated_cost' => $this->estimated_cost,
+            'sponsor' => $this->sponsor,
             'tax' => $this->tax,
-            'type' => $this->type,
-            'total' => $this->total,
-            'tax_percentage' => $this->tax_percentage,
-            'tax_amount' => $this->tax_amount,
-            'payment_type' => $this->payment_type,
+            'supplier' => $this->supplier,
             'status' => $this->status,
             'CB' => $this->CB,
             'UB' => $this->UB,
@@ -77,9 +76,8 @@ class AppointmentServiceSearch extends AppointmentService
             'DOU' => $this->DOU,
         ]);
 
-        $query->andFilterWhere(['like', 'comment', $this->comment])
-            ->andFilterWhere(['like', 'due_amount', $this->due_amount])
-            ->andFilterWhere(['like', 'amount_paid', $this->amount_paid]);
+        $query->andFilterWhere(['like', 'service_id', $this->service_id])
+            ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;
     }

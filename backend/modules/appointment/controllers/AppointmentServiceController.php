@@ -61,6 +61,9 @@ class AppointmentServiceController extends Controller {
     public function actionAdd($id, $prfrma_id = NULL) {
         $services = AppointmentService::findAll(['appointment_id' => $id]);
         $appointment = Appointment::findOne($id);
+        if (empty($services)) {
+            $this->setService($appointment);
+        }
         if (!isset($prfrma_id)) {
             $model = new AppointmentService();
         } else {
@@ -90,6 +93,38 @@ class AppointmentServiceController extends Controller {
                     'appointment' => $appointment,
                     'id' => $id,
         ]);
+    }
+
+    public function setService($appointment) {
+        if (!empty($appointment)) {
+            $services = '';
+            if ($appointment->service_type == 1) {
+                $services = \common\models\Services::find()->where(['service_category' => 1])->all();
+            } elseif ($appointment->service_type == 2) {
+                $services = \common\models\Services::find()->where(['service_category' => 2])->all();
+            } elseif ($appointment->service_type == 3) {
+                $services = \common\models\Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->all();
+            }
+            if (!empty($services)) {
+                foreach ($services as $service) {
+                    if (!empty($service)) {
+                        $this->saveServices($appointment, $service);
+                    }
+                }
+            }
+        }
+        return;
+    }
+
+    public function saveServices($appointment, $service) {
+        $model = new AppointmentService();
+        $model->appointment_id = $appointment->id;
+        $model->service = $service->id;
+        $model->amount = $service->estimated_cost;
+        $model->total = $service->estimated_cost;
+        Yii::$app->SetValues->Attributes($model);
+        $model->save();
+        return;
     }
 
     /**
@@ -174,14 +209,14 @@ class AppointmentServiceController extends Controller {
         $this->findModel($id)->delete();
         return $this->redirect(Yii::$app->request->referrer);
     }
-    
+
     /*
      * This function generate quotation
      */
 
     public function actionQuotation($id) {
         $apointment = Appointment::findOne($id);
-        $services = AppointmentService::find()->where(['appointment_id'=>$id])->all();
+        $services = AppointmentService::find()->where(['appointment_id' => $id])->all();
         echo $this->renderPartial('report', [
             'apointment' => $apointment,
             'services' => $services,

@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
         </div>
-        <?= Html::a('<span> Generate Quotation</span>', ['quotation','id'=>$appointment->id], ['class' => 'btn btn-block manage-btn','style'=>'float:right;','target'=>'_blank']) ?>
+        <?= Html::a('<span> Generate Quotation</span>', ['quotation', 'id' => $appointment->id], ['class' => 'btn btn-block manage-btn', 'style' => 'float:right;', 'target' => '_blank']) ?>
         <div class="appointment-service-create">
             <table class="table table-bordered table-responsive">
                 <thead>
@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td><?= Services::findOne($service->service)->service_name ?></td>
                                 <td><?= $service->comment ?></td>
                                 <td style="text-align: right;"><?= $service->amount ?></td>
-                                <td style="text-align: right;"><?= $service->tax_percentage ?> %</td>
+                                <td style="text-align: right;"><?= $service->tax_percentage ?> <?= $service->tax_percentage != '' ? '%' : '' ?></td>
                                 <td style="text-align: right;"><?= $service->total ?></td>
                                 <td>
                                     <?= Html::a('<i class="fa fa-pencil"></i>', ['/appointment/appointment-service/add', 'id' => $id, 'prfrma_id' => $service->id], ['class' => '', 'tittle' => 'Edit']) ?>

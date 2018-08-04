@@ -18,8 +18,8 @@ class AppointmentSearch extends Appointment
     public function rules()
     {
         return [
-            [['id', 'customer', 'service_type', 'plot', 'space_for_license', 'sponsor', 'tax', 'supplier', 'status', 'CB', 'UB'], 'integer'],
-            [['service_id', 'comment', 'DOC', 'DOU'], 'safe'],
+            [['id', 'customer', 'service_type', 'plot', 'space_for_license', 'sponsor', 'tax', 'supplier', 'no_partners', 'approval_status', 'sales_employee_id', 'accounts_employee_id', 'operations_employee_id', 'status', 'CB', 'UB'], 'integer'],
+            [['service_id', 'start_date', 'expiry_date', 'total_amount', 'paid_amount', 'comment', 'DOC', 'DOU'], 'safe'],
             [['estimated_cost'], 'number'],
         ];
     }
@@ -69,6 +69,13 @@ class AppointmentSearch extends Appointment
             'sponsor' => $this->sponsor,
             'tax' => $this->tax,
             'supplier' => $this->supplier,
+            'no_partners' => $this->no_partners,
+            'start_date' => $this->start_date,
+            'expiry_date' => $this->expiry_date,
+            'approval_status' => $this->approval_status,
+            'sales_employee_id' => $this->sales_employee_id,
+            'accounts_employee_id' => $this->accounts_employee_id,
+            'operations_employee_id' => $this->operations_employee_id,
             'status' => $this->status,
             'CB' => $this->CB,
             'UB' => $this->UB,
@@ -77,6 +84,8 @@ class AppointmentSearch extends Appointment
         ]);
 
         $query->andFilterWhere(['like', 'service_id', $this->service_id])
+            ->andFilterWhere(['like', 'total_amount', $this->total_amount])
+            ->andFilterWhere(['like', 'paid_amount', $this->paid_amount])
             ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;

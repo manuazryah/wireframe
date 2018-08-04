@@ -25,23 +25,21 @@ use Yii;
  *
  * @property Supplier $supplier0
  */
-class Services extends \yii\db\ActiveRecord
-{
+class Services extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'services';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['service_category', 'type', 'service_name', 'service_code','supplier'], 'required'],
+            [['service_category', 'type', 'service_name', 'service_code'], 'required'],
             [['service_category', 'type', 'supplier', 'tax_id', 'tax_percentage', 'status', 'CB', 'UB'], 'integer'],
             [['estimated_cost'], 'number'],
             [['comment'], 'string'],
@@ -54,8 +52,7 @@ class Services extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'service_category' => 'Service Category',
@@ -78,8 +75,8 @@ class Services extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSupplier0()
-    {
+    public function getSupplier0() {
         return $this->hasOne(Supplier::className(), ['id' => 'supplier']);
     }
+
 }

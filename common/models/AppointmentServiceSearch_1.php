@@ -18,8 +18,8 @@ class AppointmentServiceSearch extends AppointmentService
     public function rules()
     {
         return [
-            [['id', 'appointment_id', 'service', 'tax', 'type', 'tax_percentage', 'payment_type', 'status', 'CB', 'UB'], 'integer'],
-            [['comment', 'due_amount', 'amount_paid', 'DOC', 'DOU'], 'safe'],
+            [['id', 'appointment_id', 'service', 'tax', 'type', 'tax_percentage', 'status', 'CB', 'UB'], 'integer'],
+            [['comment', 'DOC', 'DOU'], 'safe'],
             [['amount', 'total', 'tax_amount'], 'number'],
         ];
     }
@@ -69,7 +69,6 @@ class AppointmentServiceSearch extends AppointmentService
             'total' => $this->total,
             'tax_percentage' => $this->tax_percentage,
             'tax_amount' => $this->tax_amount,
-            'payment_type' => $this->payment_type,
             'status' => $this->status,
             'CB' => $this->CB,
             'UB' => $this->UB,
@@ -77,9 +76,7 @@ class AppointmentServiceSearch extends AppointmentService
             'DOU' => $this->DOU,
         ]);
 
-        $query->andFilterWhere(['like', 'comment', $this->comment])
-            ->andFilterWhere(['like', 'due_amount', $this->due_amount])
-            ->andFilterWhere(['like', 'amount_paid', $this->amount_paid]);
+        $query->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;
     }

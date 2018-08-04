@@ -19,7 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box-body table-responsive">
             <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-            <?= Html::a('<span> Create Service Category</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
             <?=
             GridView::widget([
                 'dataProvider' => $dataProvider,
@@ -42,8 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     // 'UB',
                     // 'DOC',
                     // 'DOU',
-                   ['class' => 'yii\grid\ActionColumn',
-                        'template' => '{update}{delete}',
+                    ['class' => 'yii\grid\ActionColumn',
+                        'template' => '{update}',
                     ],
                 ],
             ]);
