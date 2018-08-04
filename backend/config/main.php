@@ -31,6 +31,9 @@ return [
         'appointment' => [
             'class' => 'backend\modules\appointment\Module',
         ],
+        'accounts' => [
+            'class' => 'backend\modules\accounts\Module',
+        ],
     ],
     'components' => [
         'request' => [
@@ -48,7 +51,7 @@ return [
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
-                    [
+                [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],

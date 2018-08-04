@@ -87,6 +87,7 @@ class AppointmentServiceController extends Controller {
                 return $this->redirect(['add', 'id' => $id]);
             }
         }
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
         return $this->render('add', [
                     'model' => $model,
                     'services' => $services,
@@ -222,6 +223,23 @@ class AppointmentServiceController extends Controller {
             'services' => $services,
         ]);
         exit;
+    }
+
+    public function actionQuotationApprove($id) {
+        $apointment = Appointment::findOne($id);
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
+        if (!empty($services)) {
+            if (!empty($apointment)) {
+                $apointment->status = 2; //appointmrnt complete
+                if ($apointment->update()) {
+                    Yii::$app->session->setFlash('success', "Appointment Completed");
+                }
+            }
+        } else {
+            Yii::$app->session->setFlash('success', "Services not completed");
+            return $this->redirect(Yii::$app->request->referrer);
+        }
+        return $this->redirect(['appointment/index']);
     }
 
 }

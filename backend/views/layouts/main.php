@@ -71,7 +71,7 @@ AppAsset::register($this);
                     <ul class="sidebar-menu" data-widget="tree">
                         <li class="header"></li>
                         <?php
-                        if (Yii::$app->session['post']['admin'] == 1) {
+                        if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['admin'] == 1) {
                             ?>
                             <li class="treeview active">
                                 <a href="">
@@ -98,7 +98,7 @@ AppAsset::register($this);
                         }
                         ?>
                         <?php
-                        if (Yii::$app->session['post']['admin'] == 1 || Yii::$app->session['post']['masters'] == 1) {
+                        if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['masters'] == 1) {
                             ?>
                             <li>
                                 <?= Html::a('<i class="fa fa-building-o"></i> <span>Real Estate Management</span>', ['/masters/real-estate-master/index'], ['class' => '']) ?>
@@ -107,7 +107,7 @@ AppAsset::register($this);
                         }
                         ?>
                         <?php
-                        if (Yii::$app->session['post']['admin'] == 1 || Yii::$app->session['post']['masters'] == 1) {
+                        if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['sales'] == 1) {
                             ?>
                             <li>
                                 <?= Html::a('<i class="fa fa-file"></i> <span>Appointment</span>', ['/appointment/appointment/index'], ['class' => '']) ?>
@@ -115,39 +115,54 @@ AppAsset::register($this);
                             <?php
                         }
                         ?>
-                        <li class="treeview">
-                            <a href="">
-                                <i class="fa fa-database"></i>
-                                <span>Masters</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Debtors', ['/masters/debtor/index'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Company Management', ['/masters/company-management/index'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Sponsor Management', ['/masters/sponsor/index'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Service Category', ['/masters/service-category/index'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Suppliers', ['/masters/supplier/index'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Services', ['/masters/services/index'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Nationality', ['/masters/country/index'], ['class' => 'title']) ?>
-                                </li>
+                        <?php
+                        if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['accounts'] == 1) {
+                            ?>
+                            <li>
+                                <?= Html::a('<i class="fa fa-money"></i> <span>Accounts</span>', ['/accounts/service-payment/index'], ['class' => '']) ?>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                        if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['masters'] == 1) {
+                            ?>
+                            <li class="treeview">
+                                <a href="">
+                                    <i class="fa fa-database"></i>
+                                    <span>Masters</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Debtors', ['/masters/debtor/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Company Management', ['/masters/company-management/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Sponsor Management', ['/masters/sponsor/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Service Category', ['/masters/service-category/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Suppliers', ['/masters/supplier/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Services', ['/masters/services/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Nationality', ['/masters/country/index'], ['class' => 'title']) ?>
+                                    </li>
 
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
+                            <?php
+                        }
+                        ?>
                     </ul>
                 </section>
                 <!-- /.sidebar -->

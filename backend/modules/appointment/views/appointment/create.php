@@ -16,16 +16,18 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="box-body">
         <?= Html::a('<span> Manage Appointment</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
-        <div class="app-nav">
-            <ul class="nav nav-tabs nav-tabs-justified">
-                <li class="active">
-                    <a><span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Appointment</span></a>
-                </li>
-                <li class="">
-                    <a><span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Services</span></a>
-                </li>
-            </ul>
-        </div>
+        <section id="tabs">
+            <div class="card1">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a>Appointment</a>
+                    </li>
+                    <li role="presentation">
+                        <a>Services</a>
+                    </li>
+                </ul>
+            </div>
+        </section>
         <div class="appointment-create">
             <?=
             $this->render('_form', [

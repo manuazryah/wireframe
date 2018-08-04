@@ -20,20 +20,22 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="box-body">
         <div class="app-nav">
-            <ul class="nav nav-tabs nav-tabs-justified">
-                <li class="">
-                    <?php
-                    echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Appointment</span>', ['appointment/update', 'id' => $appointment->id]);
-                    ?>
-
-                </li>
-                <li class="active">
-                    <?php
-                    echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Services</span>', ['appointment-service/add', 'id' => $appointment->id]);
-                    ?>
-
-                </li>
-            </ul>
+            <section id="tabs">
+                <div class="card1">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation">
+                            <?php
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Appointment</span>', ['appointment/update', 'id' => $appointment->id]);
+                            ?>
+                        </li>
+                        <li role="presentation" class="active">
+                            <?php
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Services</span>', ['appointment-service/add', 'id' => $appointment->id]);
+                            ?>
+                        </li>
+                    </ul>
+                </div>
+            </section>
         </div>
         <div class="appointment-history">
             <table class="table table-responsive">
@@ -52,6 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </table>
         </div>
         <?= Html::a('<span> Generate Quotation</span>', ['quotation', 'id' => $appointment->id], ['class' => 'btn btn-block manage-btn', 'style' => 'float:right;', 'target' => '_blank']) ?>
+        <?= \common\components\AlertMessageWidget::widget() ?>
         <div class="appointment-service-create">
             <table class="table table-bordered table-responsive">
                 <thead>
@@ -119,6 +122,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tbody>
             </table>
         </div>
+        <?= Html::a('<span>Quotation approved and proceed to next</span>', ['quotation-approve', 'id' => $appointment->id], ['class' => 'btn btn-block btn-success btn-sm', 'style' => 'float:right;']) ?>
     </div>
     <!-- /.box-body -->
 </div>

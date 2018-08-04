@@ -1,9 +1,14 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 24, 2018, 8:33:03 PM
+    Author     : manu ko
+*/
 #yii-debug-toolbar{
     display: none !important;
-}
-.login-box, .register-box {
-    width: 425px;
-    margin: 7% auto;
 }
 .login-page, .register-page {
     background: #232d33;
@@ -22,9 +27,9 @@
     width: max-content;
     margin-bottom: 15px;
 }
-.form-group{
+/*.form-group{
     width: 100%;
-}
+}*/
 .form-control{
     width: 100%;
 }
@@ -278,9 +283,11 @@ label.upload-cv input[type="file"] {
     border-top: none;
 }
 
+
+
 /*****************************************************************FORM-PAGE*******************************************/
 
-.fright{
+/*.fright{
     float: right
 }
 .fleft{
@@ -296,16 +303,13 @@ label.upload-cv input[type="file"] {
 #tabs .nav-tabs>li{
     width: 25%;
 }
-#tabs .card1 .nav-tabs>li {
-    width: 50%;
-}
 #tabs .nav-tabs>li.active>a{
     background: #278acb;
     color: #fff;
     border-color: #278acb;
 }
 #tabs .nav-tabs>li{
-    /*margin-right: 15px;*/
+    margin-right: 15px;
 }
 #tabs .nav-tabs>li:last-child{
     margin-right: 0px;
@@ -467,5 +471,9 @@ h3.heading{
 .button.green{
     background: #58ba57;
 }
+
+#tabs .card1 .nav-tabs>li {
+    width: 50%;
+}*/
 
 /*****************************************************************FORM-PAGE-END*******************************************/

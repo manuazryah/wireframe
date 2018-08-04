@@ -35,6 +35,7 @@ class AppointmentController extends Controller {
     public function actionIndex() {
         $searchModel = new AppointmentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['status' => 1]);
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -61,10 +62,13 @@ class AppointmentController extends Controller {
     public function actionCreate() {
         $model = new Appointment();
 
-        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
-            Yii::$app->session->setFlash('success', "Appointment Created Successfully");
-            $this->updateEstateManagement($model);
-            return $this->redirect(['/appointment/appointment-service/add', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
+            $model->sales_employee_id = Yii::$app->user->identity->post_id;
+            if ($model->save()) {
+                // Yii::$app->session->setFlash('success', "Appointment Created Successfully");
+                $this->updateEstateManagement($model);
+                return $this->redirect(['/appointment/appointment-service/add', 'id' => $model->id]);
+            }
         } return $this->render('create', [
                     'model' => $model,
         ]);
@@ -93,7 +97,10 @@ class AppointmentController extends Controller {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
-            Yii::$app->session->setFlash('success', "Appointment Created Successfully");
+            $model->sales_employee_id = Yii::$app->user->identity->post_id;
+            if ($model->save()) {
+                //   Yii::$app->session->setFlash('success', "Appointment Updated Successfully");
+            }
             return $this->redirect(['update', 'id' => $model->id]);
         } return $this->render('update', [
                     'model' => $model,

@@ -108,7 +108,7 @@ use yii\helpers\Html;
             <tr>
                 <th>
                     <div class="quation-head">
-                        <img src="<?= Yii::$app->homeUrl ?>img/ublcsp-logo.png"/>
+                        <img width="100" src="<?= Yii::$app->homeUrl ?>img/ublcsp-logo.png"/>
                     </div>
                 </th>
             </tr>
@@ -127,9 +127,9 @@ use yii\helpers\Html;
                         <table class="appointment-content-table">
                             <tr>
                                 <th class="width-20">Customer Name:</th>
-                                <th class="width-40"><?= $apointment->customer!= ''?common\models\Debtor::findOne($apointment->customer)->company_name : '' ?></th>
+                                <th class="width-40"><?= $apointment->customer != '' ? common\models\Debtor::findOne($apointment->customer)->company_name : '' ?></th>
                                 <th class="width-20">Date :</th>
-                                <th class="width-20"><?= date('d-F-Y')?></th>
+                                <th class="width-20"><?= date('d-F-Y') ?></th>
                             </tr>
                             <tr>
                                 <th class="width-20">Company Name:</th>
@@ -165,7 +165,20 @@ use yii\helpers\Html;
                             </tr>
                             <?php
                             if (!empty($services)) {
-                                $i = 0;
+                                $i = 1;
+                                ?>
+                                <tr>
+                                    <td><?= $i ?></td>
+                                    <td>
+                                        <strong style="text-decoration: underline;">A. Specification</strong>
+                                        <p>1. New company Formation: Dubai Mainland</p>
+                                        <p>2. Company Type: Commercial Issue</p>
+                                    </td>
+                                    <td>
+                                        With Office Space
+                                    </td>
+                                </tr>
+                                <?php
                                 foreach ($services as $service) {
                                     if (!empty($service)) {
                                         $i++;
@@ -225,7 +238,7 @@ use yii\helpers\Html;
                             </div>
                             <div style="width:50%">
                                 <p>Customer;</p>
-                                <p>Name: <?= $apointment->customer!= ''?common\models\Debtor::findOne($apointment->customer)->company_name : '' ?></p>
+                                <p>Name: <?= $apointment->customer != '' ? common\models\Debtor::findOne($apointment->customer)->company_name : '' ?></p>
                                 <p>Sign: ....................................</p>
                             </div>
                         </div>

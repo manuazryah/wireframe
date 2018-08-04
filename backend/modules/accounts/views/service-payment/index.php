@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use common\models\Debtor;
 use common\models\AppointmentServices;
 use common\models\Sponsor;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\AppointmentSearch */
@@ -22,8 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="box-body table-responsive">
             <?= \common\components\AlertMessageWidget::widget() ?>
-
-            <?= Html::a('<span> Create Appointment</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
             <?=
             GridView::widget([
                 'dataProvider' => $dataProvider,
@@ -47,19 +46,25 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value' => 'sponsor0.name',
                         'filter' => ArrayHelper::map(Sponsor::find()->asArray()->all(), 'id', 'name'),
                     ],
-//            'plot',
-//            'space_for_license',
-                    // 'estimated_cost',
-                    // 'tax',
-                    // 'supplier',
-                    // 'comment',
-                    // 'status',
-                    // 'CB',
-                    // 'UB',
-                    // 'DOC',
-                    // 'DOU',
-                    ['class' => 'yii\grid\ActionColumn',
-                        'template' => '{update}',
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+                        'contentOptions' => ['style' => 'width:50px;'],
+                        'header' => 'Actions',
+                        'template' => '{service}',
+                        'buttons' => [
+                            'service' => function ($url, $model) {
+                                return Html::a('<i class="fa fa-database"></i>', $url, [
+                                            'title' => Yii::t('app', 'service'),
+                                            'class' => '',
+                                ]);
+                            },
+                        ],
+                        'urlCreator' => function ($action, $model) {
+                            if ($action === 'service') {
+                                $url = Url::to(['service-payment', 'id' => $model->id]);
+                                return $url;
+                            }
+                        }
                     ],
                 ],
             ]);
