@@ -99,11 +99,11 @@ class AppointmentServiceController extends Controller {
         if (!empty($appointment)) {
             $services = '';
             if ($appointment->service_type == 1) {
-                $services = \common\models\Services::find()->where(['service_category' => 1])->all();
-            } elseif ($appointment->service_type == 2) {
-                $services = \common\models\Services::find()->where(['service_category' => 2])->all();
-            } elseif ($appointment->service_type == 3) {
                 $services = \common\models\Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->all();
+            } elseif ($appointment->service_type == 2) {
+                $services = \common\models\Services::find()->where(['service_category' => 2])->orWhere(['service_category' => 3])->all();
+            } elseif ($appointment->service_type == 3) {
+                $services = \common\models\Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->orWhere(['service_category' => 3])->all();
             }
             if (!empty($services)) {
                 foreach ($services as $service) {

@@ -17,11 +17,23 @@ use yii\widgets\ActiveForm;
 
         </div>
         <div class='col-md-3 col-xs-12'>
-            <?= $form->field($model, 'admin')->dropDownList(['1' => 'Yes', '0' => 'No'],['prompt' => 'Admin  Module Permission']) ?>
+            <?= $form->field($model, 'admin')->dropDownList(['1' => 'Yes', '0' => 'No'], ['prompt' => 'Admin  Module Permission']) ?>
 
         </div>
         <div class='col-md-3 col-xs-12'>
-            <?= $form->field($model, 'masters')->dropDownList(['1' => 'Yes', '0' => 'No'],['prompt' => 'Masters  Module Permission']) ?>
+            <?= $form->field($model, 'masters')->dropDownList(['1' => 'Yes', '0' => 'No'], ['prompt' => 'Masters  Module Permission']) ?>
+
+        </div>
+        <div class='col-md-3 col-xs-12'>
+            <?= $form->field($model, 'sales')->dropDownList(['1' => 'Yes', '0' => 'No'], ['prompt' => 'Appointment  Module Permission']) ?>
+
+        </div>
+        <div class='col-md-3 col-xs-12'>
+            <?= $form->field($model, 'accounts')->dropDownList(['1' => 'Yes', '0' => 'No'], ['prompt' => 'Accounts  Module Permission']) ?>
+
+        </div>
+        <div class='col-md-3 col-xs-12'>
+            <?= $form->field($model, 'operations')->dropDownList(['1' => 'Yes', '0' => 'No'], ['prompt' => 'Operations  Module Permission']) ?>
 
         </div>
         <div class='col-md-3 col-xs-12'>

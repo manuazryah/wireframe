@@ -70,33 +70,51 @@ AppAsset::register($this);
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu" data-widget="tree">
                         <li class="header"></li>
-                        <li class="treeview active">
-                            <a href="">
-                                <i class="fa fa-dashboard"></i>
-                                <span>Administration</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Access Powers', ['/admin/admin-posts/index'], ['class' => 'title']) ?>
-                                </li>
+                        <?php
+                        if (Yii::$app->session['post']['admin'] == 1) {
+                            ?>
+                            <li class="treeview active">
+                                <a href="">
+                                    <i class="fa fa-dashboard"></i>
+                                    <span>Administration</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Access Powers', ['/admin/admin-posts/index'], ['class' => 'title']) ?>
+                                    </li>
 
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Admin Users', ['/admin/admin-users/index'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Design', ['/admin/test/index'], ['class' => 'title']) ?>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <?= Html::a('<i class="fa fa-building-o"></i> <span>Real Estate Management</span>', ['/masters/real-estate-master/index'], ['class' => '']) ?>
-                        </li>
-                        <li>
-                            <?= Html::a('<i class="fa fa-file"></i> <span>Appointment</span>', ['/appointment/appointment/index'], ['class' => '']) ?>
-                        </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Admin Users', ['/admin/admin-users/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Design', ['/admin/test/index'], ['class' => 'title']) ?>
+                                    </li>
+                                </ul>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                        if (Yii::$app->session['post']['admin'] == 1 || Yii::$app->session['post']['masters'] == 1) {
+                            ?>
+                            <li>
+                                <?= Html::a('<i class="fa fa-building-o"></i> <span>Real Estate Management</span>', ['/masters/real-estate-master/index'], ['class' => '']) ?>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                        <?php
+                        if (Yii::$app->session['post']['admin'] == 1 || Yii::$app->session['post']['masters'] == 1) {
+                            ?>
+                            <li>
+                                <?= Html::a('<i class="fa fa-file"></i> <span>Appointment</span>', ['/appointment/appointment/index'], ['class' => '']) ?>
+                            </li>
+                            <?php
+                        }
+                        ?>
                         <li class="treeview">
                             <a href="">
                                 <i class="fa fa-database"></i>
