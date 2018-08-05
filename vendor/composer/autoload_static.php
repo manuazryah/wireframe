@@ -33,9 +33,13 @@ class ComposerStaticInit5efbc713b32d388c41825eb01bde1874
         array (
             'phpDocumentor\\Reflection\\' => 25,
         ),
+        'k' => 
+        array (
+            'kartik\\select2\\' => 15,
+            'kartik\\base\\' => 12,
+        ),
         'd' => 
         array (
-            'dosamigos\\select2\\' => 18,
             'dosamigos\\ckeditor\\' => 19,
         ),
         'c' => 
@@ -124,9 +128,13 @@ class ComposerStaticInit5efbc713b32d388c41825eb01bde1874
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
-        'dosamigos\\select2\\' => 
+        'kartik\\select2\\' => 
         array (
-            0 => __DIR__ . '/..' . '/2amigos/yii2-select2-widget/src',
+            0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-select2',
+        ),
+        'kartik\\base\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kartik-v/yii2-krajee-base',
         ),
         'dosamigos\\ckeditor\\' => 
         array (

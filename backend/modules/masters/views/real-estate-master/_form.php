@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use common\models\CompanyManagement;
 use common\models\Sponsor;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\RealEstateMaster */
@@ -23,33 +24,51 @@ use common\models\Sponsor;
     <div class="row">
         <div class='col-md-4  col-xs-12 left_padd'>
             <?php $companies = ArrayHelper::map(CompanyManagement::findAll(['status' => 1]), 'id', 'company_name'); ?>
-            <?= $form->field($model, 'company')->dropDownList($companies, ['prompt' => 'Choose Company']) ?>
+            <?php
+            echo $form->field($model, 'company')->widget(Select2::classname(), [
+                'data' => $companies,
+                'language' => 'en',
+                'options' => ['placeholder' => 'Choose Company'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>   
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'reference_code')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'total_square_feet')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'> 
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?php $sponsors = ArrayHelper::map(Sponsor::findAll(['status' => 1]), 'id', 'name'); ?>
-            <?= $form->field($model, 'sponsor')->dropDownList($sponsors, ['prompt' => 'Choose Sponsor']) ?>
+            <?php
+            echo $form->field($model, 'sponsor')->widget(Select2::classname(), [
+                'data' => $sponsors,
+                'language' => 'en',
+                'options' => ['placeholder' => 'Choose Sponsor'],
+                'pluginOptions' => [
+                    'allowClear' => true
+                ],
+            ]);
+            ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'comany_name_for_ejari')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'number_of_license')->textInput() ?>
 
         </div>
     </div>
     <div class="row">
-        <div class='col-md-8  col-xs-12 left_padd'>    
+        <div class='col-md-8  col-xs-12 left_padd'>
             <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>
@@ -78,27 +97,27 @@ use common\models\Sponsor;
             <?= $form->field($model, 'no_of_cheques')->dropDownList($numbers, ['prompt' => '- select -']) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'commission')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'deposit')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>   
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'sponser_fee')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>   
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'furniture_expense')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'office_renovation_expense')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'other_expense')->textInput(['maxlength' => true]) ?>
 
         </div>
