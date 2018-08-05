@@ -12,7 +12,7 @@ use yii\helpers\Url;
 /* @var $searchModel common\models\AppointmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Appointments';
+$this->title = 'Accounts (Appointments)';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <!-- Default box -->
@@ -28,25 +28,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
+                        ['class' => 'yii\grid\SerialColumn'],
 //                            'id',
                     [
                         'attribute' => 'customer',
                         'value' => 'customer0.company_name',
                         'filter' => ArrayHelper::map(Debtor::find()->asArray()->all(), 'id', 'company_name'),
                     ],
-                    [
+                        [
                         'attribute' => 'service_type',
                         'value' => 'serviceType.service',
                         'filter' => ArrayHelper::map(AppointmentServices::find()->asArray()->all(), 'id', 'service'),
                     ],
                     'service_id',
-                    [
+                        [
                         'attribute' => 'sponsor',
                         'value' => 'sponsor0.name',
                         'filter' => ArrayHelper::map(Sponsor::find()->asArray()->all(), 'id', 'name'),
                     ],
-                    [
+                        [
                         'class' => 'yii\grid\ActionColumn',
                         'contentOptions' => ['style' => 'width:50px;'],
                         'header' => 'Actions',

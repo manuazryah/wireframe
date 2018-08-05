@@ -35,8 +35,97 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
         </div>
+        <div class="appt-services">
+            <div class="append-box-head">
+                                        <!--<a href=""><button class="remove"><i class="fa fa-close"></i></button></a>-->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="formrow">
+                            <h5>Particular</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="formrow">
+                            <h5>Comments</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="formrow">
+                            <h5>Amount</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="formrow">
+                            <h5>Payment Type</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+            if (!empty($services)) {
+                foreach ($services as $service) {
+                    if (!empty($service)) {
+                        ?>
+                        <div class="append-box" id="service_payment-<?= $service->id ?>">
+                                                    <!--<a href=""><button class="remove"><i class="fa fa-close"></i></button></a>-->
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="formrow">
+                                        <span><?= $service->service != '' ? Services::findOne($service->service)->service_name : '' ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="formrow">
+                                        <span><?= $service->comment ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="formrow">
+                                        <span><?= $service->total ?></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="formrow">
+                                        <select class="form-control payment-type" name="payment_type" id="payment_type-<?= $service->id ?>">
+                                            <option value="">Select PaymentType</option>
+                                            <option value="1">Monthly</option>
+                                            <option value="2">Quarterly</option>
+                                            <option value="3">Twice a Year</option>
+                                            <option value="4">Annually</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="cheque-details-content-<?= $service->id ?>">
+
+                            </div>
+                        </div>
+                        <?php
+                    }
+                }
+            }
+            ?>
+        </div>
     </div>
     <!-- /.box-body -->
 </div>
 <!-- /.box -->
+<script>
+    $("document").ready(function () {
+        $(document).on('change', '.payment-type', function (e) {
+            var count = $(this).val();
+            var service_id = this.id.match(/\d+/);
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: {count: count, service_id: service_id},
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/add-cheque-details',
+                success: function (data) {
+                    $("#cheque-details-content-" + service_id).html(data);
+                }
+            });
+        });
+    });
+</script>
 

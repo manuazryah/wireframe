@@ -30,4 +30,16 @@ class ServicePaymentController extends \yii\web\Controller {
         ]);
     }
 
+    public function actionAddChequeDetails() {
+        if (Yii::$app->request->isAjax) {
+            $service_id = $_POST['service_id'];
+            $type = $_POST['count'];
+            $data = $this->renderPartial('_form_cheque', [
+                'service_id' => $service_id,
+                'type' => $type,
+            ]);
+        }
+        return $data;
+    }
+
 }

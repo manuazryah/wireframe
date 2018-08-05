@@ -469,3 +469,12 @@ h3.heading{
 }
 
 /*****************************************************************FORM-PAGE-END*******************************************/
+.append-box-head h5{
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.append-box{
+    border: 1px solid #e2e1e1;
+    padding: 6px 15px;
+    margin-bottom: 10px;
+}
