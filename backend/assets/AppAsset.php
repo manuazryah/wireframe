@@ -24,6 +24,7 @@ class AppAsset extends AssetBundle {
 //        'js/jquery.min.js',
         'js/bootstrap.min.js',
         'js/jquery.slimscroll.min.js',
+        'js/Chart.js',
         'js/fastclick.js',
         'js/adminlte.min.js',
         'js/demo.js',

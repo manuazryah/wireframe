@@ -48,7 +48,7 @@
     border-radius: 5px;
 }
 .box{
-    min-height: 500px;
+    /*min-height: 500px;*/
 }
 .alert {
     padding: 6px 15px;

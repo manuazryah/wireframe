@@ -6,6 +6,7 @@ use backend\assets\AppAsset;
 use yii\helpers\Html;
 
 AppAsset::register($this);
+$controler = Yii::$app->controller->id;
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -73,7 +74,7 @@ AppAsset::register($this);
                         <?php
                         if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['admin'] == 1) {
                             ?>
-                            <li class="treeview active">
+                            <li class="treeview <?= $controler == 'admin-posts' || $controler == 'admin-users' || $controler == 'site' ? 'active' : '' ?>">
                                 <a href="">
                                     <i class="fa fa-dashboard"></i>
                                     <span>Administration</span>
@@ -100,7 +101,7 @@ AppAsset::register($this);
                         <?php
                         if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['masters'] == 1) {
                             ?>
-                            <li>
+                            <li class="<?= $controler == 'real-estate-master' ? 'active' : '' ?>">
                                 <?= Html::a('<i class="fa fa-building-o"></i> <span>Real Estate Management</span>', ['/masters/real-estate-master/index'], ['class' => '']) ?>
                             </li>
                             <?php
@@ -109,7 +110,7 @@ AppAsset::register($this);
                         <?php
                         if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['sales'] == 1) {
                             ?>
-                            <li>
+                            <li class="<?= $controler == 'appointment' ? 'active' : '' ?>">
                                 <?= Html::a('<i class="fa fa-file"></i> <span>Appointment</span>', ['/appointment/appointment/index'], ['class' => '']) ?>
                             </li>
                             <?php
@@ -118,7 +119,7 @@ AppAsset::register($this);
                         <?php
                         if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['accounts'] == 1) {
                             ?>
-                            <li>
+                            <li class="<?= $controler == 'service-payment' ? 'active' : '' ?>">
                                 <?= Html::a('<i class="fa fa-money"></i> <span>Accounts</span>', ['/accounts/service-payment/index'], ['class' => '']) ?>
                             </li>
                             <?php
@@ -127,7 +128,7 @@ AppAsset::register($this);
                         <?php
                         if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['masters'] == 1) {
                             ?>
-                            <li class="treeview">
+                            <li class="treeview <?= $controler == 'country' || $controler == 'services' || $controler == 'supplier' || $controler == 'service-category' || $controler == 'sponsor' || $controler == 'company-management' || $controler == 'debtor' ? 'active' : '' ?>">
                                 <a href="">
                                     <i class="fa fa-database"></i>
                                     <span>Masters</span>
