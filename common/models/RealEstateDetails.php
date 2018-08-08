@@ -22,26 +22,23 @@ use Yii;
  *
  * @property RealEstateMaster $master
  */
-class RealEstateDetails extends \yii\db\ActiveRecord
-{
+class RealEstateDetails extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'real_estate_details';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['master_id', 'category', 'customer_id', 'availability', 'status', 'CB', 'UB'], 'integer'],
             [['cost'], 'number'],
-            [['DOC', 'DOU'], 'safe'],
-            [['code'], 'string', 'max' => 100],
+            [['DOC', 'DOU', 'code'], 'safe'],
             [['master_id'], 'exist', 'skipOnError' => true, 'targetClass' => RealEstateMaster::className(), 'targetAttribute' => ['master_id' => 'id']],
         ];
     }
@@ -49,8 +46,7 @@ class RealEstateDetails extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'master_id' => 'Master ID',
@@ -70,8 +66,8 @@ class RealEstateDetails extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMaster()
-    {
+    public function getMaster() {
         return $this->hasOne(RealEstateMaster::className(), ['id' => 'master_id']);
     }
+
 }

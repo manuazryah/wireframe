@@ -64,13 +64,24 @@ class RealEstateMasterController extends Controller {
 
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->validate()) {
             $data = Yii::$app->request->post();
-            $files = UploadedFile::getInstances($model, 'attachments');
+            $aggrement = UploadedFile::getInstance($model, 'aggrement');
+            $ejari = UploadedFile::getInstance($model, 'ejari');
+            $cheque_copy = UploadedFile::getInstance($model, 'cheque_copy');
+            if (!empty($aggrement)) {
+                $model->aggrement = $aggrement->extension;
+            }
+            if (!empty($ejari)) {
+                $model->ejari = $ejari->extension;
+            }
+            if (!empty($cheque_copy)) {
+                $model->cheque_copy = $cheque_copy->extension;
+            }
             if ($model->save()) {
                 $this->EstateDetails($model);
                 if ($model->no_of_cheques != '' && $model->no_of_cheques >= 1) {
                     $this->ChequeDetails($model, $data);
                 }
-                $this->upload($model, $files);
+                $this->upload($model, $aggrement, $ejari, $cheque_copy);
                 Yii::$app->session->setFlash('success', "Real Estate Details Created Successfully");
                 $model = new RealEstateMaster();
             }
@@ -82,22 +93,27 @@ class RealEstateMasterController extends Controller {
     public function EstateDetails($model) {
         if ($model->number_of_license >= 1) {
             for ($i = 1; $i <= $model->number_of_license; $i++) {
-                $this->SaveEstateDetails($model, 1,$i);
+                $this->SaveEstateDetails($model, 1, $i);
             }
         }
         if ($model->number_of_plots >= 1) {
             for ($i = 1; $i <= $model->number_of_plots; $i++) {
-                $this->SaveEstateDetails($model, 2,$i);
+                $this->SaveEstateDetails($model, 2, $i);
             }
         }
         return;
     }
 
-    public function SaveEstateDetails($model_master, $category,$code) {
+    public function SaveEstateDetails($model_master, $category, $code) {
         $model = new \common\models\RealEstateDetails();
         $model->master_id = $model_master->id;
         $model->category = $category;
-        $model->code = Yii::$app->SetValues->NumberAlphabet($code);
+        if ($category == 2) {
+            $model->code = Yii::$app->SetValues->NumberAlphabet($code);
+        }
+        if ($category == 1) {
+            $model->code = $code;
+        }
         $model->save();
         return;
     }
@@ -150,14 +166,17 @@ class RealEstateMasterController extends Controller {
         return;
     }
 
-    public function upload($model, $files) {
+    public function upload($model, $aggrement, $ejari, $cheque_copy) {
         $path = Yii::$app->basePath . '/../uploads/real_estate/' . $model->id;
         $path = $this->CheckPath($path);
-        if (!empty($files)) {
-            foreach ($files as $file) {
-                $name = $this->fileExists($path, $file->baseName . '.' . $file->extension, $file, 1);
-                $file->saveAs($path . '/' . $name);
-            }
+        if (!empty($aggrement)) {
+            $aggrement->saveAs($path . '/aggrement.' . $aggrement->extension);
+        }
+        if (!empty($ejari)) {
+            $ejari->saveAs($path . '/ejari.' . $ejari->extension);
+        }
+        if (!empty($cheque_copy)) {
+            $cheque_copy->saveAs($path . '/cheque_copy.' . $cheque_copy->extension);
         }
     }
 
@@ -193,11 +212,31 @@ class RealEstateMasterController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
+        $aggrement_ = $model->aggrement;
+        $ejari_ = $model->ejari;
+        $cheque_copy_ = $model->cheque_copy;
         $cheque_details = \common\models\ChequeDetails::find()->where(['master_id' => $id])->all();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $files = UploadedFile::getInstances($model, 'attachments');
+            $aggrement = UploadedFile::getInstance($model, 'aggrement');
+            $ejari = UploadedFile::getInstance($model, 'ejari');
+            $cheque_copy = UploadedFile::getInstance($model, 'cheque_copy');
+            if (!empty($aggrement)) {
+                $model->aggrement = $aggrement->extension;
+            } else {
+                $model->aggrement = $aggrement_;
+            }
+            if (!empty($ejari)) {
+                $model->ejari = $ejari->extension;
+            } else {
+                $model->ejari = $ejari_;
+            }
+            if (!empty($cheque_copy)) {
+                $model->cheque_copy = $cheque_copy->extension;
+            } else {
+                $model->cheque_copy = $cheque_copy_;
+            }
             if ($model->save()) {
-                $this->upload($model, $files);
+                $this->upload($model, $aggrement, $ejari, $cheque_copy);
             }
             return $this->redirect(['update', 'id' => $model->id]);
         } return $this->render('update', [

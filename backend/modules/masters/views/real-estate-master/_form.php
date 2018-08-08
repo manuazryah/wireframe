@@ -136,7 +136,16 @@ use kartik\select2\Select2;
         </div>
     </div>
     <div class="row">
-        <div class='col-md-4  col-xs-12 left_padd'>    <?= $form->field($model, 'attachments[]')->fileInput(['multiple' => true]) ?>
+        <div class='col-md-4  col-xs-12 left_padd'>    
+            <?= $form->field($model, 'aggrement')->fileInput(['multiple' => true]) ?>
+
+        </div>
+        <div class='col-md-4  col-xs-12 left_padd'>    
+            <?= $form->field($model, 'ejari')->fileInput(['multiple' => true]) ?>
+
+        </div>
+        <div class='col-md-4  col-xs-12 left_padd'>    
+            <?= $form->field($model, 'cheque_copy')->fileInput(['multiple' => true]) ?>
 
         </div>
     </div>

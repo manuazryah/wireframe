@@ -148,4 +148,38 @@ class AppointmentController extends Controller {
         }
     }
 
+    /*
+     * Add new Customer
+     */
+
+    public function actionAddCustomer() {
+        $model = new \common\models\Debtor();
+        if (Yii::$app->request->post()) {
+            $model->company_name = Yii::$app->request->post()['company_name'];
+            $model->email = Yii::$app->request->post()['email'];
+            $model->phone_number = Yii::$app->request->post()['phone_number'];
+            $model->contact_person = Yii::$app->request->post()['contact_person'];
+            $model->TRN = Yii::$app->request->post()['TRN'];
+            $model->reference_code = Yii::$app->request->post()['reference_code'];
+            $model->address = Yii::$app->request->post()['address'];
+            $model->contact_person_email = Yii::$app->request->post()['contact_person_email'];
+            $model->contact_person_phone = Yii::$app->request->post()['contact_person_phone'];
+            $model->nationality = Yii::$app->request->post()['nationality'];
+            $model->comment = Yii::$app->request->post()['comment'];
+            Yii::$app->SetValues->Attributes($model);
+            if ($model->validate() && $model->save()) {
+                echo json_encode(array("con" => "1", 'id' => $model->id, 'name' => $model->company_name)); //Success
+                exit;
+            } else {
+                $array = $model->getErrors();
+                $error = isset($array['name']['0']) ? $array['name']['0'] : 'Internal error';
+                echo json_encode(array("con" => "2", 'error' => $error));
+                exit;
+            }
+        }
+        return $this->renderAjax('_form_debtor', [
+                    'model' => $model,
+        ]);
+    }
+
 }

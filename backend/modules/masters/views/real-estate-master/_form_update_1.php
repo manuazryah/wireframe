@@ -156,36 +156,56 @@ use common\models\Sponsor;
     <div class="row">
         <div class='col-md-4  col-xs-12 left_padd'>    
             <?= $form->field($model, 'aggrement')->fileInput(['multiple' => true]) ?>
-            <?php
-            if (!empty($model->aggrement)) {
-                ?>
-                <a href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/aggrement.<?= $model->aggrement; ?>" target="_blank">Aggrement</a>
-                <?php
-            }
-            ?>
+
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>    
             <?= $form->field($model, 'ejari')->fileInput(['multiple' => true]) ?>
-            <?php
-            if (!empty($model->ejari)) {
-                ?>
-                <a href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/ejari.<?= $model->ejari; ?>" target="_blank">Ejari</a>
-                <?php
-            }
-            ?>
+
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>    
             <?= $form->field($model, 'cheque_copy')->fileInput(['multiple' => true]) ?>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class='col-md-12  col-xs-12 left_padd'>    
             <?php
-            if (!empty($model->cheque_copy)) {
+            $path = Yii::getAlias('@paths') . '/real_estate/' . $model->id;
+            if (count(glob("{$path}/*")) > 0) {
+                $k = 0;
                 ?>
-                <a href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/cheque_copy.<?= $model->cheque_copy; ?>" target="_blank">Cheque Copy</a>
+                <table class="table table-borderless sub-tbl2">
+                    <tbody>
+                        <?php
+                        foreach (glob("{$path}/*") as $file) {
+                            $k++;
+                            $arry = explode('/', $file);
+                            $img_nmee = end($arry);
+
+                            $img_nmees = explode('.', $img_nmee);
+                            if ($img_nmees['1'] != '') {
+                                ?>
+                                <tr>
+                                    <td style="width: 1%;">
+                                        <a class="" href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/<?= end($arry); ?>?<?= rand() ?>" target="_blank"><?= end($arry) ?></a>
+                                    </td>
+                                    <td style="width: 10%;">
+                                        <?= Html::a('<i class="fa fa-trash-o"></i>', ['/masters/real-estate-master/remove', 'path' => Yii::$app->basePath . '/../uploads/real_estate/' . $model->id . '/' . end($arry)], ['class' => 'gal-img-remove']) ?>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
                 <?php
             }
             ?>
+
         </div>
     </div>
-    <div class="clearfix"></div>
+
     <div class="form-group action-btn-right">
         <?= Html::a('<span> Cancel</span>', ['index'], ['class' => 'btn btn-block cancel-btn']) ?>
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => 'btn btn-success']) ?>

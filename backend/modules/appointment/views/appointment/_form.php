@@ -8,8 +8,9 @@ use common\models\Tax;
 use common\models\AppointmentServices;
 use common\models\Sponsor;
 use common\models\RealEstateDetails;
-use common\models\RealEstateMaster;
+use yii\helpers\Url;
 use kartik\select2\Select2;
+use common\components\ModalViewWidget;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Appointment */
@@ -17,7 +18,9 @@ use kartik\select2\Select2;
 ?>
 
 <div class="appointment-form form-inline">
-
+    <?php
+    echo ModalViewWidget::widget();
+    ?>
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
@@ -32,7 +35,7 @@ use kartik\select2\Select2;
                 ],
             ]);
             ?>
-            <?php // $form->field($model, 'customer')->dropDownList($customers, ['prompt' => 'Choose Customer']) ?>
+            <?= Html::button('<span> Not in the list ? Add New</span>', ['value' => Url::to('../appointment/add-customer'), 'class' => 'btn-add modalButton']) ?>
 
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
@@ -129,6 +132,11 @@ use kartik\select2\Select2;
     </div>
     <div class="row">
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+            <?php $salesman = ArrayHelper::map(\common\models\AdminUsers::findAll(['status' => 1]), 'id', 'name'); ?>
+            <?= $form->field($model, 'sales_man')->dropDownList($salesman, ['prompt' => 'Choose Salesman']) ?>
+
+        </div>
+        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?= $form->field($model, 'comment')->textInput(['maxlength' => true]) ?>
 
         </div>
@@ -148,6 +156,15 @@ use kartik\select2\Select2;
     <?php ActiveForm::end(); ?>
 
 </div>
+<script>
+    $("document").ready(function () {
+        $(document).on('click', '.modalButton', function () {
+            $('#modal').modal('show')
+                    .find('#modalContent')
+                    .load($(this).attr("value"));
+        });
+    });
+</script>
 <script>
     $("document").ready(function () {
         $(document).on('change', '#appointment-service_type', function (e) {

@@ -58,7 +58,7 @@ class Appointment extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['customer', 'service_type', 'sponsor'], 'required'],
+            [['service_type', 'sponsor', 'sales_man', 'customer'], 'required'],
             [['customer', 'service_type', 'plot', 'space_for_license', 'sponsor', 'tax', 'supplier', 'no_partners', 'approval_status', 'sales_employee_id', 'accounts_employee_id', 'operations_employee_id', 'status', 'CB', 'UB'], 'integer'],
             [['estimated_cost'], 'number'],
             [['start_date', 'expiry_date', 'DOC', 'DOU'], 'safe'],
@@ -115,6 +115,13 @@ class Appointment extends \yii\db\ActiveRecord {
      */
     public function getOperationsEmployee() {
         return $this->hasOne(AdminUsers::className(), ['id' => 'operations_employee_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSalesman() {
+        return $this->hasOne(AdminUsers::className(), ['id' => 'sales_man']);
     }
 
     /**

@@ -481,3 +481,21 @@ h3.heading{
 .select2-container--krajee {
     margin-bottom: 30px;
 }
+input[type="file"] {
+    margin-bottom: 30px;
+}
+.btn-add{
+    position: absolute;
+    top: 57px;
+    right: 8px;
+    border: none;
+    background: white;
+    color: #278acb;
+    font-weight: 600;
+    font-size: 12px;
+}
+.btn-add:hover{
+    border: none;
+    background: white;
+    color: #278acb;
+}
