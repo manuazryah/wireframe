@@ -35,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
         </div>
+        <?php $form = ActiveForm::begin(); ?>
         <div class="appt-services">
             <div class="append-box-head">
                                         <!--<a href=""><button class="remove"><i class="fa fa-close"></i></button></a>-->
@@ -86,12 +87,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                                 <div class="col-md-3">
                                     <div class="formrow">
-                                        <select class="form-control payment-type" name="payment_type" id="payment_type-<?= $service->id ?>">
+                                        <select class="form-control payment-type" name="updatee[<?= $service->id; ?>][payment_type]" id="payment_type-<?= $service->id ?>" required>
                                             <option value="">Select PaymentType</option>
                                             <option value="1">Monthly</option>
                                             <option value="2">Quarterly</option>
                                             <option value="3">Twice a Year</option>
                                             <option value="4">Annually</option>
+                                            <option value="5">One Time</option>
                                         </select>
                                     </div>
                                 </div>
@@ -106,6 +108,11 @@ $this->params['breadcrumbs'][] = $this->title;
             }
             ?>
         </div>
+        <div class="form-group action-btn-right">
+            <?= Html::a('<span> Cancel</span>', ['index'], ['class' => 'btn btn-block cancel-btn']) ?>
+            <?= Html::submitButton('Save', ['class' => 'btn btn-success create-btn']) ?>
+        </div>
+        <?php ActiveForm::end(); ?>
     </div>
     <!-- /.box-body -->
 </div>
@@ -114,12 +121,14 @@ $this->params['breadcrumbs'][] = $this->title;
     $("document").ready(function () {
         $(document).on('change', '.payment-type', function (e) {
             var count = $(this).val();
-            var service_id = this.id.match(/\d+/);
+            var id = $(this).attr('id');
+            var arr = id.split("-");
+            var service_id = arr[1];
             $.ajax({
                 type: 'POST',
                 cache: false,
                 async: false,
-                data: {count: count, service_id: service_id},
+                data: {service_id: service_id, count: count},
                 url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/add-cheque-details',
                 success: function (data) {
                     $("#cheque-details-content-" + service_id).html(data);
