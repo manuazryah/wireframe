@@ -13,6 +13,7 @@ use Yii;
  * @property string $amount
  * @property string $cheque_no
  * @property string $date
+ * @property string $comment
  * @property int $status
  * @property int $CB
  * @property int $UB
@@ -38,6 +39,7 @@ class ServicePayment extends \yii\db\ActiveRecord
             [['transaction_type', 'status', 'CB', 'UB'], 'integer'],
             [['amount'], 'number'],
             [['date', 'DOC', 'DOU'], 'safe'],
+            [['comment'], 'string'],
             [['transaction_no', 'cheque_no'], 'string', 'max' => 100],
         ];
     }
@@ -54,6 +56,7 @@ class ServicePayment extends \yii\db\ActiveRecord
             'amount' => 'Amount',
             'cheque_no' => 'Cheque No',
             'date' => 'Date',
+            'comment' => 'Comment',
             'status' => 'Status',
             'CB' => 'C B',
             'UB' => 'U B',
