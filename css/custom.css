@@ -499,3 +499,14 @@ input[type="file"] {
     background: white;
     color: #278acb;
 }
+.pay-btn{
+    background: white;
+    border: none;
+    float: right;
+    color: #00a1ff;
+}
+.pay-btn:hover{
+    background: white;
+    border: none;
+    color: #00a1ff;
+}

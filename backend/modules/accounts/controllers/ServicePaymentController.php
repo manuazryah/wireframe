@@ -179,4 +179,26 @@ class ServicePaymentController extends \yii\web\Controller {
         ]);
     }
 
+    public function actionPayAmount() {
+        if (Yii::$app->request->post()) {
+            
+        }
+        return $this->renderAjax('_form_pay', [
+                    'model' => $model,
+        ]);
+    }
+
+    public function actionGetPayment() {
+        $data = '';
+        if (Yii::$app->request->post()) {
+            $type = $_POST['type'];
+            $service = $_POST['service_id'];
+            $data = $this->renderPartial('_form_pay', [
+                'type' => $type,
+                'service' => $service,
+            ]);
+        }
+        return $data;
+    }
+
 }

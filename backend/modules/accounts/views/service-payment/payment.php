@@ -38,7 +38,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             <tr>
                                 <td></td>
                                 <td><?= $one_time_payment->service != '' ? common\models\Services::findOne($one_time_payment->service)->service_name : '' ?></td>
-                                <td><?= $one_time_payment->total ?></td>
+                                <td>
+                                    <?= $one_time_payment->total ?>
+                                    <button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
+                                        Click to pay
+                                    </button>
+                                </td>
                                 <td><?= $one_time_payment->amount_paid ?></td>
                                 <td><?= $one_time_payment->due_amount ?></td>
                             </tr>
@@ -62,7 +67,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ?>
 
                                             <td><?= $service_cheque->service_id != '' ? common\models\Services::findOne($service_cheque->service_id)->service_name : '' ?></td>
-                                            <td><?= $service_cheque->amount ?></td>
+                                            <td>
+                                                <?= $service_cheque->amount ?>
+                                                <button id="<?= $service_cheque->service_id ?>" type="button" data-val="2" class="pay-btn" data-toggle="modal" data-target="#modal-default">
+                                                    Click to pay
+                                                </button>
+                                            </td>
                                             <td></td>
                                             <td></td>
                                         </tr>
@@ -80,4 +90,32 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- /.box-body -->
 </div>
 <!-- /.box -->
+<div class="modal fade" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content payment-modal">
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<script>
+    $("document").ready(function () {
+        $(document).on('click', '.pay-btn', function (e) {
+            var service_id = $(this).attr('id');
+            var type = $(this).attr('data-val');
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: {service_id: service_id, type: type},
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/get-payment',
+                success: function (data) {
+                    $(".payment-modal").html(data);
+                }
+            });
+        });
+    });
+</script>
 
