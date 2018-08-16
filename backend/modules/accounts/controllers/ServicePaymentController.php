@@ -12,7 +12,8 @@ class ServicePaymentController extends \yii\web\Controller {
     public function actionIndex() {
         $searchModel = new AppointmentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['status' => 2]);
+        $arr = [2, 3];
+        $dataProvider->query->andWhere(['status' => $arr]);
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -27,16 +28,18 @@ class ServicePaymentController extends \yii\web\Controller {
             $data = Yii::$app->request->post();
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                if ($this->SaveServiceDetails($data)) {
+                if ($this->SaveServiceDetails($data, $appointment)) {
                     $transaction->commit();
-                    Yii::$app->session->setFlash('success', "Invoice Created successfully");
+                    $appointment->status = 3;
+                    $appointment->save(FALSE);
+                    Yii::$app->session->setFlash('success', "Payment Details Added successfully");
                 } else {
                     $transaction->rollBack();
-                    Yii::$app->session->setFlash('error', "There was a problem creating new invoice. Please try again.");
+                    Yii::$app->session->setFlash('error', "There was a problem adding payment details. Please try again.");
                 }
             } catch (Exception $e) {
                 $transaction->rollBack();
-                Yii::$app->session->setFlash('error', "There was a problem creating new invoice. Please try again.");
+                Yii::$app->session->setFlash('error', "There was a problem creating adding payment details. Please try again.");
             }
             return $this->redirect(['index']);
         }
@@ -51,19 +54,19 @@ class ServicePaymentController extends \yii\web\Controller {
      * Update Appointment service
      */
 
-    public function SaveServiceDetails($data) {
+    public function SaveServiceDetails($data, $appointment) {
         $flag = 0;
         if (!empty($data['updatee'])) {
             foreach ($data['updatee'] as $key => $update) {
-                if (!empty($data['updatee'][$key])) {
+                if (!empty($update['payment_type'])) {
                     $service = AppointmentService::find()->where(['id' => $key])->one();
                     if (!empty($service)) {
-                        $service->payment_type = $data['updatee'][$key];
+                        $service->payment_type = $update['payment_type'];
                         if ($service->save()) {
                             if ($service->payment_type == 5) {
                                 $flag = 1;
                             } else {
-                                if ($this->SaveChequeDetails($service, $data, $key)) {
+                                if ($this->SaveChequeDetails($service, $data, $key, $appointment)) {
                                     $flag = 1;
                                 } else {
                                     $flag = 0;
@@ -85,7 +88,7 @@ class ServicePaymentController extends \yii\web\Controller {
     /**
      * To set cheque details into an array.
      */
-    public function SaveChequeDetails($service, $data, $key) {
+    public function SaveChequeDetails($service, $data, $key, $appointment) {
         $flag = 0;
         $creatematerial = $data['create'][$key];
         if (isset($creatematerial) && $creatematerial != '') {
@@ -111,7 +114,7 @@ class ServicePaymentController extends \yii\web\Controller {
                     $i++;
                 }
             }
-            if ($this->AddMaterialDetails($service, $arr)) {
+            if ($this->AddChequeDetails($service, $arr, $appointment)) {
                 $flag = 1;
             }
         }
@@ -125,10 +128,11 @@ class ServicePaymentController extends \yii\web\Controller {
     /**
      * This function save service cheque details.
      */
-    public function AddMaterialDetails($service, $arr) {
+    public function AddChequeDetails($service, $arr, $appointment) {
         $flag = 0;
         foreach ($arr as $val) {
             $aditional = new \common\models\ServiceChequeDetails();
+            $aditional->appointment_id = $appointment->id;
             $aditional->service_id = $service->id;
             $aditional->cheque_number = $val['cheque_num'];
             $aditional->cheque_date = $val['cheque_date'];
@@ -155,6 +159,24 @@ class ServicePaymentController extends \yii\web\Controller {
             ]);
         }
         return $data;
+    }
+
+    /*
+     * Service Payment
+     */
+
+    public function actionPayment($id) {
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
+        $one_time_payments = AppointmentService::findAll(['appointment_id' => $id, 'payment_type' => 5]);
+        $appointment = Appointment::findOne($id);
+        $cheque_dates = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->groupBy('cheque_date')->all();
+        return $this->render('payment', [
+                    'services' => $services,
+                    'appointment' => $appointment,
+                    'one_time_payments' => $one_time_payments,
+                    'cheque_dates' => $cheque_dates,
+                    'id' => $id,
+        ]);
     }
 
 }

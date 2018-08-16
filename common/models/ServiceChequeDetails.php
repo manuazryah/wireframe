@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "service_cheque_details".
  *
  * @property int $id
+ * @property int $appointment_id
  * @property int $service_id
  * @property string $cheque_number
  * @property string $cheque_date
@@ -36,8 +37,7 @@ class ServiceChequeDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'required'],
-            [['id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
+            [['appointment_id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
             [['cheque_date', 'DOC', 'DOU'], 'safe'],
             [['amount'], 'number'],
             [['cheque_number'], 'string', 'max' => 100],
@@ -52,6 +52,7 @@ class ServiceChequeDetails extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'appointment_id' => 'Appointment ID',
             'service_id' => 'Service ID',
             'cheque_number' => 'Cheque Number',
             'cheque_date' => 'Cheque Date',
