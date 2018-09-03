@@ -67,6 +67,9 @@ class AppointmentController extends Controller {
             if ($model->save()) {
                 // Yii::$app->session->setFlash('success', "Appointment Created Successfully");
                 $this->updateEstateManagement($model);
+                if ($model->service_type == 2 || $model->service_type == 3) {
+                    $this->addLicencingMaster($model);
+                }
                 return $this->redirect(['/appointment/appointment-service/add', 'id' => $model->id]);
             }
         } return $this->render('create', [
@@ -85,6 +88,24 @@ class AppointmentController extends Controller {
             $estate_details->availability = 0;
             $estate_details->update();
         }
+    }
+
+    public function addLicencingMaster($model) {
+        $license_master = new \common\models\LicencingMaster();
+        $license_master->appointment_id = $model->id;
+        $license_master->appointment_no = $model->service_id;
+        $license_master->customer_id = $model->customer;
+        $license_master->sponsor = $model->sponsor;
+        $license_master->plot = $model->plot;
+        $license_master->space_for_licence = $model->space_for_license;
+        $license_master->no_of_partners = 1;
+        $license_master->status = 1;
+        $license_master->stage = 'Trade name and intial approval';
+        $license_master->comment = '';
+        $license_master->CB = Yii::$app->user->identity->id;
+        $license_master->DOC = date('Y-m-d');
+        $license_master->save();
+        return;
     }
 
     /**

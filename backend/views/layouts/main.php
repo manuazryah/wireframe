@@ -126,6 +126,15 @@ $controler = Yii::$app->controller->id;
                         }
                         ?>
                         <?php
+                        if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['operations'] == 1) {
+                            ?>
+                            <li class="<?= $controler == 'licencing-master' ? 'active' : '' ?>">
+                                <?= Html::a('<i class="fa fa-id-card-o"></i> <span>License Procedure</span>', ['/licence_procedure/licencing-master/index'], ['class' => '']) ?>
+                            </li>
+                            <?php
+                        }
+                        ?>
+                        <?php
                         if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['masters'] == 1) {
                             ?>
                             <li class="treeview <?= $controler == 'country' || $controler == 'services' || $controler == 'supplier' || $controler == 'service-category' || $controler == 'sponsor' || $controler == 'company-management' || $controler == 'debtor' ? 'active' : '' ?>">

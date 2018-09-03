@@ -34,6 +34,9 @@ return [
         'accounts' => [
             'class' => 'backend\modules\accounts\Module',
         ],
+        'licence_procedure' => [
+            'class' => 'backend\modules\licence_procedure\Module',
+        ],
     ],
     'components' => [
         'request' => [
