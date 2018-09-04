@@ -41,6 +41,7 @@ class Moa extends \yii\db\ActiveRecord {
             [['comment'], 'string'],
             [['aggrement', 'moa_document'], 'string', 'max' => 100],
             [['next_step'], 'string', 'max' => 200],
+            [['aggrement', 'moa_document'], 'file', 'extensions' => 'png, jpg, jpeg, gif, bmp, pdf, doc, docx'],
         ];
     }
 

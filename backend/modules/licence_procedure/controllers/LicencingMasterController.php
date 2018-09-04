@@ -112,6 +112,23 @@ class LicencingMasterController extends Controller {
         }
     }
 
+    /**
+     * Upload Initial approval Documents.
+     * @return mixed
+     */
+    public function Upload($model, $receipt, $certificate, $sponsor_family_book) {
+        if (isset($receipt) && !empty($receipt)) {
+            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/receipt/' . $model->id . '.' . $receipt->extension);
+        }
+        if (isset($certificate) && !empty($certificate)) {
+            $certificate->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/certificate/' . $model->id . '.' . $certificate->extension);
+        }
+        if (isset($sponsor_family_book) && !empty($sponsor_family_book)) {
+            $sponsor_family_book->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/family_book/' . $model->id . '.' . $sponsor_family_book->extension);
+        }
+        return TRUE;
+    }
+
     public function actionMoa($id) {
         $license_master = $this->findModel($id);
         $model = \common\models\Moa::find()->where(['licensing_master_id' => $id])->one();
@@ -144,23 +161,6 @@ class LicencingMasterController extends Controller {
     }
 
     /**
-     * Upload Initial approval Documents.
-     * @return mixed
-     */
-    public function Upload($model, $receipt, $certificate, $sponsor_family_book) {
-        if (isset($receipt) && !empty($receipt)) {
-            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/receipt/' . $model->id . '.' . $receipt->extension);
-        }
-        if (isset($certificate) && !empty($certificate)) {
-            $certificate->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/certificate/' . $model->id . '.' . $certificate->extension);
-        }
-        if (isset($sponsor_family_book) && !empty($sponsor_family_book)) {
-            $sponsor_family_book->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/family_book/' . $model->id . '.' . $sponsor_family_book->extension);
-        }
-        return TRUE;
-    }
-
-    /**
      * Upload MOA Documents.
      * @return mixed
      */
@@ -170,6 +170,72 @@ class LicencingMasterController extends Controller {
         }
         if (isset($aggrement) && !empty($aggrement)) {
             $aggrement->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/moa/aggrement/' . $model->id . '.' . $aggrement->extension);
+        }
+        return TRUE;
+    }
+
+    public function actionPaymentVoucher($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\PaymentVoucher::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\PaymentVoucher();
+            $model->setScenario('create');
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $ejari = UploadedFile::getInstance($model, 'ejari');
+            $main_license = UploadedFile::getInstance($model, 'main_license');
+            $noc = UploadedFile::getInstance($model, 'noc');
+            $service_receipt = UploadedFile::getInstance($model, 'service_receipt');
+            $voucher_attachment = UploadedFile::getInstance($model, 'voucher_attachment');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+            if (!empty($ejari)) {
+                $model->ejari = $ejari->extension;
+            }
+            if (!empty($main_license)) {
+                $model->main_license = $main_license->extension;
+            }
+            if (!empty($noc)) {
+                $model->noc = $noc->extension;
+            }
+            if (!empty($service_receipt)) {
+                $model->service_receipt = $service_receipt->extension;
+            }
+            if (!empty($voucher_attachment)) {
+                $model->voucher_attachment = $voucher_attachment->extension;
+            }
+            if ($model->validate() && $model->save()) {
+                $this->uploadVoucherDocument($model, $ejari, $main_license, $noc, $service_receipt, $voucher_attachment);
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->render('_payment_voucher', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Upload Payment Voucher Documents.
+     * @return mixed
+     */
+    public function uploadVoucherDocument($model, $ejari, $main_license, $noc, $service_receipt, $voucher_attachment) {
+        if (isset($ejari) && !empty($ejari)) {
+            $ejari->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/voucher_documents/ejari/' . $model->id . '.' . $ejari->extension);
+        }
+        if (isset($main_license) && !empty($main_license)) {
+            $main_license->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/voucher_documents/main_license/' . $model->id . '.' . $main_license->extension);
+        }
+        if (isset($noc) && !empty($noc)) {
+            $noc->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/voucher_documents/noc/' . $model->id . '.' . $noc->extension);
+        }
+        if (isset($service_receipt) && !empty($service_receipt)) {
+            $service_receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/voucher_documents/service_receipt/' . $model->id . '.' . $service_receipt->extension);
+        }
+        if (isset($voucher_attachment) && !empty($voucher_attachment)) {
+            $voucher_attachment->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/voucher_documents/voucher_attachment/' . $model->id . '.' . $voucher_attachment->extension);
         }
         return TRUE;
     }

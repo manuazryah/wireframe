@@ -27,15 +27,15 @@ $this->params['breadcrumbs'][] = 'Update';
                             <div class="card">
                                 <ul class="nav nav-tabs" role="tablist">
                                     <li role="presentation"><a href="#step1" aria-controls="home" role="tab" data-toggle="tab">Step 1</a></li>
-                                    <li role="presentation" class="active"><a href="#step2" aria-controls="profile" role="tab" data-toggle="tab">Step 2</a></li>
-                                    <li role="presentation"><a href="#step3" aria-controls="messages" role="tab" data-toggle="tab">Step 3</a></li>
+                                    <li role="presentation"><a href="#step2" aria-controls="profile" role="tab" data-toggle="tab">Step 2</a></li>
+                                    <li role="presentation" class="active"><a href="#step3" aria-controls="messages" role="tab" data-toggle="tab">Step 3</a></li>
                                     <li role="presentation"><a href="#step4" aria-controls="settings" role="tab" data-toggle="tab">Step 4</a></li>
                                 </ul>
 
                                 <!-- Tab panes -->
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane active" id="step1">
-                                        <h3 class="heading">MOA</h3>
+                                        <h3 class="heading">Payment Voucher</h3>
                                         <div class="customer-info">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
                                                 <ul>
@@ -110,19 +110,27 @@ $this->params['breadcrumbs'][] = 'Update';
                                                 <?php $form = ActiveForm::begin(); ?>
                                                 <div class="row">
                                                     <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
-                                                        <?= $form->field($model, 'aggrement')->fileInput(['class' => 'form-control']) ?>
-
-                                                    </div>
-                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-                                                        <?= $form->field($model, 'typing_fee')->textInput(['maxlength' => true]) ?>
-
-                                                    </div>
-                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-                                                        <?= $form->field($model, 'court_fee')->textInput(['maxlength' => true]) ?>
+                                                        <?= $form->field($model, 'ejari')->fileInput(['class' => 'form-control']) ?>
 
                                                     </div>
                                                     <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
-                                                        <?= $form->field($model, 'moa_document')->fileInput(['class' => 'form-control']) ?>
+                                                        <?= $form->field($model, 'main_license')->fileInput(['class' => 'form-control']) ?>
+
+                                                    </div>
+                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
+                                                        <?= $form->field($model, 'noc')->fileInput(['class' => 'form-control']) ?>
+
+                                                    </div>
+                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
+                                                        <?= $form->field($model, 'service_cost')->textInput(['maxlength' => true]) ?>
+
+                                                    </div>
+                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
+                                                        <?= $form->field($model, 'service_receipt')->fileInput(['class' => 'form-control']) ?>
+
+                                                    </div>
+                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
+                                                        <?= $form->field($model, 'voucher_attachment')->fileInput(['class' => 'form-control']) ?>
 
                                                     </div>
                                                     <div class='col-md-8 col-sm-6 col-xs-12 left_padd'>   
@@ -143,7 +151,7 @@ $this->params['breadcrumbs'][] = 'Update';
                                         <div class="clearfix"></div>
                                         <div class="next-step">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pad-0 fright">
-                                                <?= Html::a('<span> Completed and procced to next</span>', ['payment-voucher', 'id' => $license_master->id], ['class' => 'button green']) ?>
+                                                <?= Html::a('<span> Completed and procced to next</span>', ['moa', 'id' => $license_master->id], ['class' => 'button green']) ?>
                                             </div>
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 fright">
 

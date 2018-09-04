@@ -20,48 +20,49 @@ use Yii;
  * @property string $next_step
  * @property string $comment
  */
-class PaymentVoucher extends \yii\db\ActiveRecord
-{
+class PaymentVoucher extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'payment_voucher';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['service_cost'], 'number'],
-            [['status', 'CB'], 'integer'],
+            [['status', 'CB', 'licensing_master_id'], 'integer'],
             [['date'], 'safe'],
             [['comment'], 'string'],
             [['ejari', 'main_license', 'noc', 'service_receipt', 'voucher_attachment', 'next_step'], 'string', 'max' => 100],
+            [['service_cost'], 'required'],
+            [['ejari', 'main_license', 'noc', 'service_receipt', 'voucher_attachment'], 'required', 'on' => 'create'],
+            [['ejari', 'main_license', 'noc', 'service_receipt', 'voucher_attachment'], 'file', 'extensions' => 'png, jpg, jpeg, gif, bmp, pdf, doc, docx'],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'ejari' => 'Ejari',
             'main_license' => 'Main License',
-            'noc' => 'Noc',
+            'noc' => 'NOC',
             'service_cost' => 'Service Cost',
             'service_receipt' => 'Service Receipt',
             'voucher_attachment' => 'Voucher Attachment',
             'status' => 'Status',
-            'CB' => 'C B',
+            'CB' => 'CB',
             'date' => 'Date',
             'next_step' => 'Next Step',
             'comment' => 'Comment',
         ];
     }
+
 }
