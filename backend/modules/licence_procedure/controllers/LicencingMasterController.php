@@ -8,17 +8,17 @@ use common\models\LicencingMasterSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * LicencingMasterController implements the CRUD actions for LicencingMaster model.
  */
-class LicencingMasterController extends Controller
-{
+class LicencingMasterController extends Controller {
+
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -33,14 +33,13 @@ class LicencingMasterController extends Controller
      * Lists all LicencingMaster models.
      * @return mixed
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new LicencingMasterSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -49,10 +48,9 @@ class LicencingMasterController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
         ]);
     }
 
@@ -61,15 +59,14 @@ class LicencingMasterController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new LicencingMaster();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            return $this->redirect(Yii::$app->request->referrer);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -80,17 +77,101 @@ class LicencingMasterController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+    public function actionUpdate($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\LiceTrdnameIntlapro::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\LiceTrdnameIntlapro();
+            $model->setScenario('create');
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $receipt = UploadedFile::getInstance($model, 'payment_receipt');
+            $certificate = UploadedFile::getInstance($model, 'certificate');
+            $sponsor_family_book = UploadedFile::getInstance($model, 'sponsor_family_book');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+            if (!empty($sponsor_family_book)) {
+                $model->sponsor_family_book = $sponsor_family_book->extension;
+            }
+            if (!empty($certificate)) {
+                $model->certificate = $certificate->extension;
+            }
+            if (!empty($receipt)) {
+                $model->payment_receipt = $receipt->extension;
+            }
+            if ($model->validate() && $model->save()) {
+                $this->upload($model, $receipt, $certificate, $sponsor_family_book);
+            }
+            return $this->redirect(Yii::$app->request->referrer);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
+                        'license_master' => $license_master,
             ]);
         }
+    }
+
+    public function actionMoa($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\Moa::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\Moa();
+            $model->setScenario('create');
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $aggrement = UploadedFile::getInstance($model, 'aggrement');
+            $moa_document = UploadedFile::getInstance($model, 'moa_document');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+            if (!empty($aggrement)) {
+                $model->aggrement = $aggrement->extension;
+            }
+            if (!empty($moa_document)) {
+                $model->moa_document = $moa_document->extension;
+            }
+            if ($model->validate() && $model->save()) {
+                $this->uploadMoaDocument($model, $moa_document, $aggrement);
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->render('_moa', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Upload Initial approval Documents.
+     * @return mixed
+     */
+    public function Upload($model, $receipt, $certificate, $sponsor_family_book) {
+        if (isset($receipt) && !empty($receipt)) {
+            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/receipt/' . $model->id . '.' . $receipt->extension);
+        }
+        if (isset($certificate) && !empty($certificate)) {
+            $certificate->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/certificate/' . $model->id . '.' . $certificate->extension);
+        }
+        if (isset($sponsor_family_book) && !empty($sponsor_family_book)) {
+            $sponsor_family_book->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/trade_initial_approval/family_book/' . $model->id . '.' . $sponsor_family_book->extension);
+        }
+        return TRUE;
+    }
+
+    /**
+     * Upload MOA Documents.
+     * @return mixed
+     */
+    public function uploadMoaDocument($model, $moa_document, $aggrement) {
+        if (isset($moa_document) && !empty($moa_document)) {
+            $moa_document->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/moa/moa_document/' . $model->id . '.' . $moa_document->extension);
+        }
+        if (isset($aggrement) && !empty($aggrement)) {
+            $aggrement->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/moa/aggrement/' . $model->id . '.' . $aggrement->extension);
+        }
+        return TRUE;
     }
 
     /**
@@ -99,8 +180,7 @@ class LicencingMasterController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -113,12 +193,12 @@ class LicencingMasterController extends Controller
      * @return LicencingMaster the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = LicencingMaster::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

@@ -117,8 +117,11 @@
     border-color: #0081c9;
     color: #fff;
 }
+.form-inline .form-group{
+    height: 90px;
+}
 .form-inline .form-control{
-    margin-bottom: 30px;
+    margin-bottom: 0px;
     border-radius: 3px;
 }
 .form-inline textarea.form-control{
@@ -131,8 +134,8 @@
     color: #555;
 }
 .form-group .help-block{
-    position: absolute;
-    bottom: 0px;
+    /*    position: absolute;
+        bottom: 0px;*/
     font-size: 12px;
 }
 .action-btn-right{
@@ -509,4 +512,12 @@ input[type="file"] {
     background: white;
     border: none;
     color: #00a1ff;
+}
+.form-box{
+    border: 1px solid #c1c1c1;
+    padding: 20px 15px;
+    margin-bottom: 30px;
+}
+.next-step{
+    margin-top: 30px;
 }

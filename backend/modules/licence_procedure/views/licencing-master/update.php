@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\LicencingMaster */
 
-$this->title = 'Update Licencing Master: ' . $model->id;
+$this->title = 'License Procedure';
 $this->params['breadcrumbs'][] = ['label' => 'Licencing Masters', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
@@ -16,11 +16,14 @@ $this->params['breadcrumbs'][] = 'Update';
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
-        <?=  Html::a('<span> Manage Licencing Master</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+        <?= Html::a('<span> Manage License Procedure</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
         <div class="licencing-master-update">
-            <?= $this->render('_form', [
-            'model' => $model,
-            ]) ?>
+            <?=
+            $this->render('_form', [
+                'model' => $model,
+                'license_master' => $license_master,
+            ])
+            ?>
         </div>
     </div>
     <!-- /.box-body -->
