@@ -1,5 +1,53 @@
 # CHANGELOG
 
+### NEXT (YYYY-MM-DD)
+  * The `coalesce` method of `LayerInterface` instances now returns the LayerInterface itself (@mlocati)  
+    **BREAKING CHANGE** if you have your own `LayerInterface` implementation, it now must return `$this`
+
+### 1.0.0-alpha1 (2018-08-28)
+  * Imagine is now tested under Windows too (@mlocati)
+  * Add support to webp image format (@chregu, @antoligy, @alexander-schranz)
+  * Add `Imagine\File\LoaderInterface` that allows loading remote images with any imaging driver (@mlocati).
+    You can use your own `LoaderInterface` implementation so that you can for instance use curl or any other library.
+  * Fix some phpdoc issues (@mlocati)
+  * `flipHorizontally` and `flipVertically` methods of GD images is now much faster on PHP 5.5+ (@mlocati)
+  * Fix loading of PNG indexed images with GD (@mlocati)
+  * Loading indexed images with GD is now much faster on PHP 5.5+ (@mlocati)
+  * Add support to grayscale images with Gmagick (@mlocati)
+  * Add support to alpha channels of Gmagick images (@mlocati)
+  * Fix `getColorAt` method of Gmagick images (@mlocati)
+  * Add `getTransformations` to the `Autorotate` filter, so that you can get the list of transformations that should be applied to an image accordingly to the EXIF metadata (@mlocati)
+  * The metadata reader now doesn't throw exceptions or warnings (@lentex, @mlocati)
+  * Fix documentation (@ZhangChaoWN, @Mark-H, @mlocati)
+  * Fix pixel range issue with Gmagick image (@b-viguier)
+  * Fix `text` drawer method on Windows when using relative font file paths (@mlocati)
+  * Fix `box` font method on Windows when using relative font file paths (@mlocati)
+  * Fix crash on Windows when loading an image with Imagick (@mlocati)
+  * Fix generation of API documentation (@mlocati)
+  * Add `jpeg_sampling_factors` option when saving JPEG images (Gmagick/Imagick only) (@ausi)
+  * Add BMP as supported image format (@mlocati)
+  * Add support to new image type constants of Imagick (@ausi)
+  * Check that Imagick correctly supports profiles (@ausi)
+  * Add `setMetadataReader`/`getMetadataReader` to `ImagineInterface` (@mlocati)  
+    **BREAKING CHANGE** if you have your own `ImagineInterface` implementation, it now must implement those two methods
+  * Fix creating Gmagick images with alpha colors when palette doesn't support alpha (@FractalizeR)
+  * Fix warning about deprecated clone method in copy method of Imagick images (@mlocati)
+  * Fix copy methods of Images (the original image and its new copy are now fully detached) (@mlocati)
+  * It's now possible to use `clone $image` as an alternative to `$image->copy()` (@mlocati)
+  * Add support to custom classes for `BoxInterface`, `MetadataReaderInterface`, `FontInterface`, `LoaderInterface`, `LayersInterface`, `ImageInterface` (@mlocati)  
+    **BREAKING CHANGE** if you have your own `ImagineInterface` implementation, it now must implement the methods of `ClassFactoryAwareInterface`
+  * Add support for pasting with alpha for GD and Imagick (@AlloVince, @mlocati)
+  * Downscaling a `Box` until it reaches a dimension less than 1 returns a box with dimension of 1 instead of throwing an exception (@mlocati)    
+    **BREAKING CHANGE** if you relied on `Box::scale` throwing an exception in this case
+  * New filters: `BlackWhite`, `BorderDetection`, `Negation`, `Neighborhood` (@rejinka)
+  * Minor optimization of filters based on `OnPixelBased` (@rejinka, @mlocati)
+  * Add flag to `thumbnail` to allow upscaling images (@vlakoff)  
+    **NOTE** the `$mode` argument has been renamed to `$settings`, and it's now an integer (but old string values are accepted for backward compatibility)
+  * New filter: `brightness` (@lenybernard, @mlocati)
+  * New filter: `colvolve` available for all graphics libraries except gmagick with version prior to 2.0.1RC2 (@armatronic, @mlocati)
+  * Fix bug in Imagine\Image\Palette\RGB::blend() (@dmolineus, @mlocati)
+  * Autoload was moved from PSR-0 to PSR-4, and code files moved from `/lib/Imagine` to `/src` (@mlocati)
+
 ### 0.7.1 (2017-05-16)
   * Remove Symfony PHPUnit bridge as dependency (@craue)
 
@@ -38,7 +86,7 @@
     to previous Imagine\Image\Color constructor must be removed and use the
     palette provided by Imagine\Image\ImageInterface::getPalette to create
     colors.
-  * BC break : Animated GIF default delay is no longer 800ms but null. This 
+  * BC break : Animated GIF default delay is no longer 800ms but null. This
     avoids resettings a delay on animated image.
   * Add support for ICC profiles
   * Add support for CMYK and grayscale colorspace images.

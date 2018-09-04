@@ -572,12 +572,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/instantiator.git",
-            "reference": "8e884e78f9f0eb1329e445619e04456e64d8051d"
+            "reference": "83b5716aee90e1f733512942c635ac350cbd533c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/instantiator/zipball/8e884e78f9f0eb1329e445619e04456e64d8051d",
-            "reference": "8e884e78f9f0eb1329e445619e04456e64d8051d",
+            "url": "https://api.github.com/repos/doctrine/instantiator/zipball/83b5716aee90e1f733512942c635ac350cbd533c",
+            "reference": "83b5716aee90e1f733512942c635ac350cbd533c",
             "shasum": ""
         },
         "require": {
@@ -590,7 +590,7 @@
             "phpunit/phpunit": "~4.0",
             "squizlabs/php_codesniffer": "~2.0"
         },
-        "time": "2015-06-14T21:17:01+00:00",
+        "time": "2018-09-01T02:07:49+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -677,12 +677,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/fzaninotto/Faker.git",
-            "reference": "9c9e33857cf41bb9cbc8c1830e4d817fbacb03a2"
+            "reference": "bbb5fdeae10cfbbee3cb2debdf449ab426a1f3cc"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/9c9e33857cf41bb9cbc8c1830e4d817fbacb03a2",
-            "reference": "9c9e33857cf41bb9cbc8c1830e4d817fbacb03a2",
+            "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/bbb5fdeae10cfbbee3cb2debdf449ab426a1f3cc",
+            "reference": "bbb5fdeae10cfbbee3cb2debdf449ab426a1f3cc",
             "shasum": ""
         },
         "require": {
@@ -693,7 +693,7 @@
             "phpunit/phpunit": "^4.8.35 || ^5.7",
             "squizlabs/php_codesniffer": "^1.5"
         },
-        "time": "2018-07-13T06:28:23+00:00",
+        "time": "2018-08-24T07:12:40+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -797,19 +797,19 @@
         "source": {
             "type": "git",
             "url": "https://github.com/avalanche123/Imagine.git",
-            "reference": "91ebbe7c9462a3df05bc5312c49c21aa34fa4756"
+            "reference": "587d904ce23e4f63e725cf44560df88087dcf20c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/91ebbe7c9462a3df05bc5312c49c21aa34fa4756",
-            "reference": "91ebbe7c9462a3df05bc5312c49c21aa34fa4756",
+            "url": "https://api.github.com/repos/avalanche123/Imagine/zipball/587d904ce23e4f63e725cf44560df88087dcf20c",
+            "reference": "587d904ce23e4f63e725cf44560df88087dcf20c",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.2"
         },
         "require-dev": {
-            "sami/sami": "^3.3",
+            "friendsofphp/php-cs-fixer": "2.2.*",
             "symfony/phpunit-bridge": "^3.2 || ^4.0"
         },
         "suggest": {
@@ -817,7 +817,7 @@
             "ext-gmagick": "to use the Gmagick implementation",
             "ext-imagick": "to use the Imagick implementation"
         },
-        "time": "2018-07-18T11:02:33+00:00",
+        "time": "2018-08-29T21:00:49+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -826,8 +826,8 @@
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-0": {
-                "Imagine": "lib/"
+            "psr-4": {
+                "Imagine\\": "src/"
             }
         },
         "notification-url": "https://packagist.org/downloads/",
@@ -852,33 +852,33 @@
     },
     {
         "name": "kartik-v/yii2-krajee-base",
-        "version": "v1.8.9",
-        "version_normalized": "1.8.9.0",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-krajee-base.git",
-            "reference": "0cafe6376780cedcd00f52c9d82b172d5851f6b0"
+            "reference": "1d36fae5cdc2538ad048182f0b7362f40e45cea4"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-krajee-base/zipball/0cafe6376780cedcd00f52c9d82b172d5851f6b0",
-            "reference": "0cafe6376780cedcd00f52c9d82b172d5851f6b0",
+            "url": "https://api.github.com/repos/kartik-v/yii2-krajee-base/zipball/1d36fae5cdc2538ad048182f0b7362f40e45cea4",
+            "reference": "1d36fae5cdc2538ad048182f0b7362f40e45cea4",
             "shasum": ""
         },
         "require": {
             "yiisoft/yii2-bootstrap": "@dev"
         },
-        "time": "2017-09-29T06:18:14+00:00",
+        "time": "2018-08-29T02:57:02+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.8.x-dev"
+                "dev-master": "1.9.x-dev"
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "kartik\\base\\": ""
+                "kartik\\base\\": "src"
             }
         },
         "notification-url": "https://packagist.org/downloads/",
@@ -904,34 +904,34 @@
         ]
     },
     {
-        "name": "kartik-v/yii2-widget-select2",
+        "name": "kartik-v/yii2-widget-datepicker",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
-            "url": "https://github.com/kartik-v/yii2-widget-select2.git",
-            "reference": "d08a5b302fe04216bd04290f0e99e26386801a37"
+            "url": "https://github.com/kartik-v/yii2-widget-datepicker.git",
+            "reference": "01a5940fb1b70b39b7916a4e68768f8626024ddc"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/d08a5b302fe04216bd04290f0e99e26386801a37",
-            "reference": "d08a5b302fe04216bd04290f0e99e26386801a37",
+            "url": "https://api.github.com/repos/kartik-v/yii2-widget-datepicker/zipball/01a5940fb1b70b39b7916a4e68768f8626024ddc",
+            "reference": "01a5940fb1b70b39b7916a4e68768f8626024ddc",
             "shasum": ""
         },
         "require": {
-            "kartik-v/yii2-krajee-base": "~1.7"
+            "kartik-v/yii2-krajee-base": "~1.9"
         },
-        "time": "2018-02-24T05:28:25+00:00",
+        "time": "2018-08-29T12:10:45+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.1.x-dev"
+                "dev-master": "1.4.x-dev"
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "kartik\\select2\\": ""
+                "kartik\\date\\": "src"
             }
         },
         "notification-url": "https://packagist.org/downloads/",
@@ -945,13 +945,14 @@
                 "homepage": "http://www.krajee.com/"
             }
         ],
-        "description": "Enhanced Yii2 wrapper for the Select2 jQuery plugin (sub repo split from yii2-widgets).",
-        "homepage": "https://github.com/kartik-v/yii2-widget-select2",
+        "description": "Enhanced Yii2 wrapper for the bootstrap datepicker plugin (sub repo split from yii2-widgets).",
+        "homepage": "https://github.com/kartik-v/yii2-widget-datepicker",
         "keywords": [
-            "dropdown",
+            "date",
             "extension",
             "form",
             "jquery",
+            "picker",
             "plugin",
             "select2",
             "widget",
@@ -1158,58 +1159,18 @@
         ]
     },
     {
-        "name": "phpspec/php-diff",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/phpspec/php-diff.git",
-            "reference": "0464787bfa7cd13576c5a1e318709768798bec6a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/phpspec/php-diff/zipball/0464787bfa7cd13576c5a1e318709768798bec6a",
-            "reference": "0464787bfa7cd13576c5a1e318709768798bec6a",
-            "shasum": ""
-        },
-        "time": "2016-04-07T12:29:16+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Diff": "lib/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Chris Boulton",
-                "homepage": "http://github.com/chrisboulton"
-            }
-        ],
-        "description": "A comprehensive library for generating differences between two hashable objects (strings or arrays)."
-    },
-    {
         "name": "phpspec/prophecy",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/phpspec/prophecy.git",
-            "reference": "dbfc2600dee41b0ca3786f274bc1287d85d1c8bf"
+            "reference": "4ba436b55987b4bf311cb7c6ba82aa528aac0a06"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpspec/prophecy/zipball/dbfc2600dee41b0ca3786f274bc1287d85d1c8bf",
-            "reference": "dbfc2600dee41b0ca3786f274bc1287d85d1c8bf",
+            "url": "https://api.github.com/repos/phpspec/prophecy/zipball/4ba436b55987b4bf311cb7c6ba82aa528aac0a06",
+            "reference": "4ba436b55987b4bf311cb7c6ba82aa528aac0a06",
             "shasum": ""
         },
         "require": {
@@ -1223,11 +1184,11 @@
             "phpspec/phpspec": "^2.5|^3.2",
             "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5 || ^7.1"
         },
-        "time": "2018-07-31T07:47:46+00:00",
+        "time": "2018-08-05T17:53:17+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.7.x-dev"
+                "dev-master": "1.8.x-dev"
             }
         },
         "installation-source": "dist",
@@ -2823,12 +2784,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
-            "reference": "9d31bef82d2e9b033f335d60b96611757f98c605"
+            "reference": "e3d826245268269cd66f8326bd8bc066687b4a19"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/9d31bef82d2e9b033f335d60b96611757f98c605",
-            "reference": "9d31bef82d2e9b033f335d60b96611757f98c605",
+            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/e3d826245268269cd66f8326bd8bc066687b4a19",
+            "reference": "e3d826245268269cd66f8326bd8bc066687b4a19",
             "shasum": ""
         },
         "require": {
@@ -2837,11 +2798,11 @@
         "suggest": {
             "ext-ctype": "For best performance"
         },
-        "time": "2018-05-17T18:32:56+00:00",
+        "time": "2018-08-06T14:22:27+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.8-dev"
+                "dev-master": "1.9-dev"
             }
         },
         "installation-source": "dist",
@@ -2883,12 +2844,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "25b83a5050c6607e2dfa814ffb15388caf7ce690"
+            "reference": "d0cd638f4634c16d8df4508e847f14e9e43168b8"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/25b83a5050c6607e2dfa814ffb15388caf7ce690",
-            "reference": "25b83a5050c6607e2dfa814ffb15388caf7ce690",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/d0cd638f4634c16d8df4508e847f14e9e43168b8",
+            "reference": "d0cd638f4634c16d8df4508e847f14e9e43168b8",
             "shasum": ""
         },
         "require": {
@@ -2897,11 +2858,11 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2018-05-30T15:56:36+00:00",
+        "time": "2018-08-06T14:22:27+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.8-dev"
+                "dev-master": "1.9-dev"
             }
         },
         "installation-source": "dist",
@@ -3221,12 +3182,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/yiisoft/yii2-composer.git",
-            "reference": "f2a88bca8c1eb54ba35e5209bad632d93cac4c29"
+            "reference": "f4cb50d40ed34fc6f6b100d1a515dbdbc65e40ac"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/yiisoft/yii2-composer/zipball/f2a88bca8c1eb54ba35e5209bad632d93cac4c29",
-            "reference": "f2a88bca8c1eb54ba35e5209bad632d93cac4c29",
+            "url": "https://api.github.com/repos/yiisoft/yii2-composer/zipball/f4cb50d40ed34fc6f6b100d1a515dbdbc65e40ac",
+            "reference": "f4cb50d40ed34fc6f6b100d1a515dbdbc65e40ac",
             "shasum": ""
         },
         "require": {
@@ -3235,7 +3196,7 @@
         "require-dev": {
             "composer/composer": "^1.0"
         },
-        "time": "2018-07-05T15:45:38+00:00",
+        "time": "2018-08-25T10:44:34+00:00",
         "type": "composer-plugin",
         "extra": {
             "class": "yii\\composer\\Plugin",

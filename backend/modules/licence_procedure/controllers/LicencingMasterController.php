@@ -240,6 +240,45 @@ class LicencingMasterController extends Controller {
         return TRUE;
     }
 
+    public function actionLicence($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\Licence::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\Licence();
+            $model->setScenario('create');
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $licence_attachment = UploadedFile::getInstance($model, 'licence_attachment');
+            $model->expiry_date = date("Y-m-d", strtotime($model->expiry_date));
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+            if (!empty($licence_attachment)) {
+                $model->licence_attachment = $licence_attachment->extension;
+            }
+            if ($model->validate() && $model->save()) {
+                $this->uploadLicenseDocument($model, $licence_attachment);
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->render('_licence', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Upload License Documents.
+     * @return mixed
+     */
+    public function uploadLicenseDocument($model, $licence_attachment) {
+        if (isset($licence_attachment) && !empty($licence_attachment)) {
+            $licence_attachment->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/licence/licence_attachment/' . $model->id . '.' . $moa_document->extension);
+        }
+        return TRUE;
+    }
+
     /**
      * Deletes an existing LicencingMaster model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

@@ -1,5 +1,5 @@
 # Imagine
-[![Build Status](https://travis-ci.org/avalanche123/Imagine.svg?branch=develop)](https://travis-ci.org/avalanche123/Imagine)
+[![Travis CI Build Status](https://travis-ci.org/avalanche123/Imagine.svg?branch=develop)](https://travis-ci.org/avalanche123/Imagine) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/avalanche123/Imagine?branch=develop&svg=true)](https://ci.appveyor.com/project/avalanche123/Imagine)
 
 Tweet about it using the [#php_imagine](https://twitter.com/search?q=%23php_imagine) hashtag.
 
@@ -51,3 +51,8 @@ Some of the ideas for upcoming filters:
 ## Articles ##
 
  - [Image Processing with Imagine](http://www.phparch.com/2011/03/image-processing-with-imagine)
+
+## Contributing ##
+
+New pull requests should be based on the `develop` branch.
+The `master` branch is the stable branch: it usually matches the latest a release but in can be a bit ahead.
