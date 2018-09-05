@@ -274,9 +274,101 @@ class LicencingMasterController extends Controller {
      */
     public function uploadLicenseDocument($model, $licence_attachment) {
         if (isset($licence_attachment) && !empty($licence_attachment)) {
-            $licence_attachment->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/licence/licence_attachment/' . $model->id . '.' . $moa_document->extension);
+            $licence_attachment->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/licence/licence_attachment/' . $model->id . '.' . $licence_attachment->extension);
         }
         return TRUE;
+    }
+
+    public function actionNewStamp($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\NewStamp::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\NewStamp();
+            $model->setScenario('create');
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $receipt = UploadedFile::getInstance($model, 'receipt');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+            if (!empty($receipt)) {
+                $model->receipt = $receipt->extension;
+            }
+            if ($model->validate() && $model->save()) {
+                $this->uploadNewstamp($model, $receipt);
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->render('_newstamp', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Upload New stamp Documents.
+     * @return mixed
+     */
+    public function uploadNewstamp($model, $receipt) {
+        if (isset($receipt) && !empty($receipt)) {
+            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/new_stamp/receipt/' . $model->id . '.' . $receipt->extension);
+        }
+        return TRUE;
+    }
+
+    public function actionCompanyEstablishmentCard($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\CompanyEstablishmentCard::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\CompanyEstablishmentCard();
+            $model->setScenario('create');
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $license = UploadedFile::getInstance($model, 'license');
+            $service_reciept = UploadedFile::getInstance($model, 'service_reciept');
+            $payment_reciept = UploadedFile::getInstance($model, 'payment_reciept');
+            $card_attachment = UploadedFile::getInstance($model, 'card_attachment');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+            if (!empty($license))
+                $model->license = $license->extension;
+            if (!empty($service_reciept))
+                $model->service_reciept = $service_reciept->extension;
+            if (!empty($payment_reciept))
+                $model->payment_reciept = $payment_reciept->extension;
+            if (!empty($card_attachment))
+                $model->card_attachment = $card_attachment->extension;
+
+            if ($model->validate() && $model->save()) {
+                $this->uploadEstablishmentcard($model, $license, 'license');
+                $this->uploadEstablishmentcard($model, $service_reciept, 'service_receipt');
+                $this->uploadEstablishmentcard($model, $payment_reciept, 'payment_receipt');
+                $this->uploadEstablishmentcard($model, $card_attachment, 'card_attachment');
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->render('_company_establishment', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Upload Company establishment card Documents.
+     * @return mixed
+     */
+    public function uploadEstablishmentcard($model, $receipt, $folder) {
+        if (isset($receipt) && !empty($receipt)) {
+            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/company-establishment-card/' . $folder . '/' . $model->id . '.' . $receipt->extension);
+        }
+        return TRUE;
+    }
+    
+    public function actionLabourCard($id){
+        
     }
 
     /**
