@@ -3,10 +3,10 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 ?>
-<div class="panel panel-default">
-    <?php
-    if (!empty($initial_approval)) {
-        ?>
+<?php
+if (!empty($initial_approval)) {
+    ?>
+    <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -23,14 +23,14 @@ use yii\helpers\Url;
                 </ul>
             </div>
         </div>
-        <?php
-    }
-    ?>
-</div>
-<div class="panel panel-default">
+    </div>
     <?php
-    if (!empty($moa_documents)) {
-        ?>
+}
+?>
+<?php
+if (!empty($moa_documents)) {
+    ?>
+    <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
@@ -46,14 +46,16 @@ use yii\helpers\Url;
                 </ul>
             </div>
         </div>
-        <?php
-    }
-    ?>
-</div>
-<div class="panel panel-default">
+
+    </div>
     <?php
-    if (!empty($payment_voucher)) {
-        ?>
+}
+?>
+<?php
+if (!empty($payment_voucher)) {
+    ?>
+    <div class="panel panel-default">
+
         <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseThree" aria-expanded="true" aria-controls="collapseOne">
@@ -72,14 +74,16 @@ use yii\helpers\Url;
                 </ul>
             </div>
         </div>
-        <?php
-    }
-    ?>
-</div>
-<div class="panel panel-default">
+
+    </div>
     <?php
-    if (!empty($license_document)) {
-        ?>
+}
+?>
+<?php
+if (!empty($license_document)) {
+    ?>
+    <div class="panel panel-default">
+
         <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour" aria-expanded="true" aria-controls="collapseOne">
@@ -91,18 +95,20 @@ use yii\helpers\Url;
             <div class="panel-body">
                 <ul class="nav">
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/licence/licence_attachment/<?= $license_document->id ?>.<?= $license_document->licence_attachment ?>"> License Attachment</a></li>
-                    
+
                 </ul>
             </div>
         </div>
-        <?php
-    }
-    ?>
-</div>
-<div class="panel panel-default">
+
+    </div>
     <?php
-    if (!empty($newstamp)) {
-        ?>
+}
+?>
+<?php
+if (!empty($newstamp)) {
+    ?>
+    <div class="panel panel-default">
+
         <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFive" aria-expanded="true" aria-controls="collapseOne">
@@ -114,18 +120,20 @@ use yii\helpers\Url;
             <div class="panel-body">
                 <ul class="nav">
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/new_stamp/receipt/<?= $newstamp->id ?>.<?= $newstamp->receipt ?>"> Receipt</a></li>
-                    
+
                 </ul>
             </div>
         </div>
-        <?php
-    }
-    ?>
-</div>
-<div class="panel panel-default">
+
+    </div>
     <?php
-    if (!empty($company_card)) {
-        ?>
+}
+?>
+<?php
+if (!empty($company_card)) {
+    ?>
+    <div class="panel panel-default">
+
         <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
                 <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSix" aria-expanded="true" aria-controls="collapseOne">
@@ -140,11 +148,11 @@ use yii\helpers\Url;
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/company-establishment-card/service_receipt/<?= $company_card->id ?>.<?= $company_card->service_reciept ?>"> Service Receipt</a></li>
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/company-establishment-card/payment_receipt/<?= $company_card->id ?>.<?= $company_card->payment_reciept ?>"> Payment Receipt</a></li>
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/company-establishment-card/card_attachment/<?= $company_card->id ?>.<?= $company_card->card_attachment ?>"> Card Attachment</a></li>
-                    
+
                 </ul>
             </div>
         </div>
-        <?php
-    }
-    ?>
-</div>
+    </div>
+    <?php
+}
+?>
