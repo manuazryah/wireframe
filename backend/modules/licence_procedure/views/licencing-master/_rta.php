@@ -26,12 +26,7 @@ $this->params['breadcrumbs'][] = 'Update';
                     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
                         <section id="tabs">
                             <div class="card">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li role="presentation"><a href="#step1" aria-controls="home" role="tab" data-toggle="tab">Step 1</a></li>
-                                    <li role="presentation" class="active"><a href="#step2" aria-controls="profile" role="tab" data-toggle="tab">Step 2</a></li>
-                                    <li role="presentation"><a href="#step3" aria-controls="messages" role="tab" data-toggle="tab">Step 3</a></li>
-                                    <li role="presentation"><a href="#step4" aria-controls="settings" role="tab" data-toggle="tab">Step 4</a></li>
-                                </ul>
+                                <?= common\components\LicenseProcedureTabWidget::widget(['id' => $license_master->id, 'step' => 1]) ?>
 
                                 <!-- Tab panes -->
                                 <div class="tab-content">
@@ -117,14 +112,23 @@ $this->params['breadcrumbs'][] = 'Update';
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pad-0 fright">
                                                 <?= Html::a('<span> Completed and procced to next</span>', ['labour-card', 'id' => $license_master->id], ['class' => 'button green']) ?>
                                             </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 fright">
-
-                                                <select class="form-control">
-                                                    <option value="">Select Step</option>
-                                                    <option value="1">Step1</option>
-                                                    <option value="2">Step2</option>
-                                                    <option value="3">Step3</option>
-                                                </select>
+                                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 fright">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-primary dropdown-toggle next-step-btn" type="button" data-toggle="dropdown">Select Step
+                                                        <span class="caret"></span></button>
+                                                    <ul class="dropdown-menu next-step-drpdwn">
+                                                        <li>
+                                                            <?= Html::a('DPS', ['dps', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('Police NOC', ['police-noc', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('Others', ['others', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('MOA', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('Payment Voucher', ['payment-voucher', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('Licence', ['licence', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('New Stamp', ['new-stamp', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('Labour Card', ['labour-card', 'id' => $license_master->id], ['class' => '']) ?>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

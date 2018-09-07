@@ -100,10 +100,10 @@ use yii\widgets\ActiveForm;
                                             <li>
                                                 <?= Html::a('MOA', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
                                                 <?= Html::a('Municipality Approval', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
-                                                <?= Html::a('RTA', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
-                                                <?= Html::a('DPS', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
-                                                <?= Html::a('Police NOC', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
-                                                <?= Html::a('Others', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('RTA', ['rta', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('DPS', ['dps', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Police NOC', ['police-noc', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Others', ['others', 'id' => $license_master->id], ['class' => '']) ?>
                                                 <?= Html::a('Payment Voucher', ['payment-voucher', 'id' => $license_master->id], ['class' => '']) ?>
                                                 <?= Html::a('Licence', ['licence', 'id' => $license_master->id], ['class' => '']) ?>
                                                 <?= Html::a('New Stamp', ['new-stamp', 'id' => $license_master->id], ['class' => '']) ?>
