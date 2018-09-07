@@ -476,7 +476,7 @@ class LicencingMasterController extends Controller {
                 $model->payment_receipt = $payment_receipt_;
             }
             if ($model->validate() && $model->save()) {
-                $this->uploadLicenseDocument($model, $payment_receipt);
+                $this->uploadMunicipalityDocument($model, $payment_receipt);
             }
             return $this->redirect(Yii::$app->request->referrer);
         } else {
@@ -493,7 +493,7 @@ class LicencingMasterController extends Controller {
      */
     public function uploadMunicipalityDocument($model, $payment_receipt) {
         if (isset($payment_receipt) && !empty($payment_receipt)) {
-            $payment_receipt->saveAs(Yii::$app->basePath . '/../uploads/municipality_approval/licence/payment_receipt/' . $model->id . '.' . $licence_attachment->extension);
+            $payment_receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/municipality_approval/payment_receipt/' . $model->id . '.' . $payment_receipt->extension);
         }
         return TRUE;
     }

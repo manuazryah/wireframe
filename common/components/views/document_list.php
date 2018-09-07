@@ -156,3 +156,28 @@ if (!empty($company_card)) {
     <?php
 }
 ?>
+<?php
+if (!empty($municipality_documents)) {
+    ?>
+    <div class="panel panel-default">
+
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour" aria-expanded="true" aria-controls="collapseOne">
+                    Municipality Approval
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <ul class="nav">
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/municipality_approval/payment_receipt/<?= $municipality_documents->id ?>.<?= $municipality_documents->payment_receipt ?>">Payment Receipt</a></li>
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <?php
+}
+?>

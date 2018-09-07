@@ -26,12 +26,7 @@ $this->params['breadcrumbs'][] = 'Update';
                     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
                         <section id="tabs">
                             <div class="card">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li role="presentation"><a href="#step1" aria-controls="home" role="tab" data-toggle="tab">Step 1</a></li>
-                                    <li role="presentation" class="active"><a href="#step2" aria-controls="profile" role="tab" data-toggle="tab">Step 2</a></li>
-                                    <li role="presentation"><a href="#step3" aria-controls="messages" role="tab" data-toggle="tab">Step 3</a></li>
-                                    <li role="presentation"><a href="#step4" aria-controls="settings" role="tab" data-toggle="tab">Step 4</a></li>
-                                </ul>
+                                <?= common\components\LicenseProcedureTabWidget::widget(['id' => $license_master->id, 'step' => 6]) ?>
 
                                 <!-- Tab panes -->
                                 <div class="tab-content">

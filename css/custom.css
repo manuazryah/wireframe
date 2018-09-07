@@ -297,7 +297,7 @@ label.upload-cv input[type="file"] {
     margin-bottom: 20px;
 }
 #tabs .nav-tabs>li{
-    width: 25%;
+    width: 14%;
 }
 #tabs .card1 .nav-tabs>li {
     width: 50%;
@@ -520,4 +520,7 @@ input[type="file"] {
 }
 .next-step{
     margin-top: 30px;
+}
+.step-links{
+    cursor: pointer;
 }
