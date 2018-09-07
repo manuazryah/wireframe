@@ -546,5 +546,56 @@ class LicencingMasterController extends Controller {
         }
         return TRUE;
     }
+    public function actionDps($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\Dps::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\Dps();
+            $model->setScenario('create');
+        } else {
+            $payment_receipt_ = $model->payment_receipt;
+            $approval_fees_receipt_ = $model->approval_fees_receipt;
+            $police_report_ = $model->police_report;
+            $approval_certificate_ = $model->approval_certificate;
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $payment_receipt = UploadedFile::getInstance($model, 'payment_receipt');
+            $approval_fees_receipt = UploadedFile::getInstance($model, 'approval_fees_receipt');
+            $police_report = UploadedFile::getInstance($model, 'police_report');
+            $approval_certificate = UploadedFile::getInstance($model, 'approval_certificate');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+                $model->payment_receipt = !empty($payment_receipt) ? $payment_receipt->extension : $payment_receipt_;
+                $model->approval_fees_receipt = !empty($approval_fees_receipt) ? $approval_fees_receipt->extension : $approval_fees_receipt_;
+                $model->police_report = !empty($police_report) ? $police_report->extension : $police_report_;
+                $model->approval_certificate = !empty($approval_certificate) ? $approval_certificate->extension : $approval_certificate_;
+//            
+
+            if ($model->validate() && $model->save()) {
+                $this->uploadDps($model, $payment_receipt, 'payment_receipt');
+                $this->uploadDps($model, $approval_fees_receipt, 'approval_fees_receipt');
+                $this->uploadDps($model, $police_report, 'police_report');
+                $this->uploadDps($model, $approval_certificate, 'approval_certificate');
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->render('_dps', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Upload DPS Documents.
+     * @return mixed
+     */
+    public function uploadDps($model, $receipt, $folder) {
+        if (isset($receipt) && !empty($receipt)) {
+            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/dps/' . $folder . '/' . $model->id . '.' . $receipt->extension);
+        }
+        return TRUE;
+    }
 
 }
