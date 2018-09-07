@@ -41,6 +41,9 @@ class DocumentLinksWidget extends Widget {
         $company_card = \common\models\CompanyEstablishmentCard::find()->where(['licensing_master_id' => $this->id])->one();
         $municipality_documents = \common\models\MunicipalityApproval::find()->where(['licensing_master_id' => $this->id])->one();
         $police_noc = \common\models\PoliceNoc::find()->where(['licensing_master_id' => $this->id])->one();
+        $rta = \common\models\Rta::find()->where(['licensing_master_id' => $this->id])->one();
+        $dps = \common\models\Dps::find()->where(['licensing_master_id' => $this->id])->one();
+        $others = \common\models\Others::find()->where(['licensing_master_id' => $this->id])->one();
         return $this->render('document_list', [
                     'initial_approval' => $initial_approval,
                     'moa_documents' => $moa_documents,
@@ -50,6 +53,9 @@ class DocumentLinksWidget extends Widget {
                     'company_card' => $company_card,
                     'municipality_documents' => $municipality_documents,
                     'police_noc' => $police_noc,
+                    'rta' => $rta,
+                    'dps' => $dps,
+                    'others' => $others,
         ]);
     }
 

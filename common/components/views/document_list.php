@@ -163,15 +163,70 @@ if (!empty($municipality_documents)) {
 
         <div class="panel-heading" role="tab" id="headingOne">
             <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour" aria-expanded="true" aria-controls="collapseOne">
+                <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseSeven" aria-expanded="true" aria-controls="collapseOne">
                     Municipality Approval
                 </a>
             </h4>
         </div>
-        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+        <div id="collapseSeven" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
             <div class="panel-body">
                 <ul class="nav">
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/municipality_approval/payment_receipt/<?= $municipality_documents->id ?>.<?= $municipality_documents->payment_receipt ?>">Payment Receipt</a></li>
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <?php
+}
+?>
+<?php
+if (!empty($rta)) {
+    ?>
+    <div class="panel panel-default">
+
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEight" aria-expanded="true" aria-controls="collapseOne">
+                    RTA
+                </a>
+            </h4>
+        </div>
+        <div id="collapseEight" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <ul class="nav">
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/rta/approval_certificate/<?= $rta->id ?>.<?= $rta->approval_certificate ?>">Approval Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/rta/approval_fees_receipt/<?= $rta->id ?>.<?= $rta->approval_fees_receipt ?>">Approval Fees Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/rta/payment_receipt/<?= $rta->id ?>.<?= $rta->payment_receipt ?>">Payment Receipt</a></li>
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <?php
+}
+?>
+<?php
+if (!empty($dps)) {
+    ?>
+    <div class="panel panel-default">
+
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseNine" aria-expanded="true" aria-controls="collapseOne">
+                    DPS
+                </a>
+            </h4>
+        </div>
+        <div id="collapseNine" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <ul class="nav">
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/dps/approval_certificate/<?= $dps->id ?>.<?= $dps->approval_certificate ?>">Approval Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/dps/approval_fees_receipt/<?= $dps->id ?>.<?= $dps->approval_fees_receipt ?>">Approval Fees Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/dps/payment_receipt/<?= $dps->id ?>.<?= $dps->payment_receipt ?>">Payment Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/dps/police_report/<?= $dps->id ?>.<?= $dps->police_report ?>">Police Report</a></li>
 
                 </ul>
             </div>
@@ -199,6 +254,34 @@ if (!empty($police_noc)) {
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/police_noc/passport_copy/<?= $police_noc->id ?>.<?= $police_noc->passport_copy ?>">Passport Copy</a></li>
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/police_noc/receipt/<?= $police_noc->id ?>.<?= $police_noc->receipt ?>">Receipt</a></li>
                     <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/police_noc/certificate/<?= $police_noc->id ?>.<?= $police_noc->certificate ?>">Certificate</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <?php
+}
+?>
+<?php
+if (!empty($others)) {
+    ?>
+    <div class="panel panel-default">
+
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseEleven" aria-expanded="true" aria-controls="collapseOne">
+                    OTHERS
+                </a>
+            </h4>
+        </div>
+        <div id="collapseEleven" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <ul class="nav">
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/dps/approval_certificate/<?= $others->id ?>.<?= $others->approval_certificate ?>">Approval Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/dps/approval_fees_receipt/<?= $others->id ?>.<?= $others->approval_fees_receipt ?>">Approval Fees Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/dps/payment_receipt/<?= $others->id ?>.<?= $others->payment_receipt ?>">Payment Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/dps/police_report/<?= $others->id ?>.<?= $others->police_report ?>">Police Report</a></li>
+
                 </ul>
             </div>
         </div>
