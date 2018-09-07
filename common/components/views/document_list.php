@@ -181,3 +181,29 @@ if (!empty($municipality_documents)) {
     <?php
 }
 ?>
+<?php
+if (!empty($police_noc)) {
+    ?>
+    <div class="panel panel-default">
+
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseFour" aria-expanded="true" aria-controls="collapseOne">
+                    Police NOC
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <ul class="nav">
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/police_noc/passport_copy/<?= $police_noc->id ?>.<?= $police_noc->passport_copy ?>">Passport Copy</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/police_noc/receipt/<?= $police_noc->id ?>.<?= $police_noc->receipt ?>">Receipt</a></li>
+                    <li><a target="_blank" href="<?= Yii::$app->homeUrl; ?>uploads/license_procedure/police_noc/certificate/<?= $police_noc->id ?>.<?= $police_noc->certificate ?>">Certificate</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <?php
+}
+?>

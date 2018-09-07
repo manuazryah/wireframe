@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = 'Update';
                                 <!-- Tab panes -->
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane active" id="step1">
-                                        <h3 class="heading">Municipality Approval</h3>
+                                        <h3 class="heading">Police NOC</h3>
                                         <?= common\components\AppointmentWidget::widget(['id' => $license_master->appointment_id]) ?>
                                         <div class="customer-info-footer">
                                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
@@ -68,16 +68,20 @@ $this->params['breadcrumbs'][] = 'Update';
                                             <div class="form-box">
                                                 <?php $form = ActiveForm::begin(); ?>
                                                 <div class="row">
-                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-                                                        <?= $form->field($model, 'online_reference_no')->textInput(['maxlength' => true]) ?>
+                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
+                                                        <?= $form->field($model, 'passport_copy')->fileInput(['class' => 'form-control']) ?>
 
                                                     </div>
                                                     <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-                                                        <?= $form->field($model, 'online_application_fee')->textInput(['maxlength' => true]) ?>
+                                                        <?= $form->field($model, 'payment')->textInput(['maxlength' => true]) ?>
 
                                                     </div>
                                                     <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
-                                                        <?= $form->field($model, 'payment_receipt')->fileInput(['class' => 'form-control']) ?>
+                                                        <?= $form->field($model, 'receipt')->fileInput(['class' => 'form-control']) ?>
+
+                                                    </div>
+                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
+                                                        <?= $form->field($model, 'certificate')->fileInput(['class' => 'form-control']) ?>
 
                                                     </div>
                                                     <div class='col-md-8 col-sm-6 col-xs-12 left_padd'>   
@@ -106,9 +110,6 @@ $this->params['breadcrumbs'][] = 'Update';
                                                         <span class="caret"></span></button>
                                                     <ul class="dropdown-menu next-step-drpdwn">
                                                         <li>
-                                                            <?= Html::a('RTA', ['rta', 'id' => $license_master->id], ['class' => '']) ?>
-                                                            <?= Html::a('DPS', ['dps', 'id' => $license_master->id], ['class' => '']) ?>
-                                                            <?= Html::a('Police NOC', ['police-noc', 'id' => $license_master->id], ['class' => '']) ?>
                                                             <?= Html::a('Others', ['others', 'id' => $license_master->id], ['class' => '']) ?>
                                                             <?= Html::a('MOA', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
                                                             <?= Html::a('Payment Voucher', ['payment-voucher', 'id' => $license_master->id], ['class' => '']) ?>

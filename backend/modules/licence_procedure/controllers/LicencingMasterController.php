@@ -546,6 +546,7 @@ class LicencingMasterController extends Controller {
         }
         return TRUE;
     }
+
     public function actionDps($id) {
         $license_master = $this->findModel($id);
         $model = \common\models\Dps::find()->where(['licensing_master_id' => $id])->one();
@@ -566,10 +567,10 @@ class LicencingMasterController extends Controller {
             $model->licensing_master_id = $id;
             $model->date = date('Y-m-d');
             $model->CB = Yii::$app->user->identity->id;
-                $model->payment_receipt = !empty($payment_receipt) ? $payment_receipt->extension : $payment_receipt_;
-                $model->approval_fees_receipt = !empty($approval_fees_receipt) ? $approval_fees_receipt->extension : $approval_fees_receipt_;
-                $model->police_report = !empty($police_report) ? $police_report->extension : $police_report_;
-                $model->approval_certificate = !empty($approval_certificate) ? $approval_certificate->extension : $approval_certificate_;
+            $model->payment_receipt = !empty($payment_receipt) ? $payment_receipt->extension : $payment_receipt_;
+            $model->approval_fees_receipt = !empty($approval_fees_receipt) ? $approval_fees_receipt->extension : $approval_fees_receipt_;
+            $model->police_report = !empty($police_report) ? $police_report->extension : $police_report_;
+            $model->approval_certificate = !empty($approval_certificate) ? $approval_certificate->extension : $approval_certificate_;
 //            
 
             if ($model->validate() && $model->save()) {
@@ -594,6 +595,66 @@ class LicencingMasterController extends Controller {
     public function uploadDps($model, $receipt, $folder) {
         if (isset($receipt) && !empty($receipt)) {
             $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/dps/' . $folder . '/' . $model->id . '.' . $receipt->extension);
+        }
+        return TRUE;
+    }
+
+    public function actionPoliceNoc($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\PoliceNoc::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\PoliceNoc();
+            $model->setScenario('create');
+        } else {
+            $passport_copy_ = $model->passport_copy;
+            $receipt_ = $model->receipt;
+            $certificate_ = $model->certificate;
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $passport_copy = UploadedFile::getInstance($model, 'passport_copy');
+            $receipt = UploadedFile::getInstance($model, 'receipt');
+            $certificate = UploadedFile::getInstance($model, 'certificate');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+            if (!empty($passport_copy)) {
+                $model->passport_copy = $passport_copy->extension;
+            } else {
+                $model->passport_copy = $passport_copy_;
+            }
+            if (!empty($receipt)) {
+                $model->receipt = $receipt->extension;
+            } else {
+                $model->receipt = $receipt_;
+            }
+            if (!empty($certificate)) {
+                $model->certificate = $certificate->extension;
+            } else {
+                $model->certificate = $certificate_;
+            }
+            if ($model->validate() && $model->save()) {
+                $this->uploadPoliceNocDocument($model, $passport_copy, $receipt, $certificate);
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } return $this->render('police_noc', [
+                    'model' => $model,
+                    'license_master' => $license_master,
+        ]);
+    }
+
+    /**
+     * Upload Police NOC Documents.
+     * @return mixed
+     */
+    public function uploadPoliceNocDocument($model, $passport_copy, $receipt, $certificate) {
+        if (isset($passport_copy) && !empty($passport_copy)) {
+            $passport_copy->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/police_noc/passport_copy/' . $model->id . '.' . $passport_copy->extension);
+        }
+        if (isset($receipt) && !empty($receipt)) {
+            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/police_noc/receipt/' . $model->id . '.' . $receipt->extension);
+        }
+        if (isset($certificate) && !empty($certificate)) {
+            $certificate->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/police_noc/certificate/' . $model->id . '.' . $certificate->extension);
         }
         return TRUE;
     }

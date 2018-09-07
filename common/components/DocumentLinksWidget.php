@@ -40,6 +40,7 @@ class DocumentLinksWidget extends Widget {
         $newstamp = \common\models\NewStamp::find()->where(['licensing_master_id' => $this->id])->one();
         $company_card = \common\models\CompanyEstablishmentCard::find()->where(['licensing_master_id' => $this->id])->one();
         $municipality_documents = \common\models\MunicipalityApproval::find()->where(['licensing_master_id' => $this->id])->one();
+        $police_noc = \common\models\PoliceNoc::find()->where(['licensing_master_id' => $this->id])->one();
         return $this->render('document_list', [
                     'initial_approval' => $initial_approval,
                     'moa_documents' => $moa_documents,
@@ -48,6 +49,7 @@ class DocumentLinksWidget extends Widget {
                     'newstamp' => $newstamp,
                     'company_card' => $company_card,
                     'municipality_documents' => $municipality_documents,
+                    'police_noc' => $police_noc,
         ]);
     }
 

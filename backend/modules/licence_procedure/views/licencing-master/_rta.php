@@ -110,7 +110,7 @@ $this->params['breadcrumbs'][] = 'Update';
                                         <div class="clearfix"></div>
                                         <div class="next-step">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pad-0 fright">
-                                                <?= Html::a('<span> Completed and procced to next</span>', ['labour-card', 'id' => $license_master->id], ['class' => 'button green']) ?>
+                                                <?= Html::a('<span> Completed and procced to next</span>', ['moa', 'id' => $license_master->id], ['class' => 'button green']) ?>
                                             </div>
                                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 fright">
                                                 <div class="dropdown">
