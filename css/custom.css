@@ -524,3 +524,23 @@ input[type="file"] {
 .step-links{
     cursor: pointer;
 }
+.next-step-btn{
+    background-color: #ffffff;
+    border-color: #c1c1c1;
+    width: 100%;
+    color: #5a5858;
+    font-size: 17px;
+}
+.next-step-btn:hover{
+    background-color: #ffffff;
+    color: #5a5858;
+    border-color: #c1c1c1;
+}
+.next-step-btn.active{
+    background-color: #ffffff;
+    color: #5a5858;
+    border-color: #c1c1c1;
+}
+.next-step-drpdwn{
+    width: 100%;
+}

@@ -92,17 +92,25 @@ use yii\widgets\ActiveForm;
                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pad-0 fright">
                                     <?= Html::a('<span> Completed and procced to next</span>', ['moa', 'id' => $license_master->id], ['class' => 'button green']) ?>
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 fright">
-
-                                    <select class="form-control step-change">
-                                        <option value="">Select Step</option>
-                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/moa?id=<?= $license_master->id ?>">MOA</option>
-                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/municipality-approval?id=<?= $license_master->id ?>">Municipality Approval</option>
-                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/rta?id=<?= $license_master->id ?>">RTA</option>
-                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/municipality-approval?id=<?= $license_master->id ?>">DPS</option>
-                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/municipality-approval?id=<?= $license_master->id ?>">Police NOC</option>
-                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/municipality-approval?id=<?= $license_master->id ?>">Others</option>
-                                    </select>
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 fright">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary dropdown-toggle next-step-btn" type="button" data-toggle="dropdown">Select Step
+                                            <span class="caret"></span></button>
+                                        <ul class="dropdown-menu next-step-drpdwn">
+                                            <li>
+                                                <?= Html::a('MOA', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Municipality Approval', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('RTA', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('DPS', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Police NOC', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Others', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Payment Voucher', ['payment-voucher', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Licence', ['licence', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('New Stamp', ['new-stamp', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Labour Card', ['labour-card', 'id' => $license_master->id], ['class' => '']) ?>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>

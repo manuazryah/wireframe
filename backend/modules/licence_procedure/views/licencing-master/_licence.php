@@ -113,14 +113,18 @@ $this->params['breadcrumbs'][] = 'Update';
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pad-0 fright">
                                                 <?= Html::a('<span> Completed and procced to next</span>', ['new-stamp', 'id' => $license_master->id], ['class' => 'button green']) ?>
                                             </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 fright">
-
-                                                <select class="form-control">
-                                                    <option value="">Select Step</option>
-                                                    <option value="1">Step1</option>
-                                                    <option value="2">Step2</option>
-                                                    <option value="3">Step3</option>
-                                                </select>
+                                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 fright">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-primary dropdown-toggle next-step-btn" type="button" data-toggle="dropdown">Select Step
+                                                        <span class="caret"></span></button>
+                                                    <ul class="dropdown-menu next-step-drpdwn">
+                                                        <li>
+                                                            <?= Html::a('New Stamp', ['new-stamp', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('Company Establishment Card', ['company-establishment-card', 'id' => $license_master->id], ['class' => '']) ?>
+                                                            <?= Html::a('Labour Card', ['labour-card', 'id' => $license_master->id], ['class' => '']) ?>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
