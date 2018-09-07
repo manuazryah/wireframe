@@ -99,7 +99,7 @@ use yii\widgets\ActiveForm;
                                         <ul class="dropdown-menu next-step-drpdwn">
                                             <li>
                                                 <?= Html::a('MOA', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
-                                                <?= Html::a('Municipality Approval', ['moa', 'id' => $license_master->id], ['class' => '']) ?>
+                                                <?= Html::a('Municipality Approval', ['municipality-approval', 'id' => $license_master->id], ['class' => '']) ?>
                                                 <?= Html::a('RTA', ['rta', 'id' => $license_master->id], ['class' => '']) ?>
                                                 <?= Html::a('DPS', ['dps', 'id' => $license_master->id], ['class' => '']) ?>
                                                 <?= Html::a('Police NOC', ['police-noc', 'id' => $license_master->id], ['class' => '']) ?>
