@@ -25,44 +25,7 @@ use yii\widgets\ActiveForm;
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="step1">
                             <h3 class="heading">Trade name & initial approval</h3>
-                            <div class="customer-info">
-                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                    <ul>
-                                        <li>Customer name / ID</li>
-                                        <li>Manu KO</li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                    <ul>
-                                        <li>Email / Phone</li>
-                                        <li>Manu KO</li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                    <ul>
-                                        <li>Service ID</li>
-                                        <li>Manu KO</li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                    <ul>
-                                        <li>Service type</li>
-                                        <li>Manu KO</li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                    <ul>
-                                        <li>Sponsor</li>
-                                        <li>Manu KO</li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                    <ul>
-                                        <li>Space ID</li>
-                                        <li>Manu KO</li>
-                                    </ul>
-                                </div>
-                            </div>
+                            <?= common\components\AppointmentWidget::widget(['id' => $license_master->appointment_id]) ?>
                             <div class="customer-info-footer">
                                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                                     <ul>
@@ -136,11 +99,14 @@ use yii\widgets\ActiveForm;
                                 </div>
                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 fright">
 
-                                    <select class="form-control">
+                                    <select class="form-control step-change">
                                         <option value="">Select Step</option>
-                                        <option value="1">Step1</option>
-                                        <option value="2">Step2</option>
-                                        <option value="3">Step3</option>
+                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/moa?id=<?= $license_master->id ?>">MOA</option>
+                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/municipality-approval?id=<?= $license_master->id ?>">Municipality Approval</option>
+                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/rta?id=<?= $license_master->id ?>">RTA</option>
+                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/municipality-approval?id=<?= $license_master->id ?>">DPS</option>
+                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/municipality-approval?id=<?= $license_master->id ?>">Police NOC</option>
+                                        <option value="<?= Yii::$app->homeUrl; ?>licence_procedure/licencing-master/municipality-approval?id=<?= $license_master->id ?>">Others</option>
                                     </select>
                                 </div>
                             </div>

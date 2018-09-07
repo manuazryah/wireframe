@@ -83,6 +83,10 @@ class LicencingMasterController extends Controller {
         if (empty($model)) {
             $model = new \common\models\LiceTrdnameIntlapro();
             $model->setScenario('create');
+        } else {
+            $sponsor_family_book_ = $model->sponsor_family_book;
+            $certificate_ = $model->certificate;
+            $payment_receipt_ = $model->payment_receipt;
         }
         if ($model->load(Yii::$app->request->post())) {
             $receipt = UploadedFile::getInstance($model, 'payment_receipt');
@@ -93,12 +97,18 @@ class LicencingMasterController extends Controller {
             $model->CB = Yii::$app->user->identity->id;
             if (!empty($sponsor_family_book)) {
                 $model->sponsor_family_book = $sponsor_family_book->extension;
+            } else {
+                $model->sponsor_family_book = $sponsor_family_book_;
             }
             if (!empty($certificate)) {
                 $model->certificate = $certificate->extension;
+            } else {
+                $model->certificate = $certificate_;
             }
             if (!empty($receipt)) {
                 $model->payment_receipt = $receipt->extension;
+            } else {
+                $model->payment_receipt = $payment_receipt_;
             }
             if ($model->validate() && $model->save()) {
                 $this->upload($model, $receipt, $certificate, $sponsor_family_book);
@@ -135,6 +145,9 @@ class LicencingMasterController extends Controller {
         if (empty($model)) {
             $model = new \common\models\Moa();
             $model->setScenario('create');
+        } else {
+            $aggrement_ = $model->aggrement;
+            $moa_document_ = $model->moa_document;
         }
         if ($model->load(Yii::$app->request->post())) {
             $aggrement = UploadedFile::getInstance($model, 'aggrement');
@@ -144,9 +157,13 @@ class LicencingMasterController extends Controller {
             $model->CB = Yii::$app->user->identity->id;
             if (!empty($aggrement)) {
                 $model->aggrement = $aggrement->extension;
+            } else {
+                $model->aggrement = $aggrement_;
             }
             if (!empty($moa_document)) {
                 $model->moa_document = $moa_document->extension;
+            } else {
+                $model->moa_document = $moa_document_;
             }
             if ($model->validate() && $model->save()) {
                 $this->uploadMoaDocument($model, $moa_document, $aggrement);
@@ -180,6 +197,12 @@ class LicencingMasterController extends Controller {
         if (empty($model)) {
             $model = new \common\models\PaymentVoucher();
             $model->setScenario('create');
+        } else {
+            $ejari_ = $model->ejari;
+            $main_license_ = $model->main_license;
+            $noc_ = $model->noc;
+            $service_receipt_ = $model->service_receipt;
+            $voucher_attachmentt_ = $model->voucher_attachment;
         }
         if ($model->load(Yii::$app->request->post())) {
             $ejari = UploadedFile::getInstance($model, 'ejari');
@@ -192,18 +215,28 @@ class LicencingMasterController extends Controller {
             $model->CB = Yii::$app->user->identity->id;
             if (!empty($ejari)) {
                 $model->ejari = $ejari->extension;
+            } else {
+                $model->ejari = $ejari_;
             }
             if (!empty($main_license)) {
                 $model->main_license = $main_license->extension;
+            } else {
+                $model->main_license = $main_license_;
             }
             if (!empty($noc)) {
                 $model->noc = $noc->extension;
+            } else {
+                $model->noc = $noc_;
             }
             if (!empty($service_receipt)) {
                 $model->service_receipt = $service_receipt->extension;
+            } else {
+                $model->service_receipt = $service_receipt_;
             }
             if (!empty($voucher_attachment)) {
                 $model->voucher_attachment = $voucher_attachment->extension;
+            } else {
+                $model->voucher_attachment = $voucher_attachmentt_;
             }
             if ($model->validate() && $model->save()) {
                 $this->uploadVoucherDocument($model, $ejari, $main_license, $noc, $service_receipt, $voucher_attachment);
@@ -246,6 +279,8 @@ class LicencingMasterController extends Controller {
         if (empty($model)) {
             $model = new \common\models\Licence();
             $model->setScenario('create');
+        } else {
+            $licence_attachment_ = $model->licence_attachment;
         }
         if ($model->load(Yii::$app->request->post())) {
             $licence_attachment = UploadedFile::getInstance($model, 'licence_attachment');
@@ -255,6 +290,8 @@ class LicencingMasterController extends Controller {
             $model->CB = Yii::$app->user->identity->id;
             if (!empty($licence_attachment)) {
                 $model->licence_attachment = $licence_attachment->extension;
+            } else {
+                $model->licence_attachment = $licence_attachment_;
             }
             if ($model->validate() && $model->save()) {
                 $this->uploadLicenseDocument($model, $licence_attachment);
@@ -285,6 +322,8 @@ class LicencingMasterController extends Controller {
         if (empty($model)) {
             $model = new \common\models\NewStamp();
             $model->setScenario('create');
+        } else {
+            $receipt_ = $model->receipt;
         }
         if ($model->load(Yii::$app->request->post())) {
             $receipt = UploadedFile::getInstance($model, 'receipt');
@@ -293,6 +332,8 @@ class LicencingMasterController extends Controller {
             $model->CB = Yii::$app->user->identity->id;
             if (!empty($receipt)) {
                 $model->receipt = $receipt->extension;
+            } else {
+                $model->receipt = $receipt_;
             }
             if ($model->validate() && $model->save()) {
                 $this->uploadNewstamp($model, $receipt);
@@ -323,6 +364,11 @@ class LicencingMasterController extends Controller {
         if (empty($model)) {
             $model = new \common\models\CompanyEstablishmentCard();
             $model->setScenario('create');
+        } else {
+            $license_ = $model->license;
+            $service_reciept_ = $model->service_reciept;
+            $payment_reciept_ = $model->payment_reciept;
+            $card_attachment_ = $model->card_attachment;
         }
         if ($model->load(Yii::$app->request->post())) {
             $license = UploadedFile::getInstance($model, 'license');
@@ -332,14 +378,26 @@ class LicencingMasterController extends Controller {
             $model->licensing_master_id = $id;
             $model->date = date('Y-m-d');
             $model->CB = Yii::$app->user->identity->id;
-            if (!empty($license))
+            if (!empty($license)) {
                 $model->license = $license->extension;
-            if (!empty($service_reciept))
+            } else {
+                $model->license = $license_;
+            }
+            if (!empty($service_reciept)) {
                 $model->service_reciept = $service_reciept->extension;
-            if (!empty($payment_reciept))
+            } else {
+                $model->service_reciept = $service_reciept_;
+            }
+            if (!empty($payment_reciept)) {
                 $model->payment_reciept = $payment_reciept->extension;
-            if (!empty($card_attachment))
+            } else {
+                $model->payment_reciept = $payment_reciept_;
+            }
+            if (!empty($card_attachment)) {
                 $model->card_attachment = $card_attachment->extension;
+            } else {
+                $model->card_attachment = $card_attachment_;
+            }
 
             if ($model->validate() && $model->save()) {
                 $this->uploadEstablishmentcard($model, $license, 'license');
@@ -366,8 +424,8 @@ class LicencingMasterController extends Controller {
         }
         return TRUE;
     }
-    
-    public function actionLabourCard($id){
+
+    public function actionLabourCard($id) {
         
     }
 
@@ -396,6 +454,48 @@ class LicencingMasterController extends Controller {
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionMunicipalityApproval($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\MunicipalityApproval::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\MunicipalityApproval();
+            $model->setScenario('create');
+        } else {
+            $payment_receipt_ = $model->payment_receipt;
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $payment_receipt = UploadedFile::getInstance($model, 'payment_receipt');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+            if (!empty($payment_receipt)) {
+                $model->payment_receipt = $payment_receipt->extension;
+            } else {
+                $model->payment_receipt = $payment_receipt_;
+            }
+            if ($model->validate() && $model->save()) {
+                $this->uploadLicenseDocument($model, $payment_receipt);
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->render('municipality_approval', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Upload License Documents.
+     * @return mixed
+     */
+    public function uploadMunicipalityDocument($model, $payment_receipt) {
+        if (isset($payment_receipt) && !empty($payment_receipt)) {
+            $payment_receipt->saveAs(Yii::$app->basePath . '/../uploads/municipality_approval/licence/payment_receipt/' . $model->id . '.' . $licence_attachment->extension);
+        }
+        return TRUE;
     }
 
 }

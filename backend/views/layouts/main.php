@@ -198,3 +198,13 @@ $controler = Yii::$app->controller->id;
     </body>
 </html>
 <?php $this->endPage() ?>
+<script>
+    $(document).ready(function () {
+        $(".step-change").change(function () {
+            var url = $(".step-change").val();
+            if (url != '') {
+                window.location.href = url;
+            }
+        });
+    });
+</script>

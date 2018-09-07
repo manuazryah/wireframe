@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\LicencingMaster */
@@ -35,7 +36,7 @@ $this->params['breadcrumbs'][] = 'Update';
                                 <!-- Tab panes -->
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane active" id="step1">
-                                        <h3 class="heading">MOA</h3>
+                                        <h3 class="heading">Municipality Approval</h3>
                                         <?= common\components\AppointmentWidget::widget(['id' => $license_master->appointment_id]) ?>
                                         <div class="customer-info-footer">
                                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
@@ -72,20 +73,12 @@ $this->params['breadcrumbs'][] = 'Update';
                                             <div class="form-box">
                                                 <?php $form = ActiveForm::begin(); ?>
                                                 <div class="row">
-                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
-                                                        <?= $form->field($model, 'aggrement')->fileInput(['class' => 'form-control']) ?>
-
-                                                    </div>
                                                     <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-                                                        <?= $form->field($model, 'typing_fee')->textInput(['maxlength' => true]) ?>
-
-                                                    </div>
-                                                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
-                                                        <?= $form->field($model, 'court_fee')->textInput(['maxlength' => true]) ?>
+                                                        <?= $form->field($model, 'online_application_fee')->textInput(['maxlength' => true]) ?>
 
                                                     </div>
                                                     <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
-                                                        <?= $form->field($model, 'moa_document')->fileInput(['class' => 'form-control']) ?>
+                                                        <?= $form->field($model, 'payment_receipt')->fileInput(['class' => 'form-control']) ?>
 
                                                     </div>
                                                     <div class='col-md-8 col-sm-6 col-xs-12 left_padd'>   
@@ -106,7 +99,7 @@ $this->params['breadcrumbs'][] = 'Update';
                                         <div class="clearfix"></div>
                                         <div class="next-step">
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 pad-0 fright">
-                                                <?= Html::a('<span> Completed and procced to next</span>', ['payment-voucher', 'id' => $license_master->id], ['class' => 'button green']) ?>
+                                                <?= Html::a('<span> Completed and procced to next</span>', ['new-stamp', 'id' => $license_master->id], ['class' => 'button green']) ?>
                                             </div>
                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 fright">
 

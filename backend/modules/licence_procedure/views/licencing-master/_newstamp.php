@@ -36,44 +36,7 @@ $this->params['breadcrumbs'][] = 'Update';
                                 <div class="tab-content">
                                     <div role="tabpanel" class="tab-pane active" id="step1">
                                         <h3 class="heading">New Stamp</h3>
-                                        <div class="customer-info">
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                                <ul>
-                                                    <li>Customer name / ID</li>
-                                                    <li>Manu KO</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                                <ul>
-                                                    <li>Email / Phone</li>
-                                                    <li>Manu KO</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                                <ul>
-                                                    <li>Service ID</li>
-                                                    <li>Manu KO</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                                <ul>
-                                                    <li>Service type</li>
-                                                    <li>Manu KO</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                                <ul>
-                                                    <li>Sponsor</li>
-                                                    <li>Manu KO</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 content-box">
-                                                <ul>
-                                                    <li>Space ID</li>
-                                                    <li>Manu KO</li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                        <?= common\components\AppointmentWidget::widget(['id' => $license_master->appointment_id]) ?>
                                         <div class="customer-info-footer">
                                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                                                 <ul>
