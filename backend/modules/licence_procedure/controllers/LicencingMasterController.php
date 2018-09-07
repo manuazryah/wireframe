@@ -497,5 +497,54 @@ class LicencingMasterController extends Controller {
         }
         return TRUE;
     }
+     public function actionRta($id) {
+        $license_master = $this->findModel($id);
+        $model = \common\models\Rta::find()->where(['licensing_master_id' => $id])->one();
+        if (empty($model)) {
+            $model = new \common\models\Rta();
+            $model->setScenario('create');
+        } else {
+            $payment_receipt_ = $model->payment_receipt;
+            $approval_fees_receipt_ = $model->approval_fees_receipt;
+            $approval_certificate_ = $model->approval_certificate;
+        }
+        if ($model->load(Yii::$app->request->post())) {
+            $payment_receipt = UploadedFile::getInstance($model, 'payment_receipt');
+            $approval_fees_receipt = UploadedFile::getInstance($model, 'approval_fees_receipt');
+            $approval_certificate = UploadedFile::getInstance($model, 'approval_certificate');
+            $model->licensing_master_id = $id;
+            $model->date = date('Y-m-d');
+            $model->CB = Yii::$app->user->identity->id;
+                $model->payment_receipt = !empty($payment_receipt) ? $payment_receipt->extension : $payment_receipt_;
+                $model->approval_fees_receipt = !empty($approval_fees_receipt) ? $approval_fees_receipt->extension : $approval_fees_receipt_;
+                $model->approval_certificate = !empty($approval_certificate) ? $approval_certificate->extension : $approval_certificate_;
+//            
+
+            if ($model->validate() && $model->save()) {
+                $this->uploadRta($model, $payment_receipt, 'payment_receipt');
+                $this->uploadRta($model, $approval_fees_receipt, 'approval_fees_receipt');
+                $this->uploadRta($model, $approval_certificate, 'approval_certificate');
+//                $this->uploadEstablishmentcard($model, $payment_reciept, 'payment_receipt');
+//                $this->uploadEstablishmentcard($model, $card_attachment, 'card_attachment');
+            }
+            return $this->redirect(Yii::$app->request->referrer);
+        } else {
+            return $this->render('_rta', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Upload RTA Documents.
+     * @return mixed
+     */
+    public function uploadRta($model, $receipt, $folder) {
+        if (isset($receipt) && !empty($receipt)) {
+            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/rta/' . $folder . '/' . $model->id . '.' . $receipt->extension);
+        }
+        return TRUE;
+    }
 
 }
