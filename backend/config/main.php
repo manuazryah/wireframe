@@ -37,6 +37,9 @@ return [
         'licence_procedure' => [
             'class' => 'backend\modules\licence_procedure\Module',
         ],
+        'reports' => [
+            'class' => 'backend\modules\reports\Module',
+        ],
     ],
     'components' => [
         'request' => [
@@ -54,7 +57,7 @@ return [
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
-                [
+                    [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
