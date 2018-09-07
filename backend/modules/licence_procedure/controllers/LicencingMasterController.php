@@ -705,7 +705,7 @@ class LicencingMasterController extends Controller {
      */
     public function uploadOther($model, $receipt, $folder) {
         if (isset($receipt) && !empty($receipt)) {
-            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/other/' . $folder . '/' . $model->id . '.' . $receipt->extension);
+            $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/others/' . $folder . '/' . $model->id . '.' . $receipt->extension);
         }
         return TRUE;
     }
