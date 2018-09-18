@@ -205,7 +205,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					</div>
 					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
 						<ul>
-							<li><a href="" class="button">View payment history</a></li>
+							<li><a href="<?= Yii::$app->homeUrl ?>accounts/service-payment/payment-history?id=<?= $appointment->id ?>" class="button">View payment history</a></li>
 
 							<li><a id="<?= $appointment->id ?>" type="button" data-val="2" class="pay-btn button" data-toggle="modal" data-target="#modal-default" >
 									Make a payment

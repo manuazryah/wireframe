@@ -314,6 +314,14 @@ class ServicePaymentController extends \yii\web\Controller {
 		}
 	}
 
+	public function actionPaymentHistory($id) {
+		$payment_model = \common\models\ServicePayment::find()->where(['appointment_id' => $id])->all();
+		return $this->render('_payment_history', [
+			    'payment_model' => $payment_model,
+			    'id' => $id
+		]);
+	}
+
 	public function AddPayment($id) {
 
 		if (!empty($id)) {
