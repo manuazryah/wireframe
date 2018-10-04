@@ -246,7 +246,6 @@ class ServicePaymentController extends \yii\web\Controller {
 			$balnce_to_pay = $one_time_payment_total - $one_time_payed;
 			$data = $this->renderPartial('_form_pay', [
 			    'type' => $type,
-			    'service' => $service,
 			    'balnce_to_pay' => $balnce_to_pay,
 			    'appointment_id' => $appointment_id,
 			]);

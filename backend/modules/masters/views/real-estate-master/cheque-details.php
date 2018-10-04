@@ -13,7 +13,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel common\models\AppointmentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Payment History';
+$this->title = 'Cheque Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <!-- Default box -->
@@ -24,8 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div class="appointment-index">
 		<div class="box-header with-border">
 			<h3 class="box-title"><?= Html::encode($this->title) ?></h3>
-			<a href="<?= Yii::$app->homeUrl ?>accounts/service-payment/payment?id=<?= $id ?>" class="button" style="    width: 16%;
-			   float: right;">View Account</a>
+
 		</div>
 
 		<div class="box-body table-responsive">
@@ -33,20 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
 				<tr>
 					<th></th>
 					<th>Date</th>
-					<th>Transaction Type</th>
 					<th>Cheque Number</th>
 					<th>Amount</th>
-					<th>Comment</th>
+					<th>Status</th>
 				</tr>
-				<?php foreach ($payment_model as $model) {
+				<?php foreach ($models as $model) {
 					?>
 					<tr>
 						<td></td>
-						<td><?= $model->date ?></td>
-						<td><?= $model->transaction_type == 1 ? 'Cheque Payment' : 'Cash Payment' ?></td>
-						<td><?= $model->transaction_type == 1 ? $model->cheque_no : '' ?></td>
-						<td><?= $model->amount; ?></td>
-						<td><?= $model->comment; ?></td>
+						<td><?= $model->due_date ?></td>
+						<td><?= $model->cheque_no ?></td>
+						<td><?= $model->amount ?></td>
+						<td><?= $model->status; ?></td>
 					</tr>
 
 					<?php

@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				<tr>
 					<th></th>
 					<th>Particulars</th>
+					<th>Cheque Number</th>
 					<th>Amount</th>
 					<th>Need To Pay</th>
 					<th>Paid</th>
@@ -43,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 							<tr>
 								<td></td>
 								<td><?= $one_time_payment->service != '' ? common\models\Services::findOne($one_time_payment->service)->service_name : '' ?></td>
+								<td></td>
 								<td><?= $one_time_payment->total ?></td>
 								<td></td>
 								<td>
@@ -65,6 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
 							<tr>
 								<td></td>
 								<td><?= $cleared_cheque->service_id != '' ? common\models\Services::findOne($cleared_cheque->service_id)->service_name : '' ?></td>
+								<td><?= $cleared_cheque->cheque_number ?></td>
 								<td><?= $cleared_cheque->amount ?></td>
 								<td><?= $cleared_cheque->status == 2 ? $cleared_cheque->amount : ''; ?></td>
 								<td>
@@ -92,6 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
 							<tr>
 								<td></td>
 								<td><?= $cleared_cheque->service_id != '' ? common\models\Services::findOne($cleared_cheque->service_id)->service_name : '' ?></td>
+								<td><?= $cleared_cheque->cheque_number ?></td>
 								<td><?= $cleared_cheque->amount ?></td>
 								<td><?= $cleared_cheque->status == 2 ? $cleared_cheque->amount : ''; ?></td>
 								<td>
@@ -119,6 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
 							<tr>
 								<td></td>
 								<td><?= $previous_cheque->service_id != '' ? common\models\Services::findOne($previous_cheque->service_id)->service_name : '' ?></td>
+								<td><?= $previous_cheque->cheque_number ?></td>
 								<td><?= $previous_cheque->amount ?></td>
 								<td><?= $previous_cheque->status == 2 ? $previous_cheque->amount : ''; ?></td>
 								<td>
@@ -157,16 +162,14 @@ $this->params['breadcrumbs'][] = $this->title;
 											?>
 
 											<td><?= $service_cheque->service_id != '' ? common\models\Services::findOne($service_cheque->service_id)->service_name : '' ?></td>
+											<td><?= $service_cheque->cheque_number ?></td>
 											<td><?= $service_cheque->amount ?></td>
-											<td><?= $service_cheque->status == 2 ? $service_cheque->amount : ''; ?></td>
+											<td><?= $cheque_date->cheque_date == date('Y-m-d') ? $service_cheque->amount : ''; ?></td>
 											<td>
 												<?= $service_cheque->status == 1 ? $service_cheque->amount : ''; ?>
 
-																															<!--												<button id="<?= $service_cheque->service_id ?>" type="button" data-val="2" class="pay-btn" data-toggle="modal" data-target="#modal-default">
-																															Click to pay
-																															</button>-->
 											</td>
-											<td></td>
+											<td><?= $service_cheque->amount ?></td>
 											<td>
 												<?php
 												echo Html::dropDownList('status', $service_cheque->status, ['1' => 'Cleared', '2' => 'Bounced'], ['class' => 'cheque_payment', 'id' => $service_cheque->id, 'prompt' => '--Change Status--']);
@@ -232,25 +235,25 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 <!-- /.modal -->
 <script>
-	$(".cheque_payment").change(function () {
 
-		var cheque_id = this.id;
-		var cheque_status = $('option:selected', this).val();
-		$.ajax({
-			type: 'POST',
-			cache: false,
-			async: false,
-			data: {id: cheque_id, status: cheque_status},
-			url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/ajax-cheque-payment',
-			success: function (response) {
-				$.pjax.reload({container: '#products-table', timeout: false});
-			},
-			error: function (response) {
-				console.log(response);
-			}
-		});
-	});
 	$("document").ready(function () {
+		$(document).on('change', '.cheque_payment', function (e) {
+			var cheque_id = this.id;
+			var cheque_status = $('option:selected', this).val();
+			$.ajax({
+				type: 'POST',
+				cache: false,
+				async: false,
+				data: {id: cheque_id, status: cheque_status},
+				url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/ajax-cheque-payment',
+				success: function (response) {
+					$.pjax.reload({container: '#products-table', timeout: false});
+				},
+				error: function (response) {
+					console.log(response);
+				}
+			});
+		});
 
 		$(document).on('click', '.pay-btn', function (e) {
 			var appointment_id = $(this).attr('id');
