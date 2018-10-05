@@ -100,7 +100,6 @@ use common\models\Country;
                 data: {TRN: TRN, comment: comment, nationality: nationality, contact_person_phone: contact_person_phone, contact_person_email: contact_person_email, reference_code: reference_code, company_name: company_name, email: email, address: address, phone_number: phone_number, contact_person: contact_person},
                 success: function (data) {
                     var $data = JSON.parse(data);
-                    alert($data.id);
                     if ($data.con === "1") {
                         var newOption = $('<option value="' + $data.id + '">' + $data.name + '</option>');
                         $('#appointment-customer').append(newOption);
