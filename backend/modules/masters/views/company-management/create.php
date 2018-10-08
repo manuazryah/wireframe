@@ -2,11 +2,10 @@
 
 use yii\helpers\Html;
 
-
 /* @var $this yii\web\View */
 /* @var $model common\models\CompanyManagement */
 
-$this->title = 'Add Company Details';
+$this->title = 'Add Real Estate Vendors Details';
 $this->params['breadcrumbs'][] = ['label' => 'Company Managements', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -16,11 +15,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
-        <?=  Html::a('<span> Manage Company Details</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+        <?= Html::a('<span> Manage Real Estate Vendors</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
         <div class="company-management-create">
-            <?= $this->render('_form', [
-            'model' => $model,
-            ]) ?>
+            <?=
+            $this->render('_form', [
+                'model' => $model,
+            ])
+            ?>
         </div>
     </div>
     <!-- /.box-body -->

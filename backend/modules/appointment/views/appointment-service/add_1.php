@@ -77,36 +77,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             ?>
                             <tr>
                                 <td><?= Services::findOne($service->service)->service_name ?></td>
-                                <td class="edit_text" id="<?= $service->id ?>-comment" val="<?= $service->comment ?>">
-                                    <?php
-                                    if ($service->comment == '') {
-                                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                    } else {
-                                        echo $service->comment;
-                                    }
-                                    ?>
-                                </td>
-                                <td style="text-align: right;" class="edit_text" id="<?= $service->id ?>-amount" val="<?= $service->amount ?>">
-                                    <?php
-                                    if ($service->amount == '') {
-                                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                    } else {
-                                        echo $service->amount;
-                                    }
-                                    ?>
-                                </td>
-                                <td style="text-align: right;" class="edit_dropdown" drop_id="appointmentservice-tax" id="<?= $service->id ?>-tax" val="<?= $service->tax ?>">
-                                    <?php
-                                    if ($service->tax == '') {
-                                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                    } else {
-                                        ?>
-                                        <?= $service->tax_percentage != '' && $service->tax_percentage > 0 ? $service->tax_percentage : '' ?> <?= $service->tax_percentage != '' ? '%' : '' ?>
-                                    <?php }
-                                    ?>
-
-                                </td>
-                                <td style="text-align: right;" class="total-<?= $service->id ?>"><?= $service->total ?></td>
+                                <td><?= $service->comment ?></td>
+                                <td style="text-align: right;"><?= $service->amount ?></td>
+                                <td style="text-align: right;"><?= $service->tax_percentage ?> <?= $service->tax_percentage != '' ? '%' : '' ?></td>
+                                <td style="text-align: right;"><?= $service->total ?></td>
                                 <td>
                                     <?= Html::a('<i class="fa fa-pencil"></i>', ['/appointment/appointment-service/add', 'id' => $id, 'prfrma_id' => $service->id], ['class' => '', 'tittle' => 'Edit']) ?>
                                     <?= Html::a('<i class="fa fa-remove"></i>', ['/appointment/appointment-service/delete-performa', 'id' => $service->id], ['class' => '', 'tittle' => 'Edit', 'data-confirm' => 'Are you sure you want to delete this item?']) ?>
@@ -173,85 +147,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             });
         });
-
-        /*
-         * Double click enter function
-         * */
-
-        $('.edit_text').on('dblclick', function () {
-            var val = $(this).attr('val');
-            var idd = this.id;
-            var res_data = idd.split("-");
-            if (res_data[1] == 'comment') {
-                $(this).html('<textarea class="' + idd + '" value="' + val + '">' + val + '</textarea>');
-
-            } else {
-                $(this).html('<input class="' + idd + '" type="text" value="' + val + '"/>');
-
-            }
-
-            $('.' + idd).focus();
-        });
-
-        $('.edit_text').on('focusout', 'input,textarea', function () {
-            var thiss = $(this).parent('.edit_text');
-            var data_id = thiss.attr('id');
-            var res_id = data_id.split("-");
-            var res_val = $(this).val();
-            $.ajax({
-                type: 'POST',
-                cache: false,
-                data: {id: res_id[0], name: res_id[1], valuee: res_val},
-                url: '<?= Yii::$app->homeUrl; ?>appointment/appointment-service/edit-service',
-                success: function (data) {
-                    if (data == '') {
-                        data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    }
-                    thiss.html(res_val);
-                    if (res_id[1] == 'amount') {
-                        $('.total-' + data_id).text(data);
-                    }
-                    location.reload();
-                }
-            });
-
-        });
-
-        /*
-         * Double click Dropdown
-         * */
-
-        $('.edit_dropdown').on('dblclick', function () {
-            var val = $(this).attr('val');
-            var drop_id = $(this).attr('drop_id');
-            var idd = this.id;
-            var option = $('#' + drop_id).html();
-            $(this).html('<select class="' + drop_id + '" value="' + val + '">' + option + '</select>');
-            $('.' + drop_id + ' option[value="' + val + '"]').attr("selected", "selected");
-            $('.' + drop_id).focus();
-
-        });
-        $('.edit_dropdown').on('focusout', 'select', function () {
-            var thiss = $(this).parent('.edit_dropdown');
-            var data_id = thiss.attr('id');
-            var res_id = data_id.split("-");
-            var res_val = $(this).val();
-            $.ajax({
-                type: 'POST',
-                cache: false,
-                data: {id: res_id[0], name: res_id[1], valuee: res_val},
-                url: '<?= Yii::$app->homeUrl; ?>appointment/appointment-service/edit-service-tax',
-                success: function (data) {
-                    if (data == '') {
-                        data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                    }
-                    thiss.html(data);
-                    location.reload();
-                }
-            });
-
-        });
-
     });
     function calculateTotal() {
         var tot = 0;

@@ -105,10 +105,10 @@ use kartik\select2\Select2;
             <?= $form->field($model, 'deposit')->textInput(['maxlength' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>
-            <?= $form->field($model, 'sponser_fee')->textInput(['maxlength' => true]) ?>
-
-        </div>
+        <!--        <div class='col-md-4  col-xs-12 left_padd'>
+        <?php // $form->field($model, 'sponser_fee')->textInput(['maxlength' => true]) ?>
+        
+                </div>-->
         <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'furniture_expense')->textInput(['maxlength' => true]) ?>
 
@@ -177,9 +177,9 @@ use kartik\select2\Select2;
         $(document).on('keyup mouseup', '#realestatemaster-deposit', function (e) {
             calculateTotal();
         });
-        $(document).on('keyup mouseup', '#realestatemaster-sponser_fee', function (e) {
-            calculateTotal();
-        });
+//        $(document).on('keyup mouseup', '#realestatemaster-sponser_fee', function (e) {
+//            calculateTotal();
+//        });
         $(document).on('keyup mouseup', '#realestatemaster-furniture_expense', function (e) {
             calculateTotal();
         });
@@ -208,7 +208,7 @@ use kartik\select2\Select2;
         var rent_total = $("#realestatemaster-rent_total").val();
         var commission = $("#realestatemaster-commission").val();
         var deposit = $("#realestatemaster-deposit").val();
-        var sponsor_fee = $("#realestatemaster-sponser_fee").val();
+//        var sponsor_fee = $("#realestatemaster-sponser_fee").val();
         var furniture_expense = $("#realestatemaster-furniture_expense").val();
         var renovation_expense = $("#realestatemaster-office_renovation_expense").val();
         var other_expense = $("#realestatemaster-other_expense").val();
@@ -221,9 +221,9 @@ use kartik\select2\Select2;
         if (deposit == '') {
             deposit = 0;
         }
-        if (sponsor_fee == '') {
-            sponsor_fee = 0;
-        }
+//        if (sponsor_fee == '') {
+//            sponsor_fee = 0;
+//        }
         if (furniture_expense == '') {
             furniture_expense = 0;
         }
@@ -233,7 +233,7 @@ use kartik\select2\Select2;
         if (other_expense == '') {
             other_expense = 0;
         }
-        var total = parseFloat(rent_total) + parseFloat(commission) + parseFloat(deposit) + parseFloat(sponsor_fee) + parseFloat(furniture_expense) + parseFloat(renovation_expense) + parseFloat(other_expense);
+        var total = parseFloat(rent_total) + parseFloat(commission) + parseFloat(deposit) + parseFloat(furniture_expense) + parseFloat(renovation_expense) + parseFloat(other_expense);
         $('#expense-total').text(total.toFixed(2));
     }
 </script>

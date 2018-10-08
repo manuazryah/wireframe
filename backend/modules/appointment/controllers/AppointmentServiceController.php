@@ -123,6 +123,7 @@ class AppointmentServiceController extends Controller {
         $model->service = $service->id;
         $model->amount = $service->estimated_cost;
         $model->total = $service->estimated_cost;
+        $model->comment = $service->comment;
         Yii::$app->SetValues->Attributes($model);
         $model->save();
         return;
@@ -240,6 +241,67 @@ class AppointmentServiceController extends Controller {
             return $this->redirect(Yii::$app->request->referrer);
         }
         return $this->redirect(['appointment/index']);
+    }
+
+    /*
+     * This function will edit the close estimate text field on double click
+     * and also save changes to the database
+     */
+
+    public function actionEditService() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $name = $_POST['name'];
+            $value = $_POST['valuee'];
+            $service = AppointmentService::find()->where(['id' => $id])->one();
+            if ($value != '') {
+                $service->$name = $value;
+                $service->UB = Yii::$app->user->identity->id;
+                if ($name == 'amount') {
+                    $tax_amount = 0;
+                    if ($service->amount != '' && $service->amount > 0) {
+                        $tax_val = $service->tax != '' ? \common\models\Tax::findOne($service->tax)->value : '';
+                        if ($tax_val != '' && $tax_val > 0) {
+                            $tax_amount = ($service->amount * $tax_val) / 100;
+                        }
+                        $service->tax_amount = $tax_amount;
+                        $service->tax_percentage = $tax_val;
+                        $tot = $service->amount + $tax_amount;
+                        $service->total = $tot;
+                    }
+                }
+                if ($service->save()) {
+                    return $service->total;
+                }
+            }
+        }
+    }
+
+    public function actionEditServiceTax() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $name = $_POST['name'];
+            $value = $_POST['valuee'];
+            $service = AppointmentService::find()->where(['id' => $id])->one();
+            if ($value != '') {
+                $service->$name = $value;
+                $service->UB = Yii::$app->user->identity->id;
+                $tax_amount = 0;
+                if ($service->amount != '' && $service->amount > 0) {
+                    $tax_val = $value != '' ? \common\models\Tax::findOne($value)->value : '';
+                    if ($tax_val != '' && $tax_val > 0) {
+                        $tax_amount = ($service->amount * $tax_val) / 100;
+                    }
+                    $service->tax_amount = $tax_amount;
+                    $service->tax_percentage = $tax_val;
+                    $tot = $service->amount + $tax_amount;
+                    $service->total = $tot;
+                }
+                if ($service->save()) {
+                    return $service->total;
+                }
+            }
+        }
     }
 
 }

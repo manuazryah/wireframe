@@ -43,7 +43,7 @@ use common\models\AdminPosts;
 
                 <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'placeholder' => 'password']) ?>
 
-
+                <a onclick="show()" class="show-pass"><img src="<?= yii::$app->homeUrl; ?>img/Oyk1g.png" id="EYE"></a>
             </div>
         <?php } ?>
 
@@ -56,3 +56,16 @@ use common\models\AdminPosts;
     <?php ActiveForm::end(); ?>
 
 </div>
+<script>
+    function show() {
+        var a = document.getElementById("adminusers-password");
+        var b = document.getElementById("EYE");
+        if (a.type == "password") {
+            a.type = "text";
+            b.src = "<?= Yii::$app->homeUrl; ?>img/waw4z.png";
+        } else {
+            a.type = "password";
+            b.src = "<?= Yii::$app->homeUrl; ?>img/Oyk1g.png";
+        }
+    }
+</script>

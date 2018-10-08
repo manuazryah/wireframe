@@ -134,10 +134,10 @@ class AppointmentController extends Controller {
     public function generateServiceNo() {
         $last_appointment = Appointment::find()->orderBy(['id' => SORT_DESC])->one();
         if (empty($last_appointment)) {
-            $code = 'UBL0001';
+            $code = 'UBLSR-' . date('y') . '-0001';
         } else {
             $last = $last_appointment->id + 1;
-            $code = 'UBL' . sprintf('%04d', ++$last);
+            $code = 'UBLSR-' . date('y') . '-' . sprintf('%04d', ++$last);
         }
         return $code;
     }

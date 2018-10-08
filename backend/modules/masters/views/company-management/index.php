@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel common\models\CompanyManagementSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Company Managements';
+$this->title = 'Real Estate Vendors';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <!-- Default box -->
@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box-body table-responsive">
             <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-            <?= Html::a('<span> Add Company Details</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
+            <?= Html::a('<span> Add Real Estate Vendor</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
             <?=
             GridView::widget([
                 'dataProvider' => $dataProvider,
@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     // 'UB',
                     // 'DOC',
                     // 'DOU',
-                   ['class' => 'yii\grid\ActionColumn',
+                    ['class' => 'yii\grid\ActionColumn',
                         'template' => '{update}{delete}',
                     ],
                 ],

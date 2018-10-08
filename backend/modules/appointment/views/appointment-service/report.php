@@ -133,15 +133,15 @@ use yii\helpers\Html;
                             </tr>
                             <tr>
                                 <th class="width-20">Company Name:</th>
-                                <th class="width-40"></th>
+                                <th class="width-40"><?= $apointment->customer != '' ? common\models\Debtor::findOne($apointment->customer)->company_name : '' ?></th>
                                 <th class="width-20">Quotation No:</th>
                                 <th class="width-20"><?= $apointment->service_id ?></th>
                             </tr>
                             <tr>
+                                <th class="width-20">Salesman :</th>
+                                <th class="width-40"><?= $apointment->sales_man != '' ? common\models\AdminUsers::findOne($apointment->sales_man)->name : '' ?></th>
                                 <th class="width-20">Office No :</th>
-                                <th class="width-40"></th>
-                                <th class="width-20"></th>
-                                <th class="width-20"></th>
+                                <th class="width-20"><?= $apointment->customer != '' ? common\models\Debtor::findOne($apointment->customer)->phone_number : '' ?></th>
                             </tr>
                         </table>
                     </div>

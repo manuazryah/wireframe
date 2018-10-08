@@ -12,13 +12,12 @@ use yii\filters\VerbFilter;
 /**
  * CompanyManagementController implements the CRUD actions for CompanyManagement model.
  */
-class CompanyManagementController extends Controller
-{
+class CompanyManagementController extends Controller {
+
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -33,14 +32,13 @@ class CompanyManagementController extends Controller
      * Lists all CompanyManagement models.
      * @return mixed
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new CompanyManagementSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -49,10 +47,9 @@ class CompanyManagementController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
         ]);
     }
 
@@ -61,8 +58,7 @@ class CompanyManagementController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new CompanyManagement();
 
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
@@ -79,19 +75,16 @@ class CompanyManagementController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->validate() && $model->save()) {
             Yii::$app->session->setFlash('success', "Company Details Updated Successfully");
             return $this->redirect(['update', 'id' => $model->id]);
-        } else {
-            var_dump($model->getErrors());exit;
         }
         return $this->render('update', [
-                        'model' => $model,
-            ]);
+                    'model' => $model,
+        ]);
     }
 
     /**
@@ -100,8 +93,7 @@ class CompanyManagementController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -114,12 +106,12 @@ class CompanyManagementController extends Controller
      * @return CompanyManagement the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = CompanyManagement::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }
