@@ -125,6 +125,11 @@ use common\components\ModalViewWidget;
 
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
+            <?php
+            if ($model->isNewRecord) {
+                $model->tax = 2;
+            }
+            ?>
             <?php $taxs = ArrayHelper::map(Tax::findAll(['status' => 1]), 'id', 'name'); ?>
             <?= $form->field($model, 'tax')->dropDownList($taxs, ['prompt' => 'Choose Tax']) ?>
 
