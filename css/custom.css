@@ -553,3 +553,10 @@ input[type="file"] {
     top: 25px;
     right: 25px;
 }
+.site-login .btn-primary {
+    background-color: #3c8dbc;
+    border-color: #367fa9;
+    width: 100%;
+    text-transform: uppercase;
+    font-weight: 600;
+}

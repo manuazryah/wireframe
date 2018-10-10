@@ -51,6 +51,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>Sponsor</th>
                     <td>: <?= $appointment->sponsor != '' ? \common\models\Sponsor::findOne($appointment->sponsor)->name : '' ?></td>
                 </tr>
+                <tr>
+                    <th>Reference Code</th>
+                    <td>: <?= $appointment->customer != '' ? \common\models\Debtor::findOne($appointment->customer)->reference_code : '' ?></td>
+                    <th></th>
+                    <td></td>
+                </tr>
             </table>
         </div>
         <?= Html::a('<span> Generate Quotation</span>', ['quotation', 'id' => $appointment->id], ['class' => 'btn btn-block manage-btn', 'style' => 'float:right;', 'target' => '_blank']) ?>

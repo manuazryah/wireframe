@@ -143,6 +143,20 @@ class AppointmentController extends Controller {
     }
 
     /**
+     * Generate reference code
+     */
+    public function generateReferenceCode() {
+        $last_debtor = \common\models\Debtor::find()->orderBy(['id' => SORT_DESC])->one();
+        if (empty($last_debtor)) {
+            $code = 'UBLDR-' . '0001';
+        } else {
+            $last = $last_debtor->id + 1;
+            $code = 'UBLDR-' . sprintf('%04d', ++$last);
+        }
+        return $code;
+    }
+
+    /**
      * Deletes an existing Appointment model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id

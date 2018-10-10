@@ -18,8 +18,13 @@ use common\models\Country;
             <?= $form->field($model, 'company_name')->textInput(['maxlength' => true, 'placeholder' => 'Company Name']) ?>
 
         </div>
-        <div class='col-md-4 col-xs-12 left_padd'>    
-            <?= $form->field($model, 'reference_code')->textInput(['maxlength' => true, 'placeholder' => 'Reference Code']) ?>
+        <div class='col-md-4 col-xs-12 left_padd'>  
+            <?php
+            if ($model->isNewRecord) {
+                $model->reference_code = $this->context->generateReferenceCode();
+            }
+            ?>
+            <?= $form->field($model, 'reference_code')->textInput(['maxlength' => true, 'readonly' => TRUE]) ?>
 
         </div>
         <div class='col-md-4 col-xs-12 left_padd'>    

@@ -31,7 +31,7 @@ class ServicePaymentController extends \yii\web\Controller {
 
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                if ($this->SaveServiceDetails($data, $appointment)) {
+                if ($this->SaveServiceDetails($data, $appointment) && $this->SaveMultipleChequeDetails($data, $appointment) && $this->SaveOneTimeChequeDetails($data, $appointment)) {
                     $transaction->commit();
                     $appointment->status = 3;
                     $appointment->save(FALSE);
@@ -69,19 +69,7 @@ class ServicePaymentController extends \yii\web\Controller {
 
                         $service->payment_type = $update['payment_type'];
                         if ($service->save()) {
-                            if ($service->payment_type == 5) {
-                                $flag = 1;
-                            } else {
-                                if ($this->SaveChequeDetails($service, $data, $key, $appointment)) {
-                                    $flag = 1;
-                                } else {
-                                    $flag = 0;
-                                    break;
-                                }
-                            }
-                        } else {
-                            echo 'jkdfhg';
-                            exit;
+                            $flag = 1;
                         }
                     }
                 }
@@ -97,10 +85,9 @@ class ServicePaymentController extends \yii\web\Controller {
     /**
      * To set cheque details into an array.
      */
-    public function SaveChequeDetails($service, $data, $key, $appointment) {
-
+    public function SaveMultipleChequeDetails($data, $appointment) {
         $flag = 0;
-        $creatematerial = $data['create'][$key];
+        $creatematerial = $data['create'];
         if (isset($creatematerial) && $creatematerial != '') {
             $arr = [];
             $i = 0;
@@ -126,10 +113,46 @@ class ServicePaymentController extends \yii\web\Controller {
                 }
             }
 
-            if ($this->AddChequeDetails($service, $arr, $appointment)) {
+            if ($this->AddChequeDetails($arr, $appointment)) {
                 $flag = 1;
             }
+        } else {
+            $flag = 1;
         }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * To set cheque details into an array.
+     */
+    public function SaveOneTimeChequeDetails($data, $appointment) {
+        $flag = 0;
+        $creatematerial = $data['createone'];
+        if (isset($creatematerial) && $creatematerial != '') {
+
+            $aditional = new \common\models\ServiceChequeDetails();
+            $aditional->appointment_id = $appointment->id;
+//            $aditional->appointment_service_id = $service->id;
+//            $aditional->service_id = $service->service;
+            $aditional->type = 2;
+            $aditional->cheque_number = $creatematerial['cheque_num'];
+            $aditional->cheque_date = $creatematerial['cheque_date'];
+            $aditional->amount = $creatematerial['amount'];
+            Yii::$app->SetValues->Attributes($aditional);
+
+            if ($aditional->save()) {
+                $flag = 1;
+            } else {
+                $flag = 0;
+            }
+        } else {
+            $flag = 1;
+        }
+
         if ($flag == 1) {
             return TRUE;
         } else {
@@ -140,14 +163,15 @@ class ServicePaymentController extends \yii\web\Controller {
     /**
      * This function save service cheque details.
      */
-    public function AddChequeDetails($service, $arr, $appointment) {
+    public function AddChequeDetails($arr, $appointment) {
 
         $flag = 0;
         foreach ($arr as $val) {
             $aditional = new \common\models\ServiceChequeDetails();
             $aditional->appointment_id = $appointment->id;
-            $aditional->appointment_service_id = $service->id;
-            $aditional->service_id = $service->service;
+//            $aditional->appointment_service_id = $service->id;
+//            $aditional->service_id = $service->service;
+            $aditional->type = 1;
             $aditional->cheque_number = $val['cheque_num'];
             $aditional->cheque_date = $val['cheque_date'];
             $aditional->amount = $val['amount'];
@@ -382,6 +406,28 @@ class ServicePaymentController extends \yii\web\Controller {
                 }
             }
         }
+    }
+
+    public function actionMultipleChequeDetails() {
+        if (Yii::$app->request->isAjax) {
+            $count = $_POST['count'];
+            $total_amt = $_POST['total_amt'];
+            $data = $this->renderPartial('_form_cheque_multiple', [
+                'count' => $count,
+                'total_amt' => $total_amt,
+            ]);
+        }
+        return $data;
+    }
+
+    public function actionOneTimeChequeDetails() {
+        if (Yii::$app->request->isAjax) {
+            $total_amt = $_POST['total_amt'];
+            $data = $this->renderPartial('_form_cheque_one_time', [
+                'total_amt' => $total_amt,
+            ]);
+        }
+        return $data;
     }
 
 }

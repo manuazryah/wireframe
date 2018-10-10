@@ -27,23 +27,21 @@ use Yii;
  *
  * @property Country $nationality0
  */
-class Debtor extends \yii\db\ActiveRecord
-{
+class Debtor extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'debtor';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['email', 'contact_person','company_name','phone_number'], 'required'],
+            [['email', 'contact_person', 'company_name', 'phone_number', 'reference_code'], 'required'],
             [['address', 'comment'], 'string'],
             [['nationality', 'status', 'CB', 'UB'], 'integer'],
             [['DOC', 'DOU'], 'safe'],
@@ -57,8 +55,7 @@ class Debtor extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'company_name' => 'Company Name',
@@ -83,8 +80,8 @@ class Debtor extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNationality0()
-    {
+    public function getNationality0() {
         return $this->hasOne(Country::className(), ['id' => 'nationality']);
     }
+
 }
