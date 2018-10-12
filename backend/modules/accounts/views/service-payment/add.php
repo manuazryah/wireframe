@@ -19,6 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
+        <?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
         <div class="appointment-history">
             <table class="table table-responsive">
                 <tr>
@@ -107,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <input type="hidden" value="<?= $count ?>" id="total-row_count">
         <div class="row">
-            <div class="col-md-6" style="border-right:1px solid;">
+            <div class="col-md-6" style="border-right: 1px solid #c5c5c5;">
                 <div class="col-md-6">
                     <div class="form-group field-debtor-company_name required">
                         <label class="control-label" for="debtor-company_name">Multiple Total</label>

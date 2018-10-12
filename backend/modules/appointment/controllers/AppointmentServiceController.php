@@ -122,8 +122,21 @@ class AppointmentServiceController extends Controller {
         $model->appointment_id = $appointment->id;
         $model->service = $service->id;
         $model->amount = $service->estimated_cost;
-        $model->total = $service->estimated_cost;
         $model->comment = $service->comment;
+        $model->total = $service->estimated_cost;
+        if ($service->tax_id != '') {
+            $tax_data = \common\models\Tax::find()->where(['id' => $service->tax_id])->one();
+            $tax_amount = 0;
+            if ($model->amount > 0) {
+                if ($tax_data->value != '' && $tax_data->value > 0) {
+                    $tax_amount = ($model->amount * $tax_data->value) / 100;
+                    $model->tax = $tax_data->id;
+                    $model->tax_percentage = $tax_data->value;
+                    $model->tax_amount = $tax_amount;
+                    $model->total = $model->amount + $model->tax_amount;
+                }
+            }
+        }
         Yii::$app->SetValues->Attributes($model);
         $model->save();
         return;

@@ -126,21 +126,21 @@ use yii\helpers\Html;
                     <div class="appointment-content">
                         <table class="appointment-content-table">
                             <tr>
-                                <th class="width-20">Customer Name:</th>
-                                <th class="width-40"><?= $apointment->customer != '' ? common\models\Debtor::findOne($apointment->customer)->company_name : '' ?></th>
-                                <th class="width-20">Date :</th>
+                                <th class="width-20">Customer Name</th>
+                                <th class="width-40"><?= $apointment->customer != '' ? common\models\Debtor::findOne($apointment->customer)->contact_person : '' ?></th>
+                                <th class="width-20">Date </th>
                                 <th class="width-20"><?= date('d-F-Y') ?></th>
                             </tr>
                             <tr>
-                                <th class="width-20">Company Name:</th>
+                                <th class="width-20">Company Name</th>
                                 <th class="width-40"><?= $apointment->customer != '' ? common\models\Debtor::findOne($apointment->customer)->company_name : '' ?></th>
-                                <th class="width-20">Quotation No:</th>
+                                <th class="width-20">Quotation No</th>
                                 <th class="width-20"><?= $apointment->service_id ?></th>
                             </tr>
                             <tr>
-                                <th class="width-20">Salesman :</th>
+                                <th class="width-20">Salesman </th>
                                 <th class="width-40"><?= $apointment->sales_man != '' ? common\models\AdminUsers::findOne($apointment->sales_man)->name : '' ?></th>
-                                <th class="width-20">Office No :</th>
+                                <th class="width-20">Office No </th>
                                 <th class="width-20"><?= $apointment->customer != '' ? common\models\Debtor::findOne($apointment->customer)->phone_number : '' ?></th>
                             </tr>
                         </table>
@@ -165,38 +165,265 @@ use yii\helpers\Html;
                             </tr>
                             <?php
                             if (!empty($services)) {
-                                $i = 1;
+                                $i = 0;
+                                if ($apointment->service_type == 1 || $apointment->service_type == 3) {
+                                    $i++;
+                                    ?>
+                                    <tr>
+                                        <td><?= $i ?></td>
+                                        <td>
+                                            <strong style="text-decoration: underline;">A. Specification</strong>
+                                            <p>1. New company Formation: Dubai Mainland</p>
+                                            <p>2. Company Type: Commercial Issue</p>
+                                        </td>
+                                        <td>
+                                            With Office Space
+                                        </td>
+                                    </tr>
+                                <?php }
                                 ?>
-                                <tr>
-                                    <td><?= $i ?></td>
-                                    <td>
-                                        <strong style="text-decoration: underline;">A. Specification</strong>
-                                        <p>1. New company Formation: Dubai Mainland</p>
-                                        <p>2. Company Type: Commercial Issue</p>
-                                    </td>
-                                    <td>
-                                        With Office Space
-                                    </td>
-                                </tr>
                                 <?php
-                                foreach ($services as $service) {
-                                    if (!empty($service)) {
+                                if ($apointment->service_type == 1) {
+                                    $i++;
+                                    ?>
+                                    <tr>
+                                        <td><?= $i ?></td>
+                                        <td>
+                                            <strong style="text-decoration: underline;">B. Rental for Office& Sponsorship</strong>
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    $service_categories = common\models\Services::find()->where(['service_category' => [1, 2]])->all();
+                                    $space_arr = [];
+                                    if (!empty($service_categories)) {
+                                        foreach ($service_categories as $service_category) {
+                                            $space_arr[] = $service_category->id;
+                                        }
+                                    }
+                                    $space_services = \common\models\AppointmentService::find()->where(['appointment_id' => $apointment->id])->andWhere(['service' => $space_arr])->all();
+                                    if (!empty($space_services)) {
+                                        foreach ($space_services as $space_service) {
+                                            if (!empty($space_service)) {
+                                                $i++;
+                                                ?>
+                                                <tr>
+                                                    <td><?= $i ?></td>
+                                                    <td><strong><?= $space_service->service != '' ? common\models\Services::findOne($space_service->service)->service_name : '' ?></strong>
+                                                        <?php
+                                                        if ($space_service->comment != '') {
+                                                            echo '<br><span class="cmmd-span">' . $space_service->comment . '</span>';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td class="txt-align-right"><?= $space_service->total ?> </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                }
+                                if ($apointment->service_type == 2) {
+                                    $service_ministries = common\models\Services::find()->where(['type' => 3])->andWhere(['service_category' => 3])->all();
+                                    $service_ubl = common\models\Services::find()->where(['<>', 'type', 3])->andWhere(['service_category' => 3])->all();
+                                    $ministry_arr = [];
+                                    $ubl_arr = [];
+                                    if (!empty($service_ministries)) {
+                                        foreach ($service_ministries as $service_ministrie) {
+                                            $ministry_arr[] = $service_ministrie->id;
+                                        }
+                                    }
+                                    if (!empty($service_ubl)) {
+                                        foreach ($service_ubl as $service_ubl_val) {
+                                            $ubl_arr[] = $service_ubl_val->id;
+                                        }
+                                    }
+                                    $ubl_services = \common\models\AppointmentService::find()->where(['appointment_id' => $apointment->id])->andWhere(['service' => $ubl_arr])->all();
+                                    $ministry_services = \common\models\AppointmentService::find()->where(['appointment_id' => $apointment->id])->andWhere(['service' => $ministry_arr])->all();
+                                    if (!empty($ubl_services)) {
                                         $i++;
                                         ?>
                                         <tr>
                                             <td><?= $i ?></td>
-                                            <td><strong><?= $service->service != '' ? common\models\Services::findOne($service->service)->service_name : '' ?></strong>
-                                                <?php
-                                                if ($service->comment != '') {
-                                                    echo '<br><span class="cmmd-span">' . $service->comment . '</span>';
-                                                }
-                                                ?>
+                                            <td>
+                                                <strong style="text-decoration: underline;">A. License</strong>
                                             </td>
-                                            <td class="txt-align-right"><?= $service->total ?> </td>
+                                            <td>
+                                            </td>
                                         </tr>
                                         <?php
+                                        foreach ($ubl_services as $ubl_service) {
+                                            if (!empty($ubl_service)) {
+                                                $i++;
+                                                ?>
+                                                <tr>
+                                                    <td><?= $i ?></td>
+                                                    <td><strong><?= $ubl_service->service != '' ? common\models\Services::findOne($ubl_service->service)->service_name : '' ?></strong>
+                                                        <?php
+                                                        if ($ubl_service->comment != '') {
+                                                            echo '<br><span class="cmmd-span">' . $ubl_service->comment . '</span>';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td class="txt-align-right"><?= $ubl_service->total ?> </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    if (!empty($ministry_services)) {
+                                        $i++;
+                                        ?>
+                                        <tr>
+                                            <td><?= $i ?></td>
+                                            <td>
+                                                <strong style="text-decoration: underline;">B. Government Fees</strong>
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                        foreach ($ministry_services as $ministry_service) {
+                                            if (!empty($ministry_service)) {
+                                                $i++;
+                                                ?>
+                                                <tr>
+                                                    <td><?= $i ?></td>
+                                                    <td><strong><?= $ministry_service->service != '' ? common\models\Services::findOne($ministry_service->service)->service_name : '' ?></strong>
+                                                        <?php
+                                                        if ($ministry_service->comment != '') {
+                                                            echo '<br><span class="cmmd-span">' . $ministry_service->comment . '</span>';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td class="txt-align-right"><?= $ministry_service->total ?> </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
                                     }
                                 }
+                                if ($apointment->service_type == 3) {
+                                    $service_categories = common\models\Services::find()->where(['service_category' => [1, 2]])->all();
+                                    $service_ministries = common\models\Services::find()->where(['type' => 3])->andWhere(['service_category' => 3])->all();
+                                    $service_ubl = common\models\Services::find()->where(['<>', 'type', 3])->andWhere(['service_category' => 3])->all();
+                                    $space_arr = [];
+                                    if (!empty($service_categories)) {
+                                        foreach ($service_categories as $service_category) {
+                                            $space_arr[] = $service_category->id;
+                                        }
+                                    }
+                                    $space_services = \common\models\AppointmentService::find()->where(['appointment_id' => $apointment->id])->andWhere(['service' => $space_arr])->all();
+                                    if (!empty($space_services)) {
+                                        ?>
+                                        <tr>
+                                            <td><?= $i ?></td>
+                                            <td>
+                                                <strong style="text-decoration: underline;">B. Rental for Office& Sponsorship</strong>
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                        foreach ($space_services as $space_service) {
+                                            if (!empty($space_service)) {
+                                                $i++;
+                                                ?>
+                                                <tr>
+                                                    <td><?= $i ?></td>
+                                                    <td><strong><?= $space_service->service != '' ? common\models\Services::findOne($space_service->service)->service_name : '' ?></strong>
+                                                        <?php
+                                                        if ($space_service->comment != '') {
+                                                            echo '<br><span class="cmmd-span">' . $space_service->comment . '</span>';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td class="txt-align-right"><?= $space_service->total ?> </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    $ministry_arr = [];
+                                    $ubl_arr = [];
+                                    if (!empty($service_ministries)) {
+                                        foreach ($service_ministries as $service_ministrie) {
+                                            $ministry_arr[] = $service_ministrie->id;
+                                        }
+                                    }
+                                    if (!empty($service_ubl)) {
+                                        foreach ($service_ubl as $service_ubl_val) {
+                                            $ubl_arr[] = $service_ubl_val->id;
+                                        }
+                                    }
+                                    $ubl_services = \common\models\AppointmentService::find()->where(['appointment_id' => $apointment->id])->andWhere(['service' => $ubl_arr])->all();
+                                    $ministry_services = \common\models\AppointmentService::find()->where(['appointment_id' => $apointment->id])->andWhere(['service' => $ministry_arr])->all();
+                                    if (!empty($ubl_services)) {
+                                        $i++;
+                                        ?>
+                                        <tr>
+                                            <td><?= $i ?></td>
+                                            <td>
+                                                <strong style="text-decoration: underline;">C. License</strong>
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                        foreach ($ubl_services as $ubl_service) {
+                                            if (!empty($ubl_service)) {
+                                                $i++;
+                                                ?>
+                                                <tr>
+                                                    <td><?= $i ?></td>
+                                                    <td><strong><?= $ubl_service->service != '' ? common\models\Services::findOne($ubl_service->service)->service_name : '' ?></strong>
+                                                        <?php
+                                                        if ($ubl_service->comment != '') {
+                                                            echo '<br><span class="cmmd-span">' . $ubl_service->comment . '</span>';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td class="txt-align-right"><?= $ubl_service->total ?> </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                    if (!empty($ministry_services)) {
+                                        $i++;
+                                        ?>
+                                        <tr>
+                                            <td><?= $i ?></td>
+                                            <td>
+                                                <strong style="text-decoration: underline;">D. Government Fees</strong>
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                        foreach ($ministry_services as $ministry_service) {
+                                            if (!empty($ministry_service)) {
+                                                $i++;
+                                                ?>
+                                                <tr>
+                                                    <td><?= $i ?></td>
+                                                    <td><strong><?= $ministry_service->service != '' ? common\models\Services::findOne($ministry_service->service)->service_name : '' ?></strong>
+                                                        <?php
+                                                        if ($ministry_service->comment != '') {
+                                                            echo '<br><span class="cmmd-span">' . $ministry_service->comment . '</span>';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td class="txt-align-right"><?= $ministry_service->total ?> </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                    }
+                                }
+                                ?>
+                                <?php
                             }
                             ?>
                         </table>

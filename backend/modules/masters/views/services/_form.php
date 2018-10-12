@@ -8,7 +8,6 @@ use common\models\ServiceType;
 use common\models\ServiceCategory;
 use common\models\Supplier;
 
-
 /* @var $this yii\web\View */
 /* @var $model common\models\Services */
 /* @var $form yii\widgets\ActiveForm */
@@ -19,7 +18,7 @@ use common\models\Supplier;
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
-             <?php $service_category = ArrayHelper::map(ServiceCategory::findAll(['status' => 1]), 'id', 'category_name'); ?>
+            <?php $service_category = ArrayHelper::map(ServiceCategory::findAll(['status' => 1]), 'id', 'category_name'); ?>
             <?= $form->field($model, 'service_category')->dropDownList($service_category, ['prompt' => 'Service Category']) ?>
 
         </div>
@@ -38,7 +37,7 @@ use common\models\Supplier;
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>  
             <?php $suppliers = ArrayHelper::map(Supplier::findAll(['status' => 1]), 'id', 'company_name'); ?>
-            <?= $form->field($model, 'supplier')->dropDownList($suppliers, ['prompt' => 'Supplier']) ?>
+            <?= $form->field($model, 'supplier')->dropDownList($suppliers, ['prompt' => '- Select Supplier -']) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    
@@ -54,7 +53,7 @@ use common\models\Supplier;
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
             <div class='col-md-12 col-xs-12 pad-0'> 
                 <?php $tax = ArrayHelper::map(Tax::findAll(['status' => 1]), 'id', 'name'); ?>
-            <?= $form->field($model, 'tax_id')->dropDownList($tax, ['prompt' => 'Tax']) ?>
+                <?= $form->field($model, 'tax_id')->dropDownList($tax)->label('Tax') ?>
             </div>
             <div class='col-md-12 col-xs-12 pad-0'> 
                 <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>

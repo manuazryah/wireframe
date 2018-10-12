@@ -125,22 +125,12 @@ use common\components\ModalViewWidget;
 
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
-            <?php
-            if ($model->isNewRecord) {
-                $model->tax = 2;
-            }
-            ?>
-            <?php $taxs = ArrayHelper::map(Tax::findAll(['status' => 1]), 'id', 'name'); ?>
-            <?= $form->field($model, 'tax')->dropDownList($taxs, ['prompt' => 'Choose Tax']) ?>
-
-        </div>
-    </div>
-    <div class="row">
-        <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?php $salesman = ArrayHelper::map(\common\models\AdminUsers::findAll(['status' => 1]), 'id', 'name'); ?>
             <?= $form->field($model, 'sales_man')->dropDownList($salesman, ['prompt' => 'Choose Salesman']) ?>
 
         </div>
+    </div>
+    <div class="row">
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?= $form->field($model, 'comment')->textInput(['maxlength' => true]) ?>
 

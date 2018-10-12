@@ -24,6 +24,23 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
         <div class="box-body table-responsive">
+            <?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+            <section id="tabs">
+                <div class="card1">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation">
+                            <?php
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 1</span>', ['service-payment/service-payment-update', 'id' => $id]);
+                            ?>
+                        </li>
+                        <li role="presentation" class="active">
+                            <?php
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 2</span>', ['service-payment/payment', 'id' => $id]);
+                            ?>
+                        </li>
+                    </ul>
+                </div>
+            </section>
             <?php Pjax::begin(['id' => 'products-table']); ?>
             <table class="table table-bordered">
                 <tr>
@@ -49,9 +66,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td></td>
                                 <td>
 
-                                                                                                                                                                                                                                                                                            <!--									<button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
-                                                                                                                                                                                                                                                                                            Click to pay
-                                                                                                                                                                                                                                                                                            </button>-->
+                                                                                                                                                                                                                                                                                                                    <!--									<button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
+                                                                                                                                                                                                                                                                                                                    Click to pay
+                                                                                                                                                                                                                                                                                                                    </button>-->
                                 </td>
                                 <td><?= $one_time_payment->amount_paid ?></td>
                                 <td><?= $one_time_payment->due_amount ?></td>
@@ -73,9 +90,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td>
                                     <?= $cleared_cheque->status == 1 ? $cleared_cheque->amount : ''; ?>
 
-                                                                                                                                                                                                                                                                                            <!--									<button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
-                                                                                                                                                                                                                                                                                            Click to pay
-                                                                                                                                                                                                                                                                                            </button>-->
+                                                                                                                                                                                                                                                                                                                    <!--									<button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
+                                                                                                                                                                                                                                                                                                                    Click to pay
+                                                                                                                                                                                                                                                                                                                    </button>-->
                                 </td>
                                 <td></td>
                                 <td><?php
@@ -101,9 +118,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td>
                                     <?= $cleared_cheque->status == 1 ? $cleared_cheque->amount : ''; ?>
 
-                                                                                                                                                                                                                                                                                            <!--									<button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
-                                                                                                                                                                                                                                                                                            Click to pay
-                                                                                                                                                                                                                                                                                            </button>-->
+                                                                                                                                                                                                                                                                                                                    <!--									<button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
+                                                                                                                                                                                                                                                                                                                    Click to pay
+                                                                                                                                                                                                                                                                                                                    </button>-->
                                 </td>
                                 <td></td>
                                 <td><?php
@@ -129,9 +146,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <td>
                                     <?= $previous_cheque->status == 1 ? $previous_cheque->amount : ''; ?>
 
-                                                                                                                                                                                                                                                                                            <!--									<button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
-                                                                                                                                                                                                                                                                                            Click to pay
-                                                                                                                                                                                                                                                                                            </button>-->
+                                                                                                                                                                                                                                                                                                                    <!--									<button id="<?= $one_time_payment->service ?>" type="button" data-val="1" class="pay-btn" data-toggle="modal" data-target="#modal-default">
+                                                                                                                                                                                                                                                                                                                    Click to pay
+                                                                                                                                                                                                                                                                                                                    </button>-->
                                 </td>
                                 <td></td>
                                 <td><?php

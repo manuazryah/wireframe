@@ -65,7 +65,6 @@ class AppointmentController extends Controller {
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
             $model->sales_employee_id = Yii::$app->user->identity->post_id;
             if ($model->save()) {
-                // Yii::$app->session->setFlash('success', "Appointment Created Successfully");
                 $this->updateEstateManagement($model);
                 if ($model->service_type == 2 || $model->service_type == 3) {
                     $this->addLicencingMaster($model);

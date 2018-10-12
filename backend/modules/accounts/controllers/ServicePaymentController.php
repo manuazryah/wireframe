@@ -24,7 +24,6 @@ class ServicePaymentController extends \yii\web\Controller {
 
     public function actionServicePayment($id) {
         $services = AppointmentService::findAll(['appointment_id' => $id]);
-
         $appointment = Appointment::findOne($id);
         if (Yii::$app->request->post()) {
             $data = Yii::$app->request->post();
@@ -50,6 +49,39 @@ class ServicePaymentController extends \yii\web\Controller {
                     'services' => $services,
                     'appointment' => $appointment,
                     'id' => $id,
+        ]);
+    }
+
+    public function actionServicePaymentUpdate($id) {
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
+        $appointment = Appointment::findOne($id);
+        $multiple_cheque_details = \common\models\ServiceChequeDetails::findAll(['appointment_id' => $id, 'type' => 1]);
+        $multiple_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 1])->sum('amount');
+        $onetime_cheque_details = \common\models\ServiceChequeDetails::findAll(['appointment_id' => $id, 'type' => 2]);
+        $onetime_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 2])->sum('amount');
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post();
+            $update = $data['update'];
+            $arr = [];
+            $i = 0;
+            foreach ($update as $key => $val) {
+                $arr[$key]['cheque_date'] = $val['cheque_date'][0];
+                $i++;
+            }
+            foreach ($arr as $key => $value) {
+                $aditional = \common\models\ServiceChequeDetails::findOne($key);
+                $aditional->cheque_date = $value['cheque_date'];
+                $aditional->save(FALSE);
+            }
+        }
+        return $this->render('update', [
+                    'services' => $services,
+                    'appointment' => $appointment,
+                    'id' => $id,
+                    'multiple_cheque_details' => $multiple_cheque_details,
+                    'onetime_cheque_details' => $onetime_cheque_details,
+                    'multiple_total' => $multiple_total,
+                    'onetime_total' => $onetime_total,
         ]);
     }
 
