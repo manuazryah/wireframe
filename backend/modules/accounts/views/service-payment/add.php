@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md-6">
                     <div class="form-group field-debtor-company_name required">
                         <label class="control-label" for="debtor-company_name">No of Cheques</label>
-                        <input style=" margin: 0px 5px;"type="number" value="0" id="multiple-cheque-count" class="form-control" step="1" />
+                        <input style=" margin: 0px 5px;"type="number" value="0" id="multiple-cheque-count" class="form-control" step="1" min="1" max="15" />
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -180,10 +180,18 @@ $this->params['breadcrumbs'][] = $this->title;
         $(document).on('change', '.payment-type', function (e) {
             var type = $(this).val();
             calculateTotal();
+            chequeAmountTotal();
+        });
+        $(document).on('change keyup', '.mul_cheque_amt', function (e) {
+            chequeAmountTotal();
         });
         $(document).on('change keyup', '#multiple-cheque-count', function (e) {
             var count = $(this).val();
             var tot_amt = $('#multiple-tot').val();
+            if (count > 15) {
+                count = 15;
+                $('#multiple-cheque-count').val(count);
+            }
             $.ajax({
                 type: 'POST',
                 cache: false,
@@ -214,6 +222,25 @@ $this->params['breadcrumbs'][] = $this->title;
             }
         });
     });
+    function chequeAmountTotal() {
+        var row_count = $('#multiple-cheque-count').val();
+        var tot_amt = $('#multiple-tot').val();
+        var mul_tot = 0;
+        for (i = 1; i <= row_count; i++) {
+            var row_tot = $('#mul_cheque_amt-' + i).val();
+            var mul_tot_pre = parseFloat(mul_tot);
+            mul_tot += parseFloat(row_tot);
+            if (mul_tot > tot_amt) {
+                alert('Cheque amount total does not match with multiple total amount');
+                var bal = tot_amt - mul_tot_pre;
+                if (bal >= 0) {
+                    $('#mul_cheque_amt-' + i).val(bal);
+                } else {
+                    $('#mul_cheque_amt-' + i).val(0);
+                }
+            }
+        }
+    }
     function calculateTotal() {
         var row_count = $('#total-row_count').val();
         var mul_tot = 0;

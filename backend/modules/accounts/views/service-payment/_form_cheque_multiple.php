@@ -1,5 +1,5 @@
 <?php
-if ($count != '' && $count > 0 && $total_amt != '' && $total_amt > 0) {
+if ($count != '' && $count > 0 && $total_amt != '' && $total_amt > 0 && $count <= 15) {
     $amt = $total_amt / $count;
     ?>
     <div class="row">
@@ -15,7 +15,7 @@ if ($count != '' && $count > 0 && $total_amt != '' && $total_amt > 0) {
             <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
                 <div class = "form-group">
                     <label class="control-label" for="">Cheque Number</label>
-                    <input class="form-control" type = "text" name = "create[cheque_num][]" required>
+                    <input class="form-control" type = "text" name = "create[cheque_num][]">
 
                 </div>
             </div>
@@ -28,7 +28,7 @@ if ($count != '' && $count > 0 && $total_amt != '' && $total_amt > 0) {
             <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
                 <div class="form-group">
                     <label class="control-label" for="">Amount</label>
-                    <input class="form-control" type = "number" name = "create[amount][]" value="<?= $amt ?>" readonly>
+                    <input class="form-control mul_cheque_amt" id="mul_cheque_amt-<?= $i ?>" type = "number" name = "create[amount][]" value="<?= $amt ?>" required>
                 </div>
             </div>
         </div>
