@@ -238,9 +238,7 @@ yii.validation = (function ($) {
 
         trim: function ($form, attribute, options, value) {
             var $input = $form.find(attribute.input);
-            var isCheckAble = $input.find('[type=radio]').is('[type=radio]') || $input.find('[type=checkbox]').is('[type=checkbox]');
-
-            if (!isCheckAble) {
+            if ($input.is(':checkbox, :radio')) {
                 return value;
             }
 
@@ -284,12 +282,12 @@ yii.validation = (function ($) {
                 if (!$target.length) {
                     $target = $form.find('[name="' + options.compareAttributeName + '"]');
                 }
-                compareValue = $target.val();                
+                compareValue = $target.val();
             }
 
             if (options.type === 'number') {
-                value = parseFloat(value);
-                compareValue = parseFloat(compareValue);
+                value = value ? parseFloat(value) : 0;
+                compareValue = compareValue ? parseFloat(compareValue) : 0;
             }
             switch (options.operator) {
                 case '==':

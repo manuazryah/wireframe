@@ -35,7 +35,6 @@ class DebtorController extends Controller {
     public function actionIndex() {
         $searchModel = new DebtorSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,

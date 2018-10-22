@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use common\models\CompanyManagement;
 use common\models\Sponsor;
+use kartik\export\ExportMenu;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\RealEstateMasterSearch */
@@ -23,49 +24,39 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
             <?= Html::a('<span> Create Real Estate</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
-            <?=
-            GridView::widget([
+            <?php
+            $gridColumns = [
+                ['class' => 'yii\grid\SerialColumn'],
+                [
+                    'attribute' => 'company',
+                    'label' => 'Company Name',
+                    'value' => 'company0.company_name',
+                    'filter' => ArrayHelper::map(CompanyManagement::find()->asArray()->all(), 'id', 'company_name'),
+                ],
+                'reference_code',
+                'total_square_feet',
+                [
+                    'attribute' => 'sponsor',
+                    'label' => 'Sponsor Name',
+                    'value' => 'sponsor0.name',
+                    'filter' => ArrayHelper::map(Sponsor::find()->asArray()->all(), 'id', 'name'),
+                ],
+                ['class' => 'yii\grid\ActionColumn',
+                    'template' => '{update}',
+                ],
+            ];
+
+// Renders a export dropdown menu
+            echo ExportMenu::widget([
+                'dataProvider' => $dataProvider,
+                'columns' => $gridColumns
+            ]);
+
+// You can choose to render your own GridView separately
+            echo \kartik\grid\GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
-//                            'id',
-                    [
-                        'attribute' => 'company',
-                        'label' => 'Company Name',
-                        'value' => 'company0.company_name',
-                        'filter' => ArrayHelper::map(CompanyManagement::find()->asArray()->all(), 'id', 'company_name'),
-                    ],
-                    'reference_code',
-                    'total_square_feet',
-                    [
-                        'attribute' => 'sponsor',
-                        'label' => 'Sponsor Name',
-                        'value' => 'sponsor0.name',
-                        'filter' => ArrayHelper::map(Sponsor::find()->asArray()->all(), 'id', 'name'),
-                    ],
-//                    'comany_name_for_ejari',
-                    // 'number_of_license',
-                    // 'number_of_plots',
-                    // 'comment:ntext',
-                    // 'rent_total',
-                    // 'no_of_cheques',
-                    // 'commission',
-                    // 'deposit',
-                    // 'sponser_fee',
-                    // 'furniture_expense',
-                    // 'office_renovation_expense',
-                    // 'other_expense',
-                    // 'attachments',
-                    // 'status',
-                    // 'CB',
-                    // 'UB',
-                    // 'DOC',
-                    // 'DOU',
-                   ['class' => 'yii\grid\ActionColumn',
-                        'template' => '{update}',
-                    ],
-                ],
+                'columns' => $gridColumns
             ]);
             ?>
         </div>

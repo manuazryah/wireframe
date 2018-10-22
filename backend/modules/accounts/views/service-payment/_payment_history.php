@@ -21,53 +21,56 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="box table-responsive">
 
 
-	<div class="appointment-index">
-		<div class="box-header with-border">
-			<h3 class="box-title"><?= Html::encode($this->title) ?></h3>
-			<a href="<?= Yii::$app->homeUrl ?>accounts/service-payment/payment?id=<?= $id ?>" class="button" style="    width: 16%;
-			   float: right;">View Account</a>
-		</div>
+    <div class="appointment-index">
+        <div class="box-header with-border">
+            <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
+            <a href="<?= Yii::$app->homeUrl ?>accounts/service-payment/payment?id=<?= $id ?>" class="button" style="    width: 16%;
+               float: right;">View Account</a>
+        </div>
 
-		<div class="box-body table-responsive">
-			<table class="table table-bordered">
-				<tr>
-					<th></th>
-					<th>Date</th>
-					<th>Transaction Type</th>
-					<th>Cheque Number</th>
-					<th>Amount</th>
-					<th>Comment</th>
-				</tr>
-				<?php foreach ($payment_model as $model) {
-					?>
-					<tr>
-						<td></td>
-						<td><?= $model->date ?></td>
-						<td><?= $model->transaction_type == 1 ? 'Cheque Payment' : 'Cash Payment' ?></td>
-						<td><?= $model->transaction_type == 1 ? $model->cheque_no : '' ?></td>
-						<td><?= $model->amount; ?></td>
-						<td><?= $model->comment; ?></td>
-					</tr>
+        <div class="box-body table-responsive">
+            <table class="table table-bordered">
+                <tr>
+                    <th>SNo.</th>
+                    <th>Date</th>
+                    <th>Transaction Type</th>
+                    <th>Cheque Number</th>
+                    <th>Amount</th>
+                </tr>
+                <?php
+                if (!empty($payment_model)) {
+                    $i = 0;
+                    foreach ($payment_model as $model) {
+                        $i++;
+                        ?>
+                        <tr>
+                            <td><?= $i ?></td>
+                            <td><?= $model->DOC ?></td>
+                            <td><?= $model->payment_type == 2 ? 'Cheque Payment' : 'Cash Payment' ?></td>
+                            <td><?= $model->payment_type == 2 ? $model->cheque_no : '' ?></td>
+                            <td><?= $model->amount; ?></td>
+                        </tr>
 
-					<?php
-				}
-				?>
+                        <?php
+                    }
+                }
+                ?>
 
 
 
-			</table>
+            </table>
 
-		</div>
-	</div>
-	<!-- /.box-body -->
+        </div>
+    </div>
+    <!-- /.box-body -->
 </div>
 
 <script>
 
-	$("document").ready(function () {
+    $("document").ready(function () {
 
 
 
-	});
+    });
 </script>
 

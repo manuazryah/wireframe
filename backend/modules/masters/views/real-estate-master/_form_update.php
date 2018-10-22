@@ -14,12 +14,28 @@ use common\models\Sponsor;
 <div class="real-estate-master-form form-inline">
     <?= \common\components\AlertMessageWidget::widget() ?>
     <?php $form = ActiveForm::begin(); ?>
-    <div class="row">
-        <div class='col-md-12 col-xs-12 expense-head'>
-            <span class="sub-heading">General Details</span>
-            <div class="horizontal_line"></div>
+    <!--    <div class="row">
+            <div class='col-md-12 col-xs-12 expense-head'>
+                <span class="sub-heading">General Details</span>
+                <div class="horizontal_line"></div>
+            </div>
+        </div>-->
+    <section id="tabs">
+        <div class="card1">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <?php
+                    echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">General Details</span>', ['update', 'id' => $model->id]);
+                    ?>
+                </li>
+                <li role="presentation">
+                    <?php
+                    echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Real Estate Details</span>', ['real-estate-details', 'id' => $model->id]);
+                    ?>
+                </li>
+            </ul>
         </div>
-    </div>
+    </section>
     <div class="row">
         <div class='col-md-4  col-xs-12 left_padd'>
             <?php $companies = ArrayHelper::map(CompanyManagement::findAll(['status' => 1]), 'id', 'company_name'); ?>

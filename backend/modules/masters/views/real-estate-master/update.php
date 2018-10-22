@@ -16,14 +16,17 @@ $this->params['breadcrumbs'][] = 'Update';
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
-        <?=  Html::a('<span> Manage Real Estate</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+        <?= Html::a('<span> Manage Real Estate</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
         <div class="real-estate-master-update">
-            <?= $this->render('_form_update', [
-            'model' => $model,
-            'cheque_details' => $cheque_details,
-            ]) ?>
+            <?=
+            $this->render('_form_update', [
+                'model' => $model,
+                'cheque_details' => $cheque_details,
+            ])
+            ?>
         </div>
     </div>
+
     <!-- /.box-body -->
 </div>
 <!-- /.box -->

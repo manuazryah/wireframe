@@ -52,7 +52,47 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
         </div>
-        <?php $form = ActiveForm::begin(); ?>
+        <?php
+        $form = ActiveForm::begin([
+                    'id' => 'account-form',
+        ]);
+        ?>
+        <?php if (!empty($security_cheque)) { ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="security-cheque-details">
+                        <div class="row">
+                            <div class='col-md-12 col-xs-12 expense-head'>
+                                <span class="sub-heading">Security Cheque Details</span>
+                                <div class="horizontal_line"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                <div class = "form-group">
+                                    <label class="control-label" for="">Cheque Number</label>
+                                    <input class="form-control" type = "text" name = "Security[cheque_num]" required value="<?= $security_cheque->cheque_no ?>">
+
+                                </div>
+                            </div>
+                            <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                <div class="form-group">
+                                    <label class="control-label" for="">Cheque Date</label>
+                                    <input type="date" class="form-control" name="Security[cheque_date]" required value="<?= $security_cheque->cheque_date ?>">
+                                </div>
+                            </div>
+                            <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                <div class="form-group">
+                                    <label class="control-label" for="">Amount</label>
+                                    <input class="form-control" type = "number" name = "Security[amount]" required min="1" value="<?= $security_cheque->amount ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php }
+        ?>
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -118,26 +158,28 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <?php
                         if (!empty($multiple_cheque_details)) {
+                            $j = 0;
                             foreach ($multiple_cheque_details as $multiple_cheque_detail) {
+                                $j++;
                                 ?>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                         <div class="form-group">
                                             <label class="control-label" for="">Cheque Number</label>
-                                            <input class="form-control" type="text" name="update[<?= $multiple_cheque_detail->id ?>][cheque_num][]" value="<?= $multiple_cheque_detail->cheque_number ?>" required="" readonly>
+                                            <input class="form-control" type="text" name="update[<?= $multiple_cheque_detail->id ?>][cheque_num][]" value="<?= $multiple_cheque_detail->cheque_number ?>" required>
 
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                         <div class="form-group">
                                             <label class="control-label" for="">Cheque Date</label>
-                                            <input type="date" class="form-control" name="update[<?= $multiple_cheque_detail->id ?>][cheque_date][]" value="<?= $multiple_cheque_detail->cheque_date ?>" required="">
+                                            <input type="date" class="form-control" name="update[<?= $multiple_cheque_detail->id ?>][cheque_date][]" value="<?= $multiple_cheque_detail->cheque_date ?>" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                         <div class="form-group">
                                             <label class="control-label" for="">Amount</label>
-                                            <input class="form-control" type="number" name="update[<?= $multiple_cheque_detail->id ?>][amount][]" value="<?= $multiple_cheque_detail->amount ?>" readonly="">
+                                            <input class="form-control mul_cheque_amt" id="mul_cheque_amt-<?= $j ?>" type="number" name="update[<?= $multiple_cheque_detail->id ?>][amount][]" value="<?= $multiple_cheque_detail->amount ?>" required>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +194,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md-6">
                     <div class="form-group field-debtor-company_name required">
                         <label class="control-label" for="debtor-company_name">One Time Total</label>
-                        <input type="text" value="<?= $onetime_total ?>" id="one-time-tot" class="form-control" readonly />
+                        <input type="text" value="<?= $services_ontime_amount ?>" id="one-time-tot" class="form-control" readonly />
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -179,20 +221,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                         <div class="form-group">
                                             <label class="control-label" for="">Cheque Number</label>
-                                            <input class="form-control" type="text" name="update[<?= $onetime_cheque_detail->id ?>][cheque_num][]" value="<?= $onetime_cheque_detail->cheque_number ?>" required="" readonly>
+                                            <input class="form-control" type="text" name="update[<?= $onetime_cheque_detail->id ?>][cheque_num][]" value="<?= $onetime_cheque_detail->cheque_number ?>" required>
 
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                         <div class="form-group">
                                             <label class="control-label" for="">Cheque Date</label>
-                                            <input type="date" class="form-control" name="update[<?= $onetime_cheque_detail->id ?>][cheque_date][]" value="<?= $onetime_cheque_detail->cheque_date ?>" required="">
+                                            <input type="date" class="form-control" name="update[<?= $onetime_cheque_detail->id ?>][cheque_date][]" value="<?= $onetime_cheque_detail->cheque_date ?>" required>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                         <div class="form-group">
                                             <label class="control-label" for="">Amount</label>
-                                            <input class="form-control" type="number" name="update[<?= $onetime_cheque_detail->id ?>][amount][]" value="<?= $onetime_cheque_detail->amount ?>" readonly="">
+                                            <input class="form-control" id="one_time_amt" type="number" name="update[<?= $onetime_cheque_detail->id ?>][amount][]" value="<?= $onetime_cheque_detail->amount ?>" required>
                                         </div>
                                     </div>
                                 </div>
@@ -234,10 +276,26 @@ $this->params['breadcrumbs'][] = $this->title;
         $(document).on('change', '.payment-type', function (e) {
             var type = $(this).val();
             calculateTotal();
+            chequeAmountTotal();
+        });
+        $(document).on('change keyup', '.mul_cheque_amt', function (e) {
+            chequeAmountTotal();
+        });
+        $(document).on('change keyup', '#one_time_amt', function (e) {
+            var amt = $(this).val();
+            var one_time_tot = $('#one-time-tot').val();
+            if (parseFloat(amt) > parseFloat(one_time_tot)) {
+                alert('Amount exxeeds one time total');
+                $('#one_time_amt').val(one_time_tot);
+            }
         });
         $(document).on('change keyup', '#multiple-cheque-count', function (e) {
             var count = $(this).val();
             var tot_amt = $('#multiple-tot').val();
+            if (count > 15) {
+                count = 15;
+                $('#multiple-cheque-count').val(count);
+            }
             $.ajax({
                 type: 'POST',
                 cache: false,
@@ -267,7 +325,37 @@ $this->params['breadcrumbs'][] = $this->title;
                 $("#cheque-details-content-one-time").html('');
             }
         });
+
+        $(document).on('submit', '#account-form', function (e) {
+            var mul_tot_amt = $('#multiple-tot').val();
+            var tot = chequeAmountTotal();
+            if (mul_tot_amt != tot) {
+                alert('Cheque amount total does not match with multiple total amount.Please Enter a valid amount.');
+                e.preventDefault();
+            }
+
+        });
     });
+    function chequeAmountTotal() {
+        var row_count = $('#multiple-cheque-count').val();
+        var tot_amt = $('#multiple-tot').val();
+        var mul_tot = 0;
+        for (i = 1; i <= row_count; i++) {
+            var row_tot = $('#mul_cheque_amt-' + i).val();
+            var mul_tot_pre = parseFloat(mul_tot);
+            mul_tot += parseFloat(row_tot);
+            if (mul_tot > tot_amt) {
+                alert('Cheque amount total does not match with multiple total amount');
+                var bal = tot_amt - mul_tot_pre;
+                if (bal >= 0) {
+                    $('#mul_cheque_amt-' + i).val(bal);
+                } else {
+                    $('#mul_cheque_amt-' + i).val(0);
+                }
+            }
+        }
+        return mul_tot;
+    }
     function calculateTotal() {
         var row_count = $('#total-row_count').val();
         var mul_tot = 0;

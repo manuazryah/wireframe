@@ -33,6 +33,11 @@
             "Imagine\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Imagine\\Test\\": "tests/tests/"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-develop": "0.7-dev"
@@ -52,6 +57,6 @@
     },
     "scripts": {
         "test": "simple-phpunit --verbose",
-        "codestyle": "php-cs-fixer fix --path-mode=intersection --config=.php_cs.dist --dry-run --diff --no-interaction -- ."
+        "codestyle": "php-cs-fixer fix --path-mode=intersection --config=.php_cs.dist"
     }
 }

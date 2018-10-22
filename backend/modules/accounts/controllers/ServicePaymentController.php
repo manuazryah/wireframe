@@ -27,10 +27,9 @@ class ServicePaymentController extends \yii\web\Controller {
         $appointment = Appointment::findOne($id);
         if (Yii::$app->request->post()) {
             $data = Yii::$app->request->post();
-
             $transaction = Yii::$app->db->beginTransaction();
             try {
-                if ($this->SaveServiceDetails($data, $appointment) && $this->SaveMultipleChequeDetails($data, $appointment) && $this->SaveOneTimeChequeDetails($data, $appointment)) {
+                if ($this->SaveServiceDetails($data, $appointment) && $this->SaveMultipleChequeDetails($data, $appointment) && $this->SaveOneTimeChequeDetails($data, $appointment) && $this->SecurityChequeDetails($data, $appointment)) {
                     $transaction->commit();
                     $appointment->status = 3;
                     $appointment->save(FALSE);
@@ -54,6 +53,8 @@ class ServicePaymentController extends \yii\web\Controller {
 
     public function actionServicePaymentUpdate($id) {
         $services = AppointmentService::findAll(['appointment_id' => $id]);
+        $security_cheque = \common\models\SecurityCheque::find()->where(['appointment_id' => $id])->one();
+        $services_ontime_amount = AppointmentService::find()->where(['appointment_id' => $id, 'payment_type' => 2])->sum('total');
         $appointment = Appointment::findOne($id);
         $multiple_cheque_details = \common\models\ServiceChequeDetails::findAll(['appointment_id' => $id, 'type' => 1]);
         $multiple_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 1])->sum('amount');
@@ -65,14 +66,29 @@ class ServicePaymentController extends \yii\web\Controller {
             $arr = [];
             $i = 0;
             foreach ($update as $key => $val) {
+                $arr[$key]['cheque_num'] = $val['cheque_num'][0];
                 $arr[$key]['cheque_date'] = $val['cheque_date'][0];
+                $arr[$key]['amount'] = $val['amount'][0];
                 $i++;
             }
             foreach ($arr as $key => $value) {
                 $aditional = \common\models\ServiceChequeDetails::findOne($key);
+                $aditional->cheque_number = $value['cheque_num'];
                 $aditional->cheque_date = $value['cheque_date'];
+                $aditional->amount = $value['amount'];
                 $aditional->save(FALSE);
             }
+            $createsecurity = $data['Security'];
+            if (isset($createsecurity) && $createsecurity != '') {
+                if ($createsecurity['amount'] > 0) {
+                    $security_cheque->cheque_no = $createsecurity['cheque_num'];
+                    $security_cheque->cheque_date = $createsecurity['cheque_date'];
+                    $security_cheque->amount = $createsecurity['amount'];
+                    Yii::$app->SetValues->Attributes($security_cheque);
+                    $security_cheque->save();
+                }
+            }
+            return $this->redirect(Yii::$app->request->referrer);
         }
         return $this->render('update', [
                     'services' => $services,
@@ -82,6 +98,8 @@ class ServicePaymentController extends \yii\web\Controller {
                     'onetime_cheque_details' => $onetime_cheque_details,
                     'multiple_total' => $multiple_total,
                     'onetime_total' => $onetime_total,
+                    'services_ontime_amount' => $services_ontime_amount,
+                    'security_cheque' => $security_cheque,
         ]);
     }
 
@@ -165,21 +183,56 @@ class ServicePaymentController extends \yii\web\Controller {
         $flag = 0;
         $creatematerial = $data['createone'];
         if (isset($creatematerial) && $creatematerial != '') {
-
-            $aditional = new \common\models\ServiceChequeDetails();
-            $aditional->appointment_id = $appointment->id;
+            if ($creatematerial['amount'] > 0) {
+                $aditional = new \common\models\ServiceChequeDetails();
+                $aditional->appointment_id = $appointment->id;
 //            $aditional->appointment_service_id = $service->id;
 //            $aditional->service_id = $service->service;
-            $aditional->type = 2;
-            $aditional->cheque_number = $creatematerial['cheque_num'];
-            $aditional->cheque_date = $creatematerial['cheque_date'];
-            $aditional->amount = $creatematerial['amount'];
-            Yii::$app->SetValues->Attributes($aditional);
-
-            if ($aditional->save()) {
-                $flag = 1;
+                $aditional->type = 2;
+                $aditional->cheque_number = $creatematerial['cheque_num'];
+                $aditional->cheque_date = $creatematerial['cheque_date'];
+                $aditional->amount = $creatematerial['amount'];
+                Yii::$app->SetValues->Attributes($aditional);
+                if ($aditional->save()) {
+                    $flag = 1;
+                } else {
+                    $flag = 0;
+                }
             } else {
-                $flag = 0;
+                $flag = 1;
+            }
+        } else {
+            $flag = 1;
+        }
+
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    /**
+     * To Save Security Cheque details
+     */
+    public function SecurityChequeDetails($data, $appointment) {
+        $flag = 0;
+        $createsecurity = $data['Security'];
+        if (isset($createsecurity) && $createsecurity != '') {
+            if ($createsecurity['amount'] > 0) {
+                $aditional = new \common\models\SecurityCheque();
+                $aditional->appointment_id = $appointment->id;
+                $aditional->cheque_no = $createsecurity['cheque_num'];
+                $aditional->cheque_date = $createsecurity['cheque_date'];
+                $aditional->amount = $createsecurity['amount'];
+                Yii::$app->SetValues->Attributes($aditional);
+                if ($aditional->save()) {
+                    $flag = 1;
+                } else {
+                    $flag = 0;
+                }
+            } else {
+                $flag = 1;
             }
         } else {
             $flag = 1;
@@ -199,18 +252,20 @@ class ServicePaymentController extends \yii\web\Controller {
 
         $flag = 0;
         foreach ($arr as $val) {
-            $aditional = new \common\models\ServiceChequeDetails();
-            $aditional->appointment_id = $appointment->id;
+            if ($val['amount'] > 0) {
+                $aditional = new \common\models\ServiceChequeDetails();
+                $aditional->appointment_id = $appointment->id;
 //            $aditional->appointment_service_id = $service->id;
 //            $aditional->service_id = $service->service;
-            $aditional->type = 1;
-            $aditional->cheque_number = $val['cheque_num'];
-            $aditional->cheque_date = $val['cheque_date'];
-            $aditional->amount = $val['amount'];
-            Yii::$app->SetValues->Attributes($aditional);
-
-            if ($aditional->save()) {
-
+                $aditional->type = 1;
+                $aditional->cheque_number = $val['cheque_num'];
+                $aditional->cheque_date = $val['cheque_date'];
+                $aditional->amount = $val['amount'];
+                Yii::$app->SetValues->Attributes($aditional);
+                if ($aditional->save()) {
+                    $flag = 1;
+                }
+            } else {
                 $flag = 1;
             }
         }
@@ -240,45 +295,35 @@ class ServicePaymentController extends \yii\web\Controller {
      */
 
     public function actionPayment($id) {
-        $services = AppointmentService::findAll(['appointment_id' => $id]);
-        $one_time_payments = AppointmentService::findAll(['appointment_id' => $id, 'payment_type' => 5]);
-        $onetime_amopunt = AppointmentService::find()->where(['appointment_id' => $id, 'payment_type' => 5])->sum('amount');
-        $cheque_amounts = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->andWhere(['<', 'cheque_date', date("Y-m-d")])->groupBy('cheque_date')->sum('amount');
-        $paid_future_cheques = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'status' => 1])->andWhere(['>', 'cheque_date', date("Y-m-d")])->sum('amount');
-        $total_amount = $cheque_amounts + $onetime_amopunt + $paid_future_cheques;
-        $payed_amount = \common\models\ServicePayment::find()->where(['appointment_id' => $id])->sum('amount');
-        $balance = $total_amount - $payed_amount;
         $appointment = Appointment::findOne($id);
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
+        $onetime_total = \common\models\AppointmentService::find()->where(['appointment_id' => $id, 'payment_type' => 2])->sum('total');
+        $onetime_cheque_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 2])->sum('amount');
+        $total_cash_amount = $onetime_total - $onetime_cheque_total;
+        $cash_paid = \common\models\PaymentDetails::find()->where(['appointment_id' => $id, 'payment_type' => 1])->sum('amount');
+        $total_received = \common\models\PaymentMaster::find()->where(['appointment_id' => $id])->sum('amount_paid');
+        $total_balance = \common\models\PaymentMaster::find()->where(['appointment_id' => $id])->sum('balance_amount');
+//        $onetime_cash_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 2])->sum('amount');
         $this->ChangeChequeStatus($id);
-
-        $cleared_cheques = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->andWhere(['>=', 'cheque_date', date("Y-m-d")])->andWhere(['status' => 1])->all();
-        $bounced_cheque = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->andWhere(['>=', 'cheque_date', date("Y-m-d")])->andWhere(['status' => 2])->all();
-        $cheque_dates = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->andWhere(['>=', 'cheque_date', date("Y-m-d")])->andWhere(['status' => NULL])->groupBy('cheque_date')->all();
-
-        $previous_cheques = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->andWhere(['<', 'cheque_date', date("Y-m-d")])->groupBy('cheque_date')->all();
+        $cheque_dates = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->groupBy('cheque_date')->all();
         return $this->render('payment', [
                     'services' => $services,
                     'appointment' => $appointment,
-                    'one_time_payments' => $one_time_payments,
                     'cheque_dates' => $cheque_dates,
-                    'previous_cheques' => $previous_cheques,
-                    'id' => $id,
-                    'total_amount' => $total_amount,
-                    'payed_amount' => $payed_amount,
-                    'balance' => $balance,
-                    'cleared_cheques' => $cleared_cheques,
-                    'bounced_cheque' => $bounced_cheque,
+                    'total_cash_amount' => $total_cash_amount,
+                    'cash_paid' => $cash_paid,
+                    'total_received' => $total_received,
+                    'total_balance' => $total_balance,
         ]);
     }
 
     public function ChangeChequeStatus($id) {
         $cheques = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->andWhere(['<', 'cheque_date', date("Y-m-d")])->andWhere(['status' => NULL])->all();
-        foreach ($cheques as $cheque) {
-            $model_appointmnet_service = AppointmentService::findOne(['id' => $cheque->appointment_service_id]);
-            $model_appointmnet_service->due_amount = $cheque->amount;
-            $model_appointmnet_service->save();
-            $cheque->status = 2;
-            $cheque->save();
+        if (!empty($cheques)) {
+            foreach ($cheques as $cheque) {
+                $cheque->status = 2;
+                $cheque->save();
+            }
         }
     }
 
@@ -296,13 +341,13 @@ class ServicePaymentController extends \yii\web\Controller {
         $data = '';
         if (Yii::$app->request->post()) {
 
-            $type = $_POST['type'];
             $appointment_id = $_POST['appointment_id'];
-            $one_time_payment_total = AppointmentService::find()->where(['appointment_id' => $appointment_id, 'payment_type' => 5])->sum('amount');
-            $one_time_payed = \common\models\ServicePayment::find()->where(['appointment_id' => $appointment_id, 'transaction_type' => 2])->sum('amount');
-            $balnce_to_pay = $one_time_payment_total - $one_time_payed;
+            $onetime_total = \common\models\AppointmentService::find()->where(['appointment_id' => $appointment_id, 'payment_type' => 2])->sum('total');
+            $onetime_cheque_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $appointment_id, 'type' => 2])->sum('amount');
+            $total_cash_amount = $onetime_total - $onetime_cheque_total;
+            $cash_paid = \common\models\PaymentDetails::find()->where(['appointment_id' => $appointment_id, 'payment_type' => 1])->sum('amount');
+            $balnce_to_pay = $total_cash_amount - $cash_paid;
             $data = $this->renderPartial('_form_pay', [
-                'type' => $type,
                 'balnce_to_pay' => $balnce_to_pay,
                 'appointment_id' => $appointment_id,
             ]);
@@ -316,20 +361,47 @@ class ServicePaymentController extends \yii\web\Controller {
 
             if (!empty($data['id'])) {
                 $cheque_data = \common\models\ServiceChequeDetails::findOne(['id' => $data['id']]);
-                $cheque_data->status = $data['status'];
-
-                if ($cheque_data->status == 1) {
-
-                    $result = $this->AddPayment($data['id']);
-                } elseif ($cheque_data->status == 2) {
-                    $this->chequeBounce($data['id'], $cheque_data);
-                }
-
-                if ($result == 1) {
-                    $cheque_data->save();
+                if ($data['status'] == 1) {
+                    $transaction = Yii::$app->db->beginTransaction();
+                    try {
+                        $payment_master = \common\models\PaymentMaster::find()->where(['appointment_id' => $cheque_data->appointment_id])->one();
+                        if (empty($payment_master)) {
+                            $total_amount = \common\models\AppointmentService::find()->where(['appointment_id' => $cheque_data->appointment_id])->sum('total');
+                            $payment_master = new \common\models\PaymentMaster();
+                            $payment_master->appointment_id = $cheque_data->appointment_id;
+                            $payment_master->total_amount = $total_amount;
+                            Yii::$app->SetValues->Attributes($payment_master);
+                            $payment_master->save();
+                        }
+                        if (!empty($payment_master)) {
+                            $payment_details = new \common\models\PaymentDetails();
+                            $payment_details->appointment_id = $payment_master->appointment_id;
+                            $payment_details->master_id = $payment_master->id;
+                            $payment_details->amount = $cheque_data->amount;
+                            $payment_details->cheque_no = $cheque_data->cheque_number;
+                            $payment_details->cheque_date = $cheque_data->cheque_date;
+                            $payment_details->payment_type = 2;
+                            Yii::$app->SetValues->Attributes($payment_details);
+                            $payment_master->amount_paid = $payment_master->amount_paid + $cheque_data->amount;
+                            $payment_master->balance_amount = $payment_master->total_amount - $payment_master->amount_paid;
+                            if ($payment_details->save() && $payment_master->save()) {
+                                $transaction->commit();
+                                $cheque_data->status = 1;
+                                $cheque_data->update();
+                                $result = 1;
+                            }
+                        }
+                    } catch (Exception $e) {
+                        $transaction->rollBack();
+                        $result = 0;
+                    }
+                } else {
+                    $cheque_data->status = 2;
+                    $cheque_data->update();
+                    $result = 1;
                 }
             } else {
-                echo'fddfhfdh';
+                $result = 0;
             }
         }
     }
@@ -343,25 +415,37 @@ class ServicePaymentController extends \yii\web\Controller {
             if (!empty($id) && !empty($amount) && !empty($date)) {
                 $appointment_model = Appointment::findOne(['id' => $id]);
                 $transaction = Yii::$app->db->beginTransaction();
-                if ($amount <= $_POST['due_amount']) {
-
-                    try {
-                        $service_payment_model = new \common\models\ServicePayment();
-                        $service_payment_model->appointment_id = $id;
-                        $service_payment_model->transaction_type = 2;
-                        $service_payment_model->amount = $amount;
-                        $service_payment_model->date = $date;
-                        $service_payment_model->CB = Yii::$app->user->identity->id;
-                        $service_payment_model->DOC = date('Y-m-d');
-                        $appointment_model->paid_amount = $appointment_model->paid_amount + $amount;
-                        if ($service_payment_model->save() && $appointment_model->save()) {
+                try {
+                    $payment_master = \common\models\PaymentMaster::find()->where(['appointment_id' => $id])->one();
+                    if (empty($payment_master)) {
+                        $total_amount = \common\models\AppointmentService::find()->where(['appointment_id' => $id])->sum('total');
+                        $payment_master = new \common\models\PaymentMaster();
+                        $payment_master->appointment_id = $id;
+                        $payment_master->total_amount = $total_amount;
+                        Yii::$app->SetValues->Attributes($payment_master);
+                        $payment_master->save();
+                    }
+                    if (!empty($payment_master)) {
+                        $payment_details = new \common\models\PaymentDetails();
+                        $payment_details->appointment_id = $id;
+                        $payment_details->master_id = $payment_master->id;
+                        $payment_details->amount = $amount;
+                        $payment_details->payment_type = 1;
+                        $payment_details->comment = $comment;
+                        Yii::$app->SetValues->Attributes($payment_details);
+                        if (isset($date)) {
+                            $payment_details->DOC = $date;
+                        }
+                        $payment_master->amount_paid = $payment_master->amount_paid + $amount;
+                        $payment_master->balance_amount = $payment_master->total_amount - $payment_master->amount_paid;
+                        if ($payment_details->save() && $payment_master->save()) {
                             $transaction->commit();
                             $result = 1;
                         }
-                    } catch (Exception $e) {
-                        $transaction->rollBack();
-                        $result = 0;
                     }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                    $result = 0;
                 }
             } else {
                 $result = 0;
@@ -371,7 +455,7 @@ class ServicePaymentController extends \yii\web\Controller {
     }
 
     public function actionPaymentHistory($id) {
-        $payment_model = \common\models\ServicePayment::find()->where(['appointment_id' => $id])->all();
+        $payment_model = \common\models\PaymentDetails::find()->where(['appointment_id' => $id])->all();
         return $this->render('_payment_history', [
                     'payment_model' => $payment_model,
                     'id' => $id
@@ -460,6 +544,42 @@ class ServicePaymentController extends \yii\web\Controller {
             ]);
         }
         return $data;
+    }
+
+    public function actionGetSecurityChequeDetails() {
+        if (Yii::$app->request->isAjax) {
+            $data = $this->renderPartial('_form_security_cheque', [
+            ]);
+        }
+        return $data;
+    }
+
+    /*
+     * Accounts Report
+     */
+
+    public function actionAccountsReport($id) {
+        $appointment = Appointment::findOne($id);
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
+        $onetime_total = \common\models\AppointmentService::find()->where(['appointment_id' => $id, 'payment_type' => 2])->sum('total');
+        $onetime_cheque_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 2])->sum('amount');
+        $total_cash_amount = $onetime_total - $onetime_cheque_total;
+        $cash_paid = \common\models\PaymentDetails::find()->where(['appointment_id' => $id, 'payment_type' => 1])->sum('amount');
+        $total_received = \common\models\PaymentMaster::find()->where(['appointment_id' => $id])->sum('amount_paid');
+        $total_balance = \common\models\PaymentMaster::find()->where(['appointment_id' => $id])->sum('balance_amount');
+//        $onetime_cash_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 2])->sum('amount');
+        $cheque_dates = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->groupBy('cheque_date')->all();
+        $data = $this->renderPartial('accounts_report', [
+            'services' => $services,
+            'appointment' => $appointment,
+            'cheque_dates' => $cheque_dates,
+            'total_cash_amount' => $total_cash_amount,
+            'cash_paid' => $cash_paid,
+            'total_received' => $total_received,
+            'total_balance' => $total_balance,
+        ]);
+        echo $data;
+        exit;
     }
 
 }

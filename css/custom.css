@@ -509,9 +509,9 @@ input[type="file"] {
         color: #00a1ff;*/
 }
 .pay-btn:hover{
-    background: white;
+    background: #41bbd4;
     border: none;
-    color: #00a1ff;
+    color: #fff;
 }
 .form-box{
     border: 1px solid #c1c1c1;
@@ -559,4 +559,21 @@ input[type="file"] {
     width: 100%;
     text-transform: uppercase;
     font-weight: 600;
+}
+.action-column{
+    color:#3c8dbc;
+}
+.acc-print{
+    float:right;
+}
+.acc-print a{
+    background: #8BC34A;
+    padding: 5px 12px;
+    color: #fff;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 600;
+}
+.acc-print .fa-print{
+    padding-right: 5px;
 }

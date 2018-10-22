@@ -36,7 +36,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
         </div>
-        <?php $form = ActiveForm::begin(); ?>
+        <?php
+        $form = ActiveForm::begin([
+                    'id' => 'account-form',
+        ]);
+        ?>
+        <div class="form-group field-appointment-id">
+
+            <input type="hidden" name="security_cheque" value="0"><label><input type="checkbox" id="security_cheque" name="security_cheque" value="1"> Security Cheque</label>
+
+            <div class="help-block"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="security-cheque-details">
+
+                </div>
+            </div>
+        </div>
         <div class="appt-services">
             <div class="append-box-head">
                                         <!--<a href=""><button class="remove"><i class="fa fa-close"></i></button></a>-->
@@ -185,6 +202,14 @@ $this->params['breadcrumbs'][] = $this->title;
         $(document).on('change keyup', '.mul_cheque_amt', function (e) {
             chequeAmountTotal();
         });
+        $(document).on('change keyup', '#one_time_amt', function (e) {
+            var amt = $(this).val();
+            var one_time_tot = $('#one-time-tot').val();
+            if (parseFloat(amt) > parseFloat(one_time_tot)) {
+                alert('Amount exxeeds one time total');
+                $('#one_time_amt').val(one_time_tot);
+            }
+        });
         $(document).on('change keyup', '#multiple-cheque-count', function (e) {
             var count = $(this).val();
             var tot_amt = $('#multiple-tot').val();
@@ -221,6 +246,34 @@ $this->params['breadcrumbs'][] = $this->title;
                 $("#cheque-details-content-one-time").html('');
             }
         });
+
+        $(document).on('submit', '#account-form', function (e) {
+            var mul_tot_amt = $('#multiple-tot').val();
+            var tot = chequeAmountTotal();
+            if (mul_tot_amt != tot) {
+                alert('Cheque amount total does not match with multiple total amount.Please Enter a valid amount.');
+                e.preventDefault();
+            }
+
+        });
+
+        $('#security_cheque').change(function () {
+            if ($(this).is(":checked")) {
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: {},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/get-security-cheque-details',
+                    success: function (data) {
+                        $("#security-cheque-details").html(data);
+                    }
+                });
+            } else {
+                $('#security-cheque-details').html('');
+            }
+        });
+
     });
     function chequeAmountTotal() {
         var row_count = $('#multiple-cheque-count').val();
@@ -240,6 +293,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             }
         }
+        return mul_tot;
     }
     function calculateTotal() {
         var row_count = $('#total-row_count').val();

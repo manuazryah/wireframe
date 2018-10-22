@@ -25,10 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+                    ['class' => 'yii\grid\SerialColumn'],
 //                            'id',
                     'post_name',
-                        [
+                    [
                         'attribute' => 'admin',
                         'format' => 'raw',
                         'filter' => [1 => 'Yes', 0 => 'No'],
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->admin == 1 ? 'Yes' : 'No';
                         },
                     ],
-                        [
+                    [
                         'attribute' => 'masters',
                         'format' => 'raw',
                         'filter' => [1 => 'Yes', 0 => 'No'],

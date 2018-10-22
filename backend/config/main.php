@@ -40,6 +40,9 @@ return [
         'reports' => [
             'class' => 'backend\modules\reports\Module',
         ],
+        'gridview' => [
+            'class' => 'kartik\grid\Module',
+        ]
     ],
     'components' => [
         'request' => [
@@ -57,7 +60,7 @@ return [
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
-                    [
+                [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
@@ -70,6 +73,19 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+            ],
+        ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\web\JqueryAsset' => [
+                    'js' => []
+                ],
+//                'yii\bootstrap\BootstrapAsset' => [
+//                    'css' => [],
+//                ],
+                'yii\bootstrap\BootstrapPluginAsset' => [
+                    'js' => []
+                ],
             ],
         ],
     ],

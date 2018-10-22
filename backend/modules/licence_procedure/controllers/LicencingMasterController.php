@@ -658,6 +658,7 @@ class LicencingMasterController extends Controller {
         }
         return TRUE;
     }
+
     public function actionOthers($id) {
         $license_master = $this->findModel($id);
         $model = \common\models\Others::find()->where(['licensing_master_id' => $id])->one();

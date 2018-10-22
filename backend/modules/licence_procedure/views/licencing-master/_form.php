@@ -21,37 +21,7 @@ use yii\widgets\ActiveForm;
                         <div role="tabpanel" class="tab-pane active" id="step1">
                             <h3 class="heading">Trade name & initial approval</h3>
                             <?= common\components\AppointmentWidget::widget(['id' => $license_master->appointment_id]) ?>
-                            <div class="customer-info-footer">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                    <ul>
-                                        <li>Total Received</li>
-                                        <span>8000.00</span>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                    <ul>
-                                        <li>Total Expense</li>
-                                        <span>11000.00</span>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                                    <ul>
-                                        <li>Balance</li>
-                                        <span style="color: #939b21">-3000.00</span>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                                    <ul>
-                                        <li><a href="" class="button">View payment history</a></li>
-                                        <li><a href="" class="button">Make a payment</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pad-0">
-                                <ul>
-                                    <li><a href="" class="button" style="width: fit-content">View quotation</a></li>
-                                </ul>
-                            </div>
+                            <?= common\components\ExpenseWidget::widget(['id' => $license_master->appointment_id]) ?>
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pad-0">
                                 <div class="form-box">
                                     <?php $form = ActiveForm::begin(); ?>

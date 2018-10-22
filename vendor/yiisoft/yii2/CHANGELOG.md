@@ -4,6 +4,26 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #13932: Fix number validator attributes comparison (uaoleg, s1lver)
+- Bug #14039, #16636: Fixed validation for disabled inputs (s1lver, omzy83)
+- Bug #16425: Check for additional values for disabled confirm dialog (Alex-Code, s1lver)
+- Enh #14367: In `yii\db\mysql\QueryBuilder` added support fractional seconds for time types for MySQL >= 5.6.4 (konstantin-vl)
+- Bug #16766: `yii\filters\ContentNegotiator` was not setting `Vary` header to inform cache recipients (koteq, cebe, samdark)
+- Bug #11960: Fixed `checked` option ignore in `yii\helpers\BaseHtml::checkbox()` (misantron)
+- Bug #14759: Fixed `yii\web\JsonResponseFormatter` output for `null` data (misantron)
+- Bug #16490: Fix schema on rbac init (marcelodeandrade)
+- Bug #16748: Fixed params when normalize data (marcelodeandrade)
+- Bug #16752: Fix rotating files under Windows (samdark, nadirvishun)
+- Bug #16716: The ability to filter by pressing the Enter key when the option `$filterOnFocusOut` off (s1lver)
+- Bug #15791: Added a warning when the form names conflict (s1lver, rustamwin)
+- Enh #16151: `ActiveQuery::getTableNameAndAlias()` is now protected (s1lver)
+- Bug #16657: Ensure widgets after run event result contains the result of the rendered widget (AdeAttwood)
+- Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` and `radioList` (s1lver)
+- Enh #16151: Change of scope for method `getTableNameAndAlias()` (s1lver)
+- Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` (s1lver)
+- Bug #14368: Added `role` attribute for active radio list (s1lver)
+- Bug #16680: Fixed ActiveField 'text' input with maxlength (s1lver)
+- Bug #5341: HasMany via two relations (shirase, cebe)
 - Bug #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
 - Bug #14901: Fixed trim validation for radio/checkbox button (s1lver)
 - Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
@@ -17,6 +37,7 @@ Yii Framework 2 Change Log
 - Bug #16006: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma (pgaultier)
 - Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
 - Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
+- Bug #15802: Fixed exception class in yii\di\Container (vuchastyi, developeruz)
 - Bug #15988: Fixed bash completion (alekciy)
 - Bug #15798: Fixed render `yii\grid\RadioButtonColumn::$content` and `yii\grid\CheckboxColumn::$content` (lesha724)
 - Bug #15548: Fixed index names collision in RBAC (gonimar)
@@ -44,9 +65,11 @@ Yii Framework 2 Change Log
 - Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
 - Bug #16514: Fixed `yii\di\Container::resolveCallableDependencies` to support callable object (wi1dcard)
 - Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
-- Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
 - Enh #16522: Allow jQuery 3.3 (Slamdunk)
-- Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)  
+- Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)
+- Bug #16666: Fixed `yii\helpers\ArrayHelper::merge` (rustamwin)
+- Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
+- Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
 
 2.0.15.1 March 21, 2018
 -----------------------
