@@ -9,7 +9,7 @@ use common\models\Tax;
 /* @var $this yii\web\View */
 /* @var $model common\models\AppointmentService */
 
-$this->title = 'Update Service Payment';
+$this->title = 'Service Payment';
 $this->params['breadcrumbs'][] = ['label' => 'Appointment Services', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -20,22 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="box-body">
         <?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
-        <section id="tabs">
-            <div class="card1">
-                <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active">
-                        <?php
-                        echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 1</span>', ['service-payment/service-payment-update', 'id' => $id]);
-                        ?>
-                    </li>
-                    <li role="presentation">
-                        <?php
-                        echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 2</span>', ['service-payment/payment', 'id' => $id]);
-                        ?>
-                    </li>
-                </ul>
-            </div>
-        </section>
         <div class="appointment-history">
             <table class="table table-responsive">
                 <tr>
@@ -52,203 +36,161 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
         </div>
+        <?= \common\components\AlertMessageWidget::widget() ?>
         <?php
         $form = ActiveForm::begin([
                     'id' => 'account-form',
         ]);
         ?>
-        <?php if (!empty($security_cheque)) { ?>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="security-cheque-details">
-                        <div class="row">
-                            <div class='col-md-12 col-xs-12 expense-head'>
-                                <span class="sub-heading">Security Cheque Details</span>
-                                <div class="horizontal_line"></div>
+        <div class="form-group field-appointment-id">
+
+            <input type="hidden" name="security_cheque" value="0"><label><input type="checkbox" id="security_cheque" name="security_cheque" value="1"> Security Cheque</label>
+
+            <div class="help-block"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="security-cheque-details">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="expiry-details">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                            <div class="form-group">
+                                <label class="control-label" for="">License Expiry Date</label>
+                                <input type="date" class="form-control" name="Appointment[license_expiry_date]">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
-                                <div class = "form-group">
-                                    <label class="control-label" for="">Cheque Number</label>
-                                    <input class="form-control" type = "text" name = "Security[cheque_num]" required value="<?= $security_cheque->cheque_no ?>">
-
-                                </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                            <div class="form-group">
+                                <label class="control-label" for="">Contract Start Date</label>
+                                <input type="date" class="form-control" name="Appointment[contract_start_date]">
                             </div>
-                            <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
-                                <div class="form-group">
-                                    <label class="control-label" for="">Cheque Date</label>
-                                    <input type="date" class="form-control" name="Security[cheque_date]" required value="<?= $security_cheque->cheque_date ?>">
-                                </div>
-                            </div>
-                            <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
-                                <div class="form-group">
-                                    <label class="control-label" for="">Amount</label>
-                                    <input class="form-control" type = "number" name = "Security[amount]" required min="1" value="<?= $security_cheque->amount ?>">
-                                </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                            <div class="form-group">
+                                <label class="control-label" for="">Contract End Date</label>
+                                <input type="date" class="form-control" name="Appointment[contract_end_date]">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        <?php }
-        ?>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>PARTICULAR</th>
-                    <th>COMMENTS</th>
-                    <th>AMOUNT</th>
-                    <th>PAYMENT TYPE</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if (!empty($services)) {
-                    $count = 0;
-                    foreach ($services as $service) {
-                        if (!empty($service)) {
-                            $count++;
+        </div>
+        <div class="appointment-service-create">
+            <table class="table table-bordered table-responsive">
+                <thead>
+                    <tr>
+                        <th>Particular</th>
+                        <th>Comment</th>
+                        <th>Amount</th>
+                        <th>Tax Amount</th>
+                        <th>Total</th>
+                        <th>Payment Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!empty($services)) {
+                        $amount_tot = 0;
+                        $tax_tot = 0;
+                        $grand_tot = 0;
+                        $onetime_tot = 0;
+                        $cheque_tot = 0;
+                        foreach ($services as $service) {
                             ?>
                             <tr>
-                                <td><?= $service->service != '' ? Services::findOne($service->service)->service_name : '' ?></td>
+                                <td><?= Services::findOne($service->service)->service_name ?></td>
                                 <td><?= $service->comment ?></td>
+                                <td style="text-align:right"><?= $service->amount ?></td>
+                                <td style="text-align: right;"><?= $service->tax_amount ?> <?= $service->tax_percentage != '' && $service->tax_percentage > 0 ? '( ' . $service->tax_percentage : '' ?> <?= $service->tax_percentage != '' ? '% )' : '' ?></td>
                                 <td style="text-align: right;"><?= $service->total ?></td>
                                 <td>
                                     <?php
                                     if ($service->payment_type == 1) {
-                                        $payment_type = 'Multiple';
+                                        echo 'Multiple';
                                     } elseif ($service->payment_type == 2) {
-                                        $payment_type = 'One Time';
+                                        echo 'One Time';
                                     } else {
-                                        $payment_type = '';
+                                        echo '';
                                     }
                                     ?>
-                                    <?= $payment_type ?>
                                 </td>
                             </tr>
                             <?php
+                            $amount_tot += $service->amount;
+                            $tax_tot += $service->tax_amount;
+                            $grand_tot += $service->total;
+                            if ($service->payment_type == 1) {
+                                $cheque_tot += $service->total;
+                            } elseif ($service->payment_type == 2) {
+                                $onetime_tot += $service->total;
+                            }
                         }
-                    }
-                }
-                ?>
-            </tbody>
-        </table>
+                        ?>
+                        <tr>
+                            <td colspan="2" style="text-align: right;">Total</td>
+                            <td style="text-align: right;"><?= sprintf('%0.2f', $amount_tot); ?></td>
+                            <td style="text-align: right;"><?= sprintf('%0.2f', $tax_tot); ?></td>
+                            <td style="text-align: right;"><?= sprintf('%0.2f', $grand_tot); ?></td>
+                            <td></td>
+                        </tr>
+
+                    <?php }
+                    ?>
+                </tbody>
+            </table>
+        </div>
         <div class="row">
             <div class="col-md-6" style="border-right: 1px solid #c5c5c5;">
                 <div class="col-md-6">
                     <div class="form-group field-debtor-company_name required">
-                        <label class="control-label" for="debtor-company_name">Multiple Total</label>
-                        <input type="text" value="<?= $multiple_total ?>" id="multiple-tot" class="form-control" readonly />
+                        <label class="control-label" for="debtor-company_name">Cheque Amount</label>
+                        <input type="text" value="<?= $cheque_tot ?>" id="multiple-tot" class="form-control" readonly />
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group field-debtor-company_name required">
+                    <div class="form-group field-debtor-company_name">
                         <label class="control-label" for="debtor-company_name">No of Cheques</label>
-                        <input style=" margin: 0px 5px;"type="number" value="<?= count($multiple_cheque_details) ?>" id="multiple-cheque-count" class="form-control" step="1" readonly/>
+                        <input style=" margin: 0px 0px;"type="number" id="multiple-cheque-count" class="form-control" step="1" max="15" />
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div id="cheque-details-content-multiple">
-                        <div class="row">
-                            <div class="col-md-12 col-xs-12 expense-head">
-                                <span class="sub-heading">Cheque Details</span>
-                                <div class="horizontal_line"></div>
-                            </div>
-                        </div>
-                        <?php
-                        if (!empty($multiple_cheque_details)) {
-                            $j = 0;
-                            foreach ($multiple_cheque_details as $multiple_cheque_detail) {
-                                $j++;
-                                ?>
-                                <div class="row">
-                                    <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
-                                        <div class="form-group">
-                                            <label class="control-label" for="">Cheque Number</label>
-                                            <input class="form-control" type="text" name="update[<?= $multiple_cheque_detail->id ?>][cheque_num][]" value="<?= $multiple_cheque_detail->cheque_number ?>" required>
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
-                                        <div class="form-group">
-                                            <label class="control-label" for="">Cheque Date</label>
-                                            <input type="date" class="form-control" name="update[<?= $multiple_cheque_detail->id ?>][cheque_date][]" value="<?= $multiple_cheque_detail->cheque_date ?>" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
-                                        <div class="form-group">
-                                            <label class="control-label" for="">Amount</label>
-                                            <input class="form-control mul_cheque_amt" id="mul_cheque_amt-<?= $j ?>" type="number" name="update[<?= $multiple_cheque_detail->id ?>][amount][]" value="<?= $multiple_cheque_detail->amount ?>" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php
-                            }
-                        }
-                        ?>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="col-md-6">
                     <div class="form-group field-debtor-company_name required">
-                        <label class="control-label" for="debtor-company_name">One Time Total</label>
-                        <input type="text" value="<?= $services_ontime_amount ?>" id="one-time-tot" class="form-control" readonly />
+                        <label class="control-label" for="debtor-company_name">One Time Payment</label>
+                        <input type="text" value="<?= $onetime_tot ?>" id="one-time-tot" class="form-control" readonly />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group field-debtor-company_name required">
                         <label class="control-label" for="debtor-company_name">Payment Type</label>
-                        <select style="margin: 0px 5px;" id="one-time-payment_type" class="form-control" disabled>
-                            <option value=""><?= count($onetime_cheque_details) > 0 ? 'Cheque' : 'Cash' ?></option>
+                        <select style="margin: 0px 0px;" id="one-time-payment_type" class="form-control">
+                            <option value="1">Cash</option>
+                            <option value="2">Cheque</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div id="cheque-details-content-one-time">
-                        <div class="row">
-                            <div class="col-md-12 col-xs-12 expense-head">
-                                <span class="sub-heading">Cheque Details</span>
-                                <div class="horizontal_line"></div>
-                            </div>
-                        </div>
-                        <?php
-                        if (!empty($onetime_cheque_details)) {
-                            foreach ($onetime_cheque_details as $onetime_cheque_detail) {
-                                ?>
-                                <div class="row">
-                                    <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
-                                        <div class="form-group">
-                                            <label class="control-label" for="">Cheque Number</label>
-                                            <input class="form-control" type="text" name="update[<?= $onetime_cheque_detail->id ?>][cheque_num][]" value="<?= $onetime_cheque_detail->cheque_number ?>" required>
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
-                                        <div class="form-group">
-                                            <label class="control-label" for="">Cheque Date</label>
-                                            <input type="date" class="form-control" name="update[<?= $onetime_cheque_detail->id ?>][cheque_date][]" value="<?= $onetime_cheque_detail->cheque_date ?>" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
-                                        <div class="form-group">
-                                            <label class="control-label" for="">Amount</label>
-                                            <input class="form-control" id="one_time_amt" type="number" name="update[<?= $onetime_cheque_detail->id ?>][amount][]" value="<?= $onetime_cheque_detail->amount ?>" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php
-                            }
-                        }
-                        ?>
                     </div>
                 </div>
             </div>
         </div>
         <div class="form-group action-btn-right">
             <?= Html::a('<span> Cancel</span>', ['index'], ['class' => 'btn btn-block cancel-btn']) ?>
-            <?= Html::submitButton('Update', ['class' => 'btn btn-success create-btn']) ?>
+            <?= Html::submitButton('Save', ['class' => 'btn btn-success create-btn']) ?>
         </div>
         <?php ActiveForm::end(); ?>
     </div>
@@ -257,26 +199,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <!-- /.box -->
 <script>
     $("document").ready(function () {
-//        $(document).on('change', '.payment-type', function (e) {
-//            var count = $(this).val();
-//            var id = $(this).attr('id');
-//            var arr = id.split("-");
-//            var service_id = arr[1];
-//            $.ajax({
-//                type: 'POST',
-//                cache: false,
-//                async: false,
-//                data: {service_id: service_id, count: count},
-//                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/add-cheque-details',
-//                success: function (data) {
-//                    $("#cheque-details-content-" + service_id).html(data);
-//                }
-//            });
-//        });
         $(document).on('change', '.payment-type', function (e) {
             var type = $(this).val();
             calculateTotal();
             chequeAmountTotal();
+            checkOnetimePayment();
+            checkMultiplePayment();
+            calculateTaxTotal();
         });
         $(document).on('change keyup', '.mul_cheque_amt', function (e) {
             chequeAmountTotal();
@@ -292,10 +221,15 @@ $this->params['breadcrumbs'][] = $this->title;
         $(document).on('change keyup', '#multiple-cheque-count', function (e) {
             var count = $(this).val();
             var tot_amt = $('#multiple-tot').val();
+            var cheque_count = $('#multiple-cheque-count').val();
+            if (cheque_count > 0) {
+                $("#cmprivacy").remove();
+            }
             if (count > 15) {
                 count = 15;
                 $('#multiple-cheque-count').val(count);
             }
+            showLoader();
             $.ajax({
                 type: 'POST',
                 cache: false,
@@ -304,6 +238,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/multiple-cheque-details',
                 success: function (data) {
                     $("#cheque-details-content-multiple").html(data);
+                }
+            });
+            hideLoader();
+        });
+        $(document).on('blur', '.service-amt-tot', function (e) {
+            var amt_val = $(this).val();
+            var service_id = $(this).attr('data-val').match(/\d+/); // 123456
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: {amt_val: amt_val, service_id: service_id},
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/change-service-total',
+                success: function (data) {
+                    $('.payment-type').trigger("change");
                 }
             });
         });
@@ -328,13 +277,38 @@ $this->params['breadcrumbs'][] = $this->title;
 
         $(document).on('submit', '#account-form', function (e) {
             var mul_tot_amt = $('#multiple-tot').val();
+            var cheque_count = $('#multiple-cheque-count').val();
             var tot = chequeAmountTotal();
             if (mul_tot_amt != tot) {
-                alert('Cheque amount total does not match with multiple total amount.Please Enter a valid amount.');
+                if (mul_tot_amt > 0 && cheque_count <= 0) {
+                    $('#multiple-cheque-count').after('<div id="cmprivacy" style="color:red;">Enter Valid No of Cheques.</div>');
+                } else {
+                    alert('Cheque amount total does not match with multiple total amount.Please Enter a valid amount.');
+                }
                 e.preventDefault();
             }
 
         });
+
+        $('#security_cheque').change(function () {
+            showLoader();
+            if ($(this).is(":checked")) {
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: {},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/get-security-cheque-details',
+                    success: function (data) {
+                        $("#security-cheque-details").html(data);
+                    }
+                });
+            } else {
+                $('#security-cheque-details').html('');
+            }
+            hideLoader();
+        });
+
     });
     function chequeAmountTotal() {
         var row_count = $('#multiple-cheque-count').val();
@@ -374,6 +348,35 @@ $this->params['breadcrumbs'][] = $this->title;
         }
         $('#multiple-tot').val(mul_tot);
         $('#one-time-tot').val(one_tot);
+    }
+    function calculateTaxTotal() {
+        var row_count = $('#total-row_count').val();
+        var mul_tax_tot = 0;
+        for (i = 1; i <= row_count; i++) {
+            var payment_type = $('.payment_type-' + i).val();
+            var amt = $('#tax_amount_total-' + i).val();
+            if (payment_type != '' && amt != '' && amt > 0) {
+                if (payment_type == 1) {
+                    mul_tax_tot += parseFloat(amt);
+                }
+            }
+
+        }
+        $('#multiple-tax-tot').val(mul_tax_tot);
+    }
+    function checkOnetimePayment() {
+        var one_time_tot = $('#one-time-tot').val();
+        if (one_time_tot == 0 || one_time_tot == '') {
+            $('#one-time-payment_type').val(1);
+            $('#one-time-payment_type').trigger("change");
+        }
+    }
+    function checkMultiplePayment() {
+        var multi_tot = $('#multiple-tot').val();
+        if (multi_tot == 0 || multi_tot == '') {
+            $('#multiple-cheque-count').val(0);
+            $('#multiple-cheque-count').trigger("change");
+        }
     }
 </script>
 

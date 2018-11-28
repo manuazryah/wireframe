@@ -27,7 +27,7 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
         <?php $this->head() ?>
     </head>
-    <body class="skin-blue fixed sidebar-mini sidebar-mini-expand-feature sidebar-collapse">
+    <body class="hold-transition skin-blue sidebar-collapse sidebar-mini">
         <?php $this->beginBody() ?>
 
         <div class="wrapper">
@@ -111,6 +111,9 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu" data-widget="tree">
                         <li class="header"></li>
+                        <li class="">
+                            <?= Html::a('<i class="fa fa-home"></i> <span>Home</span>', ['/site/index'], ['class' => '']) ?>
+                        </li>
                         <?php
                         if (Yii::$app->user->identity->post_id == 1 || Yii::$app->session['post']['admin'] == 1) {
                             ?>
@@ -129,9 +132,6 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
 
                                     <li>
                                         <?= Html::a('<i class="fa fa-angle-double-right"></i> Admin Users', ['/admin/admin-users/index'], ['class' => 'title']) ?>
-                                    </li>
-                                    <li>
-                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Design', ['/admin/test/index'], ['class' => 'title']) ?>
                                     </li>
                                 </ul>
                             </li>
@@ -174,10 +174,19 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
                             <?php
                         }
                         ?>
-
-
-                        <li class="">
-                            <?= Html::a('<i class="fa fa-book"></i> <span>Reports</span>', ['/reports/reports/index'], ['class' => '']) ?>
+                        <li class="treeview <?= $controler == 'reports' ? 'active' : '' ?>">
+                            <a href="">
+                                <i class="fa fa-book"></i>
+                                <span>Reports</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Simple Report', ['/reports/reports/index'], ['class' => 'title']) ?>
+                                </li>
+                            </ul>
                         </li>
 
                         <?php
@@ -202,13 +211,13 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
                                         <?= Html::a('<i class="fa fa-angle-double-right"></i> Sponsor Management', ['/masters/sponsor/index'], ['class' => 'title']) ?>
                                     </li>
                                     <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Services', ['/masters/services/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
                                         <?= Html::a('<i class="fa fa-angle-double-right"></i> Service Category', ['/masters/service-category/index'], ['class' => 'title']) ?>
                                     </li>
                                     <li>
                                         <?= Html::a('<i class="fa fa-angle-double-right"></i> Suppliers', ['/masters/supplier/index'], ['class' => 'title']) ?>
-                                    </li>
-                                    <li>
-                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Services', ['/masters/services/index'], ['class' => 'title']) ?>
                                     </li>
                                     <li>
                                         <?= Html::a('<i class="fa fa-angle-double-right"></i> Nationality', ['/masters/country/index'], ['class' => 'title']) ?>
@@ -239,8 +248,27 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
             </footer>
             <div class="control-sidebar-bg"></div>
         </div>
-
+        <div class='page-loader'>
+            <div class='loader'>
+                <div class='circle'></div>
+                <div class='circle'></div>
+                <div class='circle'></div>
+                <div class='circle'></div>
+                <div class='circle'></div>
+            </div>
+        </div>
         <?php $this->endBody() ?>
     </body>
 </html>
 <?php $this->endPage() ?>
+<script>
+            $(document).ready(function () {
+            });
+            function showLoader() {
+                $('.page-loader').addClass('show');
+            }
+            function hideLoader() {
+                $('.page-loader').addClass('hide');
+                $('.page-loader').removeClass('show');
+            }
+</script>

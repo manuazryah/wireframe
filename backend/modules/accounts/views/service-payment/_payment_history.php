@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>Transaction Type</th>
                     <th>Cheque Number</th>
                     <th>Amount</th>
+                    <th></th>
                 </tr>
                 <?php
                 if (!empty($payment_model)) {
@@ -49,6 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <td><?= $model->payment_type == 2 ? 'Cheque Payment' : 'Cash Payment' ?></td>
                             <td><?= $model->payment_type == 2 ? $model->cheque_no : '' ?></td>
                             <td><?= $model->amount; ?></td>
+                            <td style="width: 50px;text-align: center;"><?= Html::a('<i class="fa fa-print"></i>', ['report', 'id' => $model->id], ['style' => 'font-size:18px;', 'target' => '_blank']) ?></td>
                         </tr>
 
                         <?php

@@ -11,6 +11,11 @@ use yii\helpers\Url;
 $this->title = 'Real Estate Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<style>
+    .summary{
+        display: none;
+    }
+</style>
 <!-- Default box -->
 <div class="box table-responsive">
     <div class="real-estate-details-index">

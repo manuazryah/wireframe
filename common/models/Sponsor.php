@@ -41,8 +41,8 @@ class Sponsor extends \yii\db\ActiveRecord {
         return [
             [['address', 'comment'], 'string'],
             [['status', 'CB', 'UB'], 'integer'],
-            [['DOC', 'DOU','yearly_charge'], 'safe'],
-            [['name', 'email', 'phone_number', 'address'], 'required'],
+            [['DOC', 'DOU', 'yearly_charge'], 'safe'],
+            [['name', 'email', 'phone_number', 'address', 'yearly_charge'], 'required'],
             [['name', 'reference_code', 'email', 'emirate_id', 'passport', 'family_book', 'photo'], 'string', 'max' => 100],
             [['phone_number'], 'string', 'max' => 25],
             [['emirate_id', 'passport', 'family_book', 'photo'], 'file', 'extensions' => 'jpg, gif, png, jpeg, pdf, txt, doc, docx'],

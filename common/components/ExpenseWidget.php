@@ -33,13 +33,22 @@ class ExpenseWidget extends Widget {
 
     public function run() {
         $appointment = \common\models\Appointment::find()->where(['id' => $this->id])->one();
-        $paymentmaster = \common\models\PaymentMaster::find()->where(['appointment_id' => $this->id])->one();
-        return $this->render('aexpense_view', [
+        $paymentmaster = \common\models\PaymentMaster::find()->where(['appointment_id' => $appointment->id])->one();
+        $services = \common\models\AppointmentService::findAll(['appointment_id' => $appointment->id]);
+        $projection_amount = 0;
+        if (!empty($services)) {
+            foreach ($services as $service) {
+                if (!empty($service)) {
+                    $projection_amount += $service->total;
+                }
+            }
+        }
+        return $this->render('expense_view', [
                     'appointment' => $appointment,
                     'paymentmaster' => $paymentmaster,
+                    'projection_amount' => $projection_amount,
         ]);
     }
 
 }
-
 ?>

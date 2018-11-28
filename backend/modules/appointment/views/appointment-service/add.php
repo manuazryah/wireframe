@@ -135,9 +135,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php }
                     ?>
                     <?php $form = ActiveForm::begin(); ?>
+                    <?php
+                    $services = [];
+                    if ($appointment->service_type == 1) {
+                        $services = ArrayHelper::map(Services::findAll(['service_category' => 1]), 'id', 'service_name');
+                    } elseif ($appointment->service_type == 2) {
+                        $services = ArrayHelper::map(Services::find()->where(['service_category' => 2])->orWhere(['service_category' => 3])->all(), 'id', 'service_name');
+                    } elseif ($appointment->service_type == 3) {
+                        $services = ArrayHelper::map(Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->orWhere(['service_category' => 3])->all(), 'id', 'service_name');
+                    } elseif ($appointment->service_type == 4) {
+                        $services = ArrayHelper::map(Services::findAll(['service_category' => 2]), 'id', 'service_name');
+                    } elseif ($appointment->service_type == 5) {
+                        $services = ArrayHelper::map(Services::findAll(['service_category' => 6]), 'id', 'service_name');
+                    }
+                    ?>
                     <tr>
                         <td>
-                            <?php $services = ArrayHelper::map(Services::findAll(['status' => 1]), 'id', 'service_name'); ?>
                             <?= $form->field($model, 'service')->dropDownList($services, ['prompt' => 'Choose Service', 'required' => TRUE])->label(FALSE) ?>
                         </td>
                         <td><?= $form->field($model, 'comment')->textInput()->label(FALSE) ?></td>
@@ -189,10 +202,10 @@ $this->params['breadcrumbs'][] = $this->title;
             var idd = this.id;
             var res_data = idd.split("-");
             if (res_data[1] == 'comment') {
-                $(this).html('<textarea class="' + idd + '" value="' + val + '">' + val + '</textarea>');
+                $(this).html('<textarea class="' + idd + ' form-control" value="' + val + '">' + val + '</textarea>');
 
             } else {
-                $(this).html('<input class="' + idd + '" type="text" value="' + val + '"/>');
+                $(this).html('<input class="' + idd + ' form-control" type="text" value="' + val + '"/>');
 
             }
 
@@ -232,7 +245,7 @@ $this->params['breadcrumbs'][] = $this->title;
             var drop_id = $(this).attr('drop_id');
             var idd = this.id;
             var option = $('#' + drop_id).html();
-            $(this).html('<select class="' + drop_id + '" value="' + val + '">' + option + '</select>');
+            $(this).html('<select class="' + drop_id + ' form-control" value="' + val + '">' + option + '</select>');
             $('.' + drop_id + ' option[value="' + val + '"]').attr("selected", "selected");
             $('.' + drop_id).focus();
 

@@ -15,6 +15,17 @@ use yii\web\UploadedFile;
  */
 class LicencingMasterController extends Controller {
 
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @inheritdoc
      */
@@ -36,6 +47,8 @@ class LicencingMasterController extends Controller {
     public function actionIndex() {
         $searchModel = new LicencingMasterSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->orderBy(['id' => SORT_DESC]);
+        $dataProvider->pagination = ['pageSize' => 40,];
 
         return $this->render('index', [
                     'searchModel' => $searchModel,

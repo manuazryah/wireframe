@@ -39,6 +39,8 @@ $this->params['breadcrumbs'][] = 'Update';
                 'model' => $model,
             ])
             ?>
+            <div class="clearfix"></div>
+            <?= Html::a('<span>Quotation approved and proceed to next</span>', ['/appointment/appointment-service/quotation-approve', 'id' => $model->id], ['class' => 'btn btn-block btn-success btn-sm', 'style' => 'float:right;margin-top:40px;']) ?>
         </div>
     </div>
     <!-- /.box-body -->

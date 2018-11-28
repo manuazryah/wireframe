@@ -13,13 +13,28 @@ $this->title = 'Service Payment';
 $this->params['breadcrumbs'][] = ['label' => 'Appointment Services', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<style>
+    #outer
+    {
+        width:100%;
+    }
+    .inner
+    {
+        display: inline-block;
+    }
+</style>
 <!-- Default box -->
 <div class="box">
     <div class="box-header with-border">
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
-        <?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+        <div id="outer">
+            <div class="inner"><?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?></div>
+            <div class="inner"><button type="button" class="btn btn-block manage-btn sitting-agreement">Sitting</button></div>
+            <div class="inner"><button type="button" class="btn btn-block manage-btn side-agreement">Side agreement</button></div>
+            <div class="inner"><button type="button" class="btn btn-block manage-btn adding-agreement">Adding</button></div>
+        </div>
         <div class="appointment-history">
             <table class="table table-responsive">
                 <tr>
@@ -36,283 +51,328 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
         </div>
-        <?php
-        $form = ActiveForm::begin([
-                    'id' => 'account-form',
-        ]);
-        ?>
-        <div class="form-group field-appointment-id">
+        <?= \common\components\AlertMessageWidget::widget() ?>
+        <div class="appointment-service-create">
+            <table class="table table-bordered table-responsive">
+                <thead>
+                    <tr>
+                        <th>Particular</th>
+                        <th>Comment</th>
+                        <th>Amount</th>
+                        <th>Tax</th>
+                        <th>Total</th>
+                        <th>Payment Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!empty($services)) {
+                        $amount_tot = 0;
+                        $tax_tot = 0;
+                        $grand_tot = 0;
+                        foreach ($services as $service) {
+                            ?>
+                            <tr>
+                                <td><?= Services::findOne($service->service)->service_name ?></td>
+                                <td class="edit_text" id="<?= $service->id ?>-comment" val="<?= $service->comment ?>">
+                                    <?php
+                                    if ($service->comment == '') {
+                                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                                    } else {
+                                        echo $service->comment;
+                                    }
+                                    ?>
+                                </td>
+                                <td style="text-align: right;" class="edit_text" id="<?= $service->id ?>-amount" val="<?= $service->amount ?>">
+                                    <?php
+                                    if ($service->amount == '') {
+                                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                                    } else {
+                                        echo $service->amount;
+                                    }
+                                    ?>
+                                </td>
+                                <td style="text-align: right;" class="edit_dropdown" drop_id="appointmentservice-tax" id="<?= $service->id ?>-tax" val="<?= $service->tax ?>">
+                                    <?php
+                                    if ($service->tax == '') {
+                                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                                    } else {
+                                        ?>
+                                        <?= $service->tax_percentage != '' && $service->tax_percentage > 0 ? $service->tax_percentage : '' ?> <?= $service->tax_percentage != '' ? '%' : '' ?>
+                                    <?php }
+                                    ?>
 
-            <input type="hidden" name="security_cheque" value="0"><label><input type="checkbox" id="security_cheque" name="security_cheque" value="1"> Security Cheque</label>
+                                </td>
+                                <td style="text-align: right;" class="total-<?= $service->id ?>"><?= $service->total ?></td>
+                                <td class="edit_dropdown_pay" drop_id="appointmentservice-payment_type" id="<?= $service->id ?>-payment_type" val="<?= $service->payment_type ?>">
+                                    <?php
+                                    if ($service->payment_type == '') {
+                                        echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                                    } else {
+                                        if ($service->payment_type == 1) {
+                                            echo 'Multiple';
+                                        } elseif ($service->payment_type == 2) {
+                                            echo 'One Time';
+                                        }
+                                        ?>
+                                    <?php }
+                                    ?>
 
-            <div class="help-block"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="security-cheque-details">
-
-                </div>
-            </div>
-        </div>
-        <div class="appt-services">
-            <div class="append-box-head">
-                                        <!--<a href=""><button class="remove"><i class="fa fa-close"></i></button></a>-->
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="formrow">
-                            <h5>Particular</h5>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="formrow">
-                            <h5>Comments</h5>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="formrow">
-                            <h5>Amount</h5>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="formrow">
-                            <h5>Payment Type</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php
-            if (!empty($services)) {
-                $count = 0;
-                foreach ($services as $service) {
-                    if (!empty($service)) {
-                        $count++;
+                                </td>
+                                <td>
+                                    <?= Html::a('<i class="fa fa-pencil"></i>', ['/accounts/service-payment/service-payment/', 'id' => $id, 'prfrma_id' => $service->id], ['class' => '', 'tittle' => 'Edit']) ?>
+                                    <?= Html::a('<i class="fa fa-remove"></i>', ['/accounts/service-payment/delete-performa', 'id' => $service->id], ['class' => '', 'tittle' => 'Edit', 'data-confirm' => 'Are you sure you want to delete this item?']) ?>
+                                </td>
+                            </tr>
+                            <?php
+                            $amount_tot += $service->amount;
+                            $tax_tot += $service->tax_amount;
+                            $grand_tot += $service->total;
+                        }
                         ?>
-                        <div class="append-box" id="service_payment-<?= $service->id ?>">
-                                                    <!--<a href=""><button class="remove"><i class="fa fa-close"></i></button></a>-->
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="formrow">
-                                        <span><?= $service->service != '' ? Services::findOne($service->service)->service_name : '' ?></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="formrow">
-                                        <span><?= $service->comment ?></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="formrow">
-                                        <input id="amount_total-<?= $count ?>" type="hidden" value="<?= $service->total ?>">
-                                        <span ><?= $service->total ?></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="formrow">
-                                        <select class="form-control payment-type payment_type-<?= $count ?>" name="updatee[<?= $service->id; ?>][payment_type]" id="payment_type-<?= $service->id ?>" required>
-                                            <option value="">Select Payment Type</option>
-                                            <option value="1">Multiple</option>
-                                            <option value="2">One Time</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
+                        <tr>
+                            <td colspan="2" style="text-align: right;">Total</td>
+                            <td style="text-align: right;"><?= sprintf('%0.2f', $amount_tot); ?></td>
+                            <td style="text-align: right;"><?= sprintf('%0.2f', $tax_tot); ?></td>
+                            <td style="text-align: right;"><?= sprintf('%0.2f', $grand_tot); ?></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                    <?php }
+                    ?>
+                    <?php $form = ActiveForm::begin(); ?>
+                    <?php
+                    $services = [];
+                    if ($appointment->service_type == 1) {
+                        $services = ArrayHelper::map(Services::findAll(['service_category' => 1]), 'id', 'service_name');
+                    } elseif ($appointment->service_type == 2) {
+                        $services = ArrayHelper::map(Services::find()->where(['service_category' => 2])->orWhere(['service_category' => 3])->all(), 'id', 'service_name');
+                    } elseif ($appointment->service_type == 3) {
+                        $services = ArrayHelper::map(Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->orWhere(['service_category' => 3])->all(), 'id', 'service_name');
+                    } elseif ($appointment->service_type == 4) {
+                        $services = ArrayHelper::map(Services::findAll(['service_category' => 2]), 'id', 'service_name');
+                    } elseif ($appointment->service_type == 5) {
+                        $services = ArrayHelper::map(Services::findAll(['service_category' => 6]), 'id', 'service_name');
                     }
-                }
-            }
-            ?>
+                    ?>
+                    <tr>
+                        <td>
+                            <?= $form->field($model, 'service')->dropDownList($services, ['prompt' => 'Choose Service', 'required' => TRUE])->label(FALSE) ?>
+                        </td>
+                        <td><?= $form->field($model, 'comment')->textInput()->label(FALSE) ?></td>
+                        <td><?= $form->field($model, 'amount')->textInput(['maxlength' => true, 'required' => TRUE])->label(FALSE) ?></td>
+                        <td>
+                            <?php $taxes = ArrayHelper::map(Tax::findAll(['status' => 1]), 'id', 'name'); ?>
+                            <?= $form->field($model, 'tax')->dropDownList($taxes, ['prompt' => 'Choose Tax'])->label(FALSE) ?>
+                            <input type="hidden" value="<?= $model->tax != '' ? Tax::findOne($model->tax)->value : '' ?>" id="tax-val" />
+                        </td>
+                        <td><?= $form->field($model, 'total')->textInput(['maxlength' => true, 'readonly' => TRUE])->label(FALSE) ?></td>
+                        <td>
+                            <?= $form->field($model, 'payment_type')->dropDownList(['2' => 'One Time', '1' => 'Multiple'])->label(FALSE) ?>
+                        </td>
+                        <td>
+                            <div style="display: inline-flex;">
+                                <?= Html::submitButton($model->isNewRecord ? 'Add' : 'Update', ['class' => 'btn btn-success']) ?>
+                                <?= Html::a(!$model->isNewRecord ? 'Reset' : '', ['/accounts/service-payment/service-payment/', 'id' => $id], ['class' => !$model->isNewRecord ? 'btn btn-danger' : '', 'style' => !$model->isNewRecord ? 'display:block;margin-left:10px;' : 'display:none']) ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php ActiveForm::end(); ?>
+                </tbody>
+            </table>
         </div>
-        <input type="hidden" value="<?= $count ?>" id="total-row_count">
-        <div class="row">
-            <div class="col-md-6" style="border-right: 1px solid #c5c5c5;">
-                <div class="col-md-6">
-                    <div class="form-group field-debtor-company_name required">
-                        <label class="control-label" for="debtor-company_name">Multiple Total</label>
-                        <input type="text" value="" id="multiple-tot" class="form-control" readonly />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group field-debtor-company_name required">
-                        <label class="control-label" for="debtor-company_name">No of Cheques</label>
-                        <input style=" margin: 0px 5px;"type="number" value="0" id="multiple-cheque-count" class="form-control" step="1" min="1" max="15" />
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div id="cheque-details-content-multiple">
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="col-md-6">
-                    <div class="form-group field-debtor-company_name required">
-                        <label class="control-label" for="debtor-company_name">One Time Total</label>
-                        <input type="text" value="" id="one-time-tot" class="form-control" readonly />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group field-debtor-company_name required">
-                        <label class="control-label" for="debtor-company_name">Payment Type</label>
-                        <select style="margin: 0px 5px;" id="one-time-payment_type" class="form-control">
-                            <option value="1">Cash</option>
-                            <option value="2">Cheque</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div id="cheque-details-content-one-time">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="form-group action-btn-right">
-            <?= Html::a('<span> Cancel</span>', ['index'], ['class' => 'btn btn-block cancel-btn']) ?>
-            <?= Html::submitButton('Save', ['class' => 'btn btn-success create-btn']) ?>
-        </div>
-        <?php ActiveForm::end(); ?>
+        <?= Html::a('<span>Service Complete and proceed to next</span>', ['service-complete', 'id' => $appointment->id], ['class' => 'btn btn-block btn-success btn-sm', 'style' => 'float:right;']) ?>
     </div>
     <!-- /.box-body -->
+</div>
+<div class="modal fade inventory-report-modal" id="modal-default">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
 <!-- /.box -->
 <script>
     $("document").ready(function () {
-//        $(document).on('change', '.payment-type', function (e) {
-//            var count = $(this).val();
-//            var id = $(this).attr('id');
-//            var arr = id.split("-");
-//            var service_id = arr[1];
-//            $.ajax({
-//                type: 'POST',
-//                cache: false,
-//                async: false,
-//                data: {service_id: service_id, count: count},
-//                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/add-cheque-details',
-//                success: function (data) {
-//                    $("#cheque-details-content-" + service_id).html(data);
-//                }
-//            });
-//        });
-        $(document).on('change', '.payment-type', function (e) {
-            var type = $(this).val();
-            calculateTotal();
-            chequeAmountTotal();
-        });
-        $(document).on('change keyup', '.mul_cheque_amt', function (e) {
-            chequeAmountTotal();
-        });
-        $(document).on('change keyup', '#one_time_amt', function (e) {
-            var amt = $(this).val();
-            var one_time_tot = $('#one-time-tot').val();
-            if (parseFloat(amt) > parseFloat(one_time_tot)) {
-                alert('Amount exxeeds one time total');
-                $('#one_time_amt').val(one_time_tot);
-            }
-        });
-        $(document).on('change keyup', '#multiple-cheque-count', function (e) {
-            var count = $(this).val();
-            var tot_amt = $('#multiple-tot').val();
-            if (count > 15) {
-                count = 15;
-                $('#multiple-cheque-count').val(count);
-            }
+
+    $(document).on('keyup mouseup', '#appointmentservice-amount', function (e) {
+    calculateTotal();
+    });
+            $(document).on('change', '#appointmentservice-tax', function (e) {
+    var tax = $(this).val();
             $.ajax({
-                type: 'POST',
-                cache: false,
-                async: false,
-                data: {count: count, total_amt: tot_amt},
-                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/multiple-cheque-details',
-                success: function (data) {
-                    $("#cheque-details-content-multiple").html(data);
-                }
+            type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: {tax: tax},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/get-tax',
+                    success: function (data) {
+                    $("#tax-val").val(data);
+                            calculateTotal();
+                    }
             });
-        });
-        $(document).on('change', '#one-time-payment_type', function (e) {
-            var type = $(this).val();
-            var tot_amt = $('#one-time-tot').val();
-            if (type == 2) {
-                $.ajax({
-                    type: 'POST',
+    });
+            /*
+             * Double click enter function
+             * */
+
+            $('.edit_text').on('dblclick', function () {
+    var val = $(this).attr('val');
+            var idd = this.id;
+            var res_data = idd.split("-");
+            if (res_data[1] == 'comment') {
+    $(this).html('<textarea class="' + idd + ' form-control" value="' + val + '">' + val + '</textarea>');
+    } else {
+    $(this).html('<input class="' + idd + ' form-control" type="text" value="' + val + '"/>');
+    }
+
+    $('.' + idd).focus();
+    });
+            $('.edit_text').on('focusout', 'input,textarea', function () {
+    var thiss = $(this).parent('.edit_text');
+            var data_id = thiss.attr('id');
+            var res_id = data_id.split("-");
+            var res_val = $(this).val();
+            $.ajax({
+            type: 'POST',
                     cache: false,
-                    async: false,
-                    data: {total_amt: tot_amt},
-                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/one-time-cheque-details',
+                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-service',
                     success: function (data) {
-                        $("#cheque-details-content-one-time").html(data);
+                    if (data == '') {
+                    data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     }
-                });
-            } else {
-                $("#cheque-details-content-one-time").html('');
-            }
-        });
+                    thiss.html(res_val);
+                            if (res_id[1] == 'amount') {
+                    $('.total-' + data_id).text(data);
+                    }
+                    location.reload();
+                    }
+            });
+    });
+            /*
+             * Double click Dropdown
+             * */
 
-        $(document).on('submit', '#account-form', function (e) {
-            var mul_tot_amt = $('#multiple-tot').val();
-            var tot = chequeAmountTotal();
-            if (mul_tot_amt != tot) {
-                alert('Cheque amount total does not match with multiple total amount.Please Enter a valid amount.');
-                e.preventDefault();
-            }
-
-        });
-
-        $('#security_cheque').change(function () {
-            if ($(this).is(":checked")) {
-                $.ajax({
-                    type: 'POST',
+            $('.edit_dropdown').on('dblclick', function () {
+    var val = $(this).attr('val');
+            var drop_id = $(this).attr('drop_id');
+            var idd = this.id;
+            var option = $('#' + drop_id).html();
+            $(this).html('<select class="' + drop_id + ' form-control" value="' + val + '">' + option + '</select>');
+            $('.' + drop_id + ' option[value="' + val + '"]').attr("selected", "selected");
+            $('.' + drop_id).focus();
+    });
+            $('.edit_dropdown').on('focusout', 'select', function () {
+    var thiss = $(this).parent('.edit_dropdown');
+            var data_id = thiss.attr('id');
+            var res_id = data_id.split("-");
+            var res_val = $(this).val();
+            $.ajax({
+            type: 'POST',
                     cache: false,
-                    async: false,
+                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-service-tax',
+                    success: function (data) {
+                    if (data == '') {
+                    data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                    }
+//                    thiss.html(data);
+                    location.reload();
+                    }
+            });
+    });
+            $('.edit_dropdown_pay').on('dblclick', function () {
+    var val = $(this).attr('val');
+            var drop_id = $(this).attr('drop_id');
+            var idd = this.id;
+            var option = $('#' + drop_id).html();
+            $(this).html('<select class="' + drop_id + ' form-control" value="' + val + '">' + option + '</select>');
+            $('.' + drop_id + ' option[value="' + val + '"]').attr("selected", "selected");
+            $('.' + drop_id).focus();
+    });
+            $('.edit_dropdown_pay').on('focusout', 'select', function () {
+    var thiss = $(this).parent('.edit_dropdown_pay');
+            var data_id = thiss.attr('id');
+            var res_id = data_id.split("-");
+            var res_val = $(this).val();
+            $.ajax({
+            type: 'POST',
+                    cache: false,
+                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-payment-type',
+                    success: function (data) {
+                    if (data == '') {
+                    data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                    }
+//                    thiss.html(data);
+                    location.reload();
+                    }
+            });
+    });
+            /******************** Agreements**********************************************/
+
+            $(document).on('click', '.sitting-agreement', function () {
+    var appointment_id = '<?php echo $appointment->id; ?>';
+            if (appointment_id != ''){
+    $.ajax({
+    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/sitting-agreement',
+            type: "POST",
+            data: {},
+            success: function (data) {
+            var res = $.parseJSON(data);
+                    $('.modal-content').html(res.result['report']);
+                    $('#modal-default').modal('show');
+            }
+    });
+    });
+            $(document).on('click', '.side-agreement', function () {
+    var appointment_id = '<?php echo $appointment->id; ?>';
+            $.ajax({
+            url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/side-agreement',
+                    type: "POST",
                     data: {},
-                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/get-security-cheque-details',
                     success: function (data) {
-                        $("#security-cheque-details").html(data);
+                    var res = $.parseJSON(data);
+                            $('.modal-content').html(res.result['report']);
+                            $('#modal-default').modal('show');
                     }
-                });
-            } else {
-                $('#security-cheque-details').html('');
-            }
-        });
+            });
+    });
+            $(document).on('click', '.sitting-agreement', function () {
+    var appointment_id = '<?php echo $appointment->id; ?>';
+            $.ajax({
+            url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/adding-agreement',
+                    type: "POST",
+                    data: {},
+                    success: function (data) {
+                    var res = $.parseJSON(data);
+                            $('.modal-content').html(res.result['report']);
+                            $('#modal-default').modal('show');
+                    }
+            });
+    });
+            /******************** Agreements**********************************************/
 
     });
-    function chequeAmountTotal() {
-        var row_count = $('#multiple-cheque-count').val();
-        var tot_amt = $('#multiple-tot').val();
-        var mul_tot = 0;
-        for (i = 1; i <= row_count; i++) {
-            var row_tot = $('#mul_cheque_amt-' + i).val();
-            var mul_tot_pre = parseFloat(mul_tot);
-            mul_tot += parseFloat(row_tot);
-            if (mul_tot > tot_amt) {
-                alert('Cheque amount total does not match with multiple total amount');
-                var bal = tot_amt - mul_tot_pre;
-                if (bal >= 0) {
-                    $('#mul_cheque_amt-' + i).val(bal);
-                } else {
-                    $('#mul_cheque_amt-' + i).val(0);
-                }
+            function calculateTotal() {
+            var tot = 0;
+                    var tax_amount = 0;
+                    var amount = $("#appointmentservice-amount").val();
+                    var tax_val = $("#tax-val").val();
+                    if (amount != '' && amount > 0) {
+            if (tax_val != '' && tax_val > 0) {
+            tax_amount = (parseFloat(amount) * parseFloat(tax_val)) / 100;
             }
-        }
-        return mul_tot;
-    }
-    function calculateTotal() {
-        var row_count = $('#total-row_count').val();
-        var mul_tot = 0;
-        var one_tot = 0;
-        for (i = 1; i <= row_count; i++) {
-            var payment_type = $('.payment_type-' + i).val();
-            var amt = $('#amount_total-' + i).val();
-            if (payment_type != '' && amt != '' && amt > 0) {
-                if (payment_type == 1) {
-                    mul_tot += parseFloat(amt);
-                } else if (payment_type == 2) {
-                    one_tot += parseFloat(amt);
-                }
+            tot = (parseFloat(amount) + parseFloat(tax_amount));
             }
-
-        }
-        $('#multiple-tot').val(mul_tot);
-        $('#one-time-tot').val(one_tot);
-    }
+            $("#appointmentservice-total").val(tot.toFixed(2));
+            }
 </script>
+
 

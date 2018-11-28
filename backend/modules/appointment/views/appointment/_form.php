@@ -21,6 +21,7 @@ use common\components\ModalViewWidget;
     <?php
     echo ModalViewWidget::widget();
     ?>
+    <?= \common\components\AlertMessageWidget::widget() ?>
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
@@ -46,24 +47,50 @@ use common\components\ModalViewWidget;
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?php
             if ($model->isNewRecord) {
-                $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1])->all(), 'id', function($model) {
-                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                        }
-                );
+                if ($model->service_type != 5) {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                } else {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                }
             } else {
-                $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2])->all(), 'id', function($model) {
-                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                        }
-                );
+                if ($model->service_type != 5) {
+                    if ($model->plot == '') {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 0])->all(), 'id', function($model) {
+                                    return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    } else {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 0])->orWhere(['in', 'id', explode(',', $model->plot)])->all(), 'id', function($model) {
+                                    return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    }
+                } else {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 1])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                }
+            }
+            ?>
+            <?php
+            if (!$model->isNewRecord) {
+                $model->plot = explode(',', $model->plot);
             }
             ?>
             <?php
             echo $form->field($model, 'plot')->widget(Select2::classname(), [
                 'data' => $plots,
                 'language' => 'en',
-                'options' => ['placeholder' => 'Choose a Plot'],
+                'options' => ['placeholder' => 'Choose Plot', 'multiple' => true, 'disabled' => $model->service_type == 2 || $model->service_type == 4 ? TRUE : FALSE],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => true,
                 ],
             ]);
             ?>
@@ -72,24 +99,50 @@ use common\components\ModalViewWidget;
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?php
             if ($model->isNewRecord) {
-                $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1])->all(), 'id', function($model) {
-                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                        }
-                );
+                if ($model->service_type != 5) {
+                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                } else {
+                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                }
             } else {
-                $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1])->all(), 'id', function($model) {
-                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                        }
-                );
+                if ($model->service_type != 5) {
+                    if ($model->space_for_license == '') {
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                    return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    } else {
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 0])->orWhere(['in', 'id', explode(',', $model->space_for_license)])->all(), 'id', function($model) {
+                                    return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    }
+                } else {
+                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                }
+            }
+            ?>
+            <?php
+            if (!$model->isNewRecord) {
+                $model->space_for_license = explode(',', $model->space_for_license);
             }
             ?>
             <?php
             echo $form->field($model, 'space_for_license')->widget(Select2::classname(), [
                 'data' => $licenses,
                 'language' => 'en',
-                'options' => ['placeholder' => 'Space for License'],
+                'options' => ['placeholder' => 'Choose License', 'multiple' => true, 'disabled' => $model->service_type == 1 || $model->service_type == 4 ? TRUE : FALSE],
                 'pluginOptions' => [
-                    'allowClear' => true
+                    'allowClear' => true,
                 ],
             ]);
             ?>
@@ -163,9 +216,23 @@ use common\components\ModalViewWidget;
 <script>
     $("document").ready(function () {
         $(document).on('change', '#appointment-service_type', function (e) {
-            $("#appointment-plot").val('');
-            $("#appointment-space_for_license").val('');
             var type = $(this).val();
+            var idd = '<?php echo $model->id; ?>';
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: {type: type, id: idd},
+                url: '<?= Yii::$app->homeUrl; ?>appointment/appointment/get-plots',
+                success: function (data) {
+                    var res = $.parseJSON(data);
+                    $("#appointment-plot").html(res.result['plots']);
+                    $("#appointment-space_for_license").html(res.result['license']);
+                    $("#appointment-plot").val('');
+                    $("#appointment-space_for_license").val('');
+                    e.preventDefault();
+                }
+            });
             if (type == 1) {
                 $("#appointment-plot").prop("disabled", false);
                 $("#appointment-space_for_license").prop("disabled", true);
@@ -175,6 +242,39 @@ use common\components\ModalViewWidget;
             } else if (type == 3) {
                 $("#appointment-plot").prop("disabled", false);
                 $("#appointment-space_for_license").prop("disabled", false);
+            } else if (type == 4) {
+                $("#appointment-plot").prop("disabled", true);
+                $("#appointment-space_for_license").prop("disabled", true);
+            } else if (type == 5) {
+                $("#appointment-plot").prop("disabled", false);
+                $("#appointment-space_for_license").prop("disabled", false);
+            }
+
+        });
+        $(document).on('change', '#appointment-space_for_license', function (e) {
+            var space = $(this).val();
+            var idd = '<?php echo $model->id; ?>';
+            alert(space);
+            if (space == "") {
+                $("#appointment-sponsor").val(null).trigger("change");
+            } else {
+                if (idd === "") {
+                    $.ajax({
+                        type: 'POST',
+                        cache: false,
+                        async: false,
+                        data: {space: space},
+                        url: '<?= Yii::$app->homeUrl; ?>appointment/appointment/get-supplier',
+                        success: function (data) {
+                            if (data === '') {
+                                $("#appointment-sponsor").val(null).trigger("change");
+                            } else {
+                                $('#appointment-sponsor').select2("val", data);
+                            }
+                            e.preventDefault();
+                        }
+                    });
+                }
             }
         });
     });

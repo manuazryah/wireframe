@@ -15,6 +15,17 @@ use yii\web\UploadedFile;
  */
 class SponsorController extends Controller {
 
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @inheritdoc
      */
@@ -23,7 +34,7 @@ class SponsorController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+//                    'delete' => ['POST'],
                 ],
             ],
         ];
@@ -36,6 +47,7 @@ class SponsorController extends Controller {
     public function actionIndex() {
         $searchModel = new SponsorSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination = ['pageSize' => 40,];
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -138,13 +150,13 @@ class SponsorController extends Controller {
         $model = $this->findModel($id);
         $dir = Yii::$app->basePath . '/../uploads/sponsers/' . $id . '/';
         if ($type == 1) {
-            $path = $dir.'emirate_id.'.$model->emirate_id;
+            $path = $dir . 'emirate_id.' . $model->emirate_id;
         } elseif ($type == 2) {
-            $path = $dir.'passport.'.$model->passport;
+            $path = $dir . 'passport.' . $model->passport;
         } elseif ($type == 3) {
-            $path = $dir.'family_book.'.$model->family_book;
+            $path = $dir . 'family_book.' . $model->family_book;
         } elseif ($type == 4) {
-            $path = $dir.'photo.'.$model->photo;
+            $path = $dir . 'photo.' . $model->photo;
         }
         if (file_exists($path)) {
             unlink($path);
@@ -163,10 +175,10 @@ class SponsorController extends Controller {
         }
         return $this->redirect(Yii::$app->request->referrer);
     }
-    
-    public function actionRemoveOther($file,$id) {
+
+    public function actionRemoveOther($file, $id) {
         $model = $this->findModel($id);
-        $path = Yii::$app->basePath . '/../uploads/sponsers/' . $id . '/others/'.$file;
+        $path = Yii::$app->basePath . '/../uploads/sponsers/' . $id . '/others/' . $file;
         if (file_exists($path)) {
             unlink($path);
         }
@@ -231,8 +243,9 @@ class SponsorController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
-
+        if ($this->findModel($id)->delete()) {
+            Yii::$app->session->setFlash('success', "Sponsor Removed Successfully");
+        }
         return $this->redirect(['index']);
     }
 
@@ -248,6 +261,60 @@ class SponsorController extends Controller {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    public function actionSponsorPayment($id) {
+        $sponsor = $this->findModel($id);
+        $sponsor_payments = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->all();
+        $sponsor_balance = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->orderBy(['id' => SORT_DESC])->one();
+        $sponsor_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 1])->sum('amount');
+        $paid_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 2])->sum('amount');
+        return $this->render('sponsor-payment', [
+                    'sponsor' => $sponsor,
+                    'sponsor_payments' => $sponsor_payments,
+                    'sponsor_balance' => $sponsor_balance,
+                    'sponsor_total' => $sponsor_total,
+                    'paid_total' => $paid_total,
+        ]);
+    }
+
+    public function actionGetPayment() {
+
+        $data = '';
+        if (Yii::$app->request->post()) {
+
+            $sponsor_id = $_POST['sponsor_id'];
+            $payment = \common\models\SponsorPayment::find()->where(['sponsor_id' => $sponsor_id])->orderBy(['id' => SORT_DESC])->one();
+            $data = $this->renderPartial('_form_pay', [
+                'sponsor_id' => $sponsor_id,
+                'payment' => $payment,
+            ]);
+        }
+        return $data;
+    }
+
+    public function actionAjaxPayment() {
+        if (Yii::$app->request->isAjax) {
+            $sponsor_id = $_POST['sponsor_id'];
+            $balance_amount = $_POST['balance_amount'];
+            $amount = $_POST['amount'];
+            if (!empty($sponsor_id) && !empty($amount)) {
+                $model = new \common\models\SponsorPayment();
+                $model->sponsor_id = $sponsor_id;
+                $model->amount = $amount;
+                $model->balance = $balance_amount - $amount;
+                $model->type = 2;
+                Yii::$app->SetValues->Attributes($model);
+                if ($model->save()) {
+                    $result = 1;
+                } else {
+                    $result = 0;
+                }
+            } else {
+                $result = 0;
+            }
+            return $result;
         }
     }
 

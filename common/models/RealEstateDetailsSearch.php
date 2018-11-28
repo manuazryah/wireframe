@@ -10,16 +10,18 @@ use common\models\RealEstateDetails;
 /**
  * RealEstateDetailsSearch represents the model behind the search form about `common\models\RealEstateDetails`.
  */
-class RealEstateDetailsSearch extends RealEstateDetails
-{
+class RealEstateDetailsSearch extends RealEstateDetails {
+
+    public $customer;
+    public $appointment;
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['id', 'master_id', 'category', 'availability', 'customer_id', 'square_feet', 'status', 'CB', 'UB'], 'integer'],
-            [['code', 'comment', 'DOC', 'DOU'], 'safe'],
+            [['code', 'comment', 'DOC', 'DOU', 'customer', 'appointment'], 'safe'],
             [['cost', 'rent_cost', 'off_rent'], 'number'],
         ];
     }
@@ -27,8 +29,7 @@ class RealEstateDetailsSearch extends RealEstateDetails
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -40,8 +41,7 @@ class RealEstateDetailsSearch extends RealEstateDetails
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = RealEstateDetails::find();
 
         // add conditions that should always apply here
@@ -77,8 +77,9 @@ class RealEstateDetailsSearch extends RealEstateDetails
         ]);
 
         $query->andFilterWhere(['like', 'code', $this->code])
-            ->andFilterWhere(['like', 'comment', $this->comment]);
+                ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;
     }
+
 }

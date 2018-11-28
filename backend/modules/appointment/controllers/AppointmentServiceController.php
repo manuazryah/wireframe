@@ -15,6 +15,17 @@ use common\models\Appointment;
  */
 class AppointmentServiceController extends Controller {
 
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @inheritdoc
      */
@@ -84,6 +95,7 @@ class AppointmentServiceController extends Controller {
             }
             $model->total = $model->amount + $tax_amount;
             if ($model->save()) {
+                Yii::$app->session->setFlash('success', "Service Updated Successfully");
                 return $this->redirect(['add', 'id' => $id]);
             }
         }
@@ -105,6 +117,10 @@ class AppointmentServiceController extends Controller {
                 $services = \common\models\Services::find()->where(['service_category' => 2])->orWhere(['service_category' => 3])->all();
             } elseif ($appointment->service_type == 3) {
                 $services = \common\models\Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->orWhere(['service_category' => 3])->all();
+            } elseif ($appointment->service_type == 4) {
+                $services = \common\models\Services::find()->where(['service_category' => 2])->all();
+            } elseif ($appointment->service_type == 5) {
+                $services = \common\models\Services::find()->where(['service_category' => 6])->all();
             }
             if (!empty($services)) {
                 foreach ($services as $service) {
@@ -184,7 +200,9 @@ class AppointmentServiceController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
+        if ($this->findModel($id)->delete()) {
+            Yii::$app->session->setFlash('success', "Service Removed Successfully");
+        }
 
         return $this->redirect(['index']);
     }
@@ -246,6 +264,7 @@ class AppointmentServiceController extends Controller {
             if (!empty($apointment)) {
                 $apointment->status = 2; //appointmrnt complete
                 if ($apointment->update()) {
+                    $this->updateRealEstate($apointment);
                     Yii::$app->session->setFlash('success', "Appointment Completed");
                 }
             }
@@ -254,6 +273,36 @@ class AppointmentServiceController extends Controller {
             return $this->redirect(Yii::$app->request->referrer);
         }
         return $this->redirect(['appointment/index']);
+    }
+
+    public function updateRealEstate($model) {
+        if ($model->plot != '') {
+            $plots = explode(',', $model->plot);
+            if (!empty($plots)) {
+                foreach ($plots as $plot) {
+                    $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $plot])->one();
+                    if (!empty($estate_details)) {
+                        $estate_details->status = 1;
+                        $estate_details->availability = 0;
+                        $estate_details->save(FALSE);
+                    }
+                }
+            }
+        }
+        if ($model->space_for_license != '') {
+            $space_for_license = explode(',', $model->space_for_license);
+            if (!empty($space_for_license)) {
+                foreach ($space_for_license as $license) {
+                    $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $license])->one();
+                    if (!empty($estate_details)) {
+                        $estate_details->status = 1;
+                        $estate_details->availability = 0;
+                        $estate_details->save(FALSE);
+                    }
+                }
+            }
+        }
+        return;
     }
 
     /*

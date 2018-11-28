@@ -46,145 +46,163 @@ use Yii;
  */
 class Appointment extends \yii\db\ActiveRecord {
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public static function tableName() {
-		return 'appointment';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName() {
+        return 'appointment';
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function rules() {
-		return [
-			[['service_type', 'sponsor', 'sales_man', 'customer'], 'required'],
-			[['customer', 'service_type', 'plot', 'space_for_license', 'sponsor', 'tax', 'supplier', 'no_partners', 'approval_status', 'sales_employee_id', 'accounts_employee_id', 'operations_employee_id', 'status', 'CB', 'UB'], 'integer'],
-			[['estimated_cost'], 'number'],
-			[['start_date', 'expiry_date', 'DOC', 'DOU', 'paid_amount'], 'safe'],
-			[['service_id', 'total_amount',], 'string', 'max' => 100],
-			[['comment'], 'string', 'max' => 1000],
-			[['operations_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['operations_employee_id' => 'id']],
-			[['operations_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['operations_employee_id' => 'id']],
-			[['service_type'], 'exist', 'skipOnError' => true, 'targetClass' => AppointmentServices::className(), 'targetAttribute' => ['service_type' => 'id']],
-			[['plot'], 'exist', 'skipOnError' => true, 'targetClass' => RealEstateDetails::className(), 'targetAttribute' => ['plot' => 'id']],
-			[['space_for_license'], 'exist', 'skipOnError' => true, 'targetClass' => RealEstateDetails::className(), 'targetAttribute' => ['space_for_license' => 'id']],
-			[['sponsor'], 'exist', 'skipOnError' => true, 'targetClass' => Sponsor::className(), 'targetAttribute' => ['sponsor' => 'id']],
-			[['tax'], 'exist', 'skipOnError' => true, 'targetClass' => Tax::className(), 'targetAttribute' => ['tax' => 'id']],
-			[['customer'], 'exist', 'skipOnError' => true, 'targetClass' => Debtor::className(), 'targetAttribute' => ['customer' => 'id']],
-			[['sales_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['sales_employee_id' => 'id']],
-			[['accounts_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['accounts_employee_id' => 'id']],
-		];
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function rules() {
+        return [
+            [['service_type', 'sales_man', 'customer'], 'required'],
+            [['sponsor'], 'required', 'when' => function ($model) {
+                    
+                }, 'whenClient' => "function (attribute, value) {
+               return $('#appointment-service_type').val() == '2';
+            }"],
+            [['sponsor'], 'required', 'when' => function ($model) {
+                    
+                }, 'whenClient' => "function (attribute, value) {
+               return $('#appointment-service_type').val() == '3';
+            }"],
+            [['sponsor'], 'required', 'when' => function ($model) {
+                    
+                }, 'whenClient' => "function (attribute, value) {
+               return $('#appointment-service_type').val() == '4';
+            }"],
+//            [['sponsor'], 'required', 'when' => function ($model) {
+//                    
+//                }, 'whenClient' => "function (attribute, value) {
+//               return $('#appointment-service_type').val() == '5';
+//            }"],
+            [['customer', 'service_type', 'sponsor', 'tax', 'supplier', 'no_partners', 'approval_status', 'sales_employee_id', 'accounts_employee_id', 'operations_employee_id', 'status', 'CB', 'UB', 'sub_status'], 'integer'],
+            [['estimated_cost'], 'number'],
+            [['start_date', 'expiry_date', 'DOC', 'DOU', 'paid_amount', 'license_expiry_date', 'contract_start_date', 'contract_end_date', 'plot', 'space_for_license'], 'safe'],
+            [['service_id', 'total_amount',], 'string', 'max' => 100],
+            [['comment'], 'string', 'max' => 1000],
+            [['operations_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['operations_employee_id' => 'id']],
+            [['operations_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['operations_employee_id' => 'id']],
+            [['service_type'], 'exist', 'skipOnError' => true, 'targetClass' => AppointmentServices::className(), 'targetAttribute' => ['service_type' => 'id']],
+            [['sponsor'], 'exist', 'skipOnError' => true, 'targetClass' => Sponsor::className(), 'targetAttribute' => ['sponsor' => 'id']],
+            [['tax'], 'exist', 'skipOnError' => true, 'targetClass' => Tax::className(), 'targetAttribute' => ['tax' => 'id']],
+            [['customer'], 'exist', 'skipOnError' => true, 'targetClass' => Debtor::className(), 'targetAttribute' => ['customer' => 'id']],
+            [['sales_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['sales_employee_id' => 'id']],
+            [['accounts_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['accounts_employee_id' => 'id']],
+        ];
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function attributeLabels() {
-		return [
-		    'id' => 'ID',
-		    'customer' => 'Customer',
-		    'service_type' => 'Service Type',
-		    'plot' => 'Plot',
-		    'space_for_license' => 'Space For License',
-		    'service_id' => 'Service ID',
-		    'estimated_cost' => 'Estimated Cost',
-		    'sponsor' => 'Sponsor',
-		    'tax' => 'Tax',
-		    'supplier' => 'Supplier',
-		    'no_partners' => 'No Partners',
-		    'start_date' => 'Start Date',
-		    'expiry_date' => 'Expiry Date',
-		    'total_amount' => 'Total Amount',
-		    'paid_amount' => 'Paid Amount',
-		    'approval_status' => 'Approval Status',
-		    'comment' => 'Comment',
-		    'sales_employee_id' => 'Sales Employee ID',
-		    'accounts_employee_id' => 'Accounts Employee ID',
-		    'operations_employee_id' => 'Operations Employee ID',
-		    'status' => 'Status',
-		    'CB' => 'C B',
-		    'UB' => 'U B',
-		    'DOC' => 'D O C',
-		    'DOU' => 'D O U',
-		];
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels() {
+        return [
+            'id' => 'ID',
+            'customer' => 'Customer',
+            'service_type' => 'Service Type',
+            'plot' => 'Plot',
+            'space_for_license' => 'Space For License',
+            'service_id' => 'Service ID',
+            'estimated_cost' => 'Estimated Cost',
+            'sponsor' => 'Sponsor',
+            'tax' => 'Tax',
+            'supplier' => 'Supplier',
+            'no_partners' => 'No Partners',
+            'start_date' => 'Start Date',
+            'expiry_date' => 'Expiry Date',
+            'total_amount' => 'Total Amount',
+            'paid_amount' => 'Paid Amount',
+            'approval_status' => 'Approval Status',
+            'comment' => 'Comment',
+            'sales_employee_id' => 'Sales Employee ID',
+            'accounts_employee_id' => 'Accounts Employee ID',
+            'operations_employee_id' => 'Operations Employee ID',
+            'status' => 'Status',
+            'CB' => 'C B',
+            'UB' => 'U B',
+            'DOC' => 'D O C',
+            'DOU' => 'D O U',
+        ];
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getOperationsEmployee() {
-		return $this->hasOne(AdminUsers::className(), ['id' => 'operations_employee_id']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOperationsEmployee() {
+        return $this->hasOne(AdminUsers::className(), ['id' => 'operations_employee_id']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getSalesman() {
-		return $this->hasOne(AdminUsers::className(), ['id' => 'sales_man']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSalesman() {
+        return $this->hasOne(AdminUsers::className(), ['id' => 'sales_man']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getOperationsEmployee0() {
-		return $this->hasOne(AdminUsers::className(), ['id' => 'operations_employee_id']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOperationsEmployee0() {
+        return $this->hasOne(AdminUsers::className(), ['id' => 'operations_employee_id']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getServiceType() {
-		return $this->hasOne(AppointmentServices::className(), ['id' => 'service_type']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getServiceType() {
+        return $this->hasOne(AppointmentServices::className(), ['id' => 'service_type']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getPlot0() {
-		return $this->hasOne(RealEstateDetails::className(), ['id' => 'plot']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPlot0() {
+        return $this->hasOne(RealEstateDetails::className(), ['id' => 'plot']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getSpaceForLicense() {
-		return $this->hasOne(RealEstateDetails::className(), ['id' => 'space_for_license']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSpaceForLicense() {
+        return $this->hasOne(RealEstateDetails::className(), ['id' => 'space_for_license']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getSponsor0() {
-		return $this->hasOne(Sponsor::className(), ['id' => 'sponsor']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSponsor0() {
+        return $this->hasOne(Sponsor::className(), ['id' => 'sponsor']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getTax0() {
-		return $this->hasOne(Tax::className(), ['id' => 'tax']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTax0() {
+        return $this->hasOne(Tax::className(), ['id' => 'tax']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getCustomer0() {
-		return $this->hasOne(Debtor::className(), ['id' => 'customer']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCustomer0() {
+        return $this->hasOne(Debtor::className(), ['id' => 'customer']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getSalesEmployee() {
-		return $this->hasOne(AdminUsers::className(), ['id' => 'sales_employee_id']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSalesEmployee() {
+        return $this->hasOne(AdminUsers::className(), ['id' => 'sales_employee_id']);
+    }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getAccountsEmployee() {
-		return $this->hasOne(AdminUsers::className(), ['id' => 'accounts_employee_id']);
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAccountsEmployee() {
+        return $this->hasOne(AdminUsers::className(), ['id' => 'accounts_employee_id']);
+    }
 
 }

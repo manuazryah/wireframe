@@ -3,6 +3,9 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
+use common\models\Debtor;
+use kartik\select2\Select2;
+use common\models\Sponsor;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\LicencingMasterSearch */
@@ -18,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
         </div>
         <div class="box-body table-responsive">
-            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+            <?php // echo $this->render('_search', ['model' => $searchModel]);   ?>
 
             <?=
             GridView::widget([
@@ -29,17 +32,57 @@ $this->params['breadcrumbs'][] = $this->title;
                     'appointment_no',
                     [
                         'attribute' => 'customer_id',
-                        'value' => function($data) {
-                            return common\models\Debtor::findOne($data->customer_id)->company_name;
+                        'format' => 'raw',
+                        'value' => function ($data) {
+                            if (isset($data->customer_id)) {
+                                return \yii\helpers\Html::a(Debtor::findOne($data->customer_id)->company_name, ['/masters/debtor/update', 'id' => $data->customer_id], ['target' => '_blank']);
+                            } else {
+                                return '';
+                            }
                         },
-                        'filter' => ArrayHelper::map(common\models\Debtor::find()->asArray()->all(), 'id', 'company_name'),
+                        'filter' => Select2::widget([
+                            'name' => 'LicencingMasterSearch[customer_id]',
+                            'model' => $searchModel,
+                            'value' => $searchModel->customer_id,
+                            'data' => ArrayHelper::map(
+                                    common\models\Debtor::findAll(['status' => 1]), 'id', 'company_name'
+                            ),
+                            'size' => Select2::MEDIUM,
+                            'options' => [
+                                'placeholder' => '-- Select --',
+                                'style' => 'width: 300px;'
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]),
                     ],
                     [
                         'attribute' => 'sponsor',
-                        'value' => function($data) {
-                            return common\models\Sponsor::findOne($data->sponsor)->name;
+                        'format' => 'raw',
+                        'value' => function ($data) {
+                            if (isset($data->sponsor)) {
+                                return \yii\helpers\Html::a(Sponsor::findOne($data->sponsor)->name, ['/masters/sponsor/update', 'id' => $data->sponsor], ['target' => '_blank']);
+                            } else {
+                                return '';
+                            }
                         },
-                        'filter' => ArrayHelper::map(common\models\Sponsor::find()->asArray()->all(), 'id', 'name'),
+                        'filter' => Select2::widget([
+                            'name' => 'AppointmentSearch[sponsor]',
+                            'model' => $searchModel,
+                            'value' => $searchModel->sponsor,
+                            'data' => ArrayHelper::map(
+                                    common\models\Sponsor::findAll(['status' => 1]), 'id', 'name'
+                            ),
+                            'size' => Select2::MEDIUM,
+                            'options' => [
+                                'placeholder' => '-- Select --',
+                                'style' => 'width: 300px;'
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]),
                     ],
                     [
                         'attribute' => 'status',

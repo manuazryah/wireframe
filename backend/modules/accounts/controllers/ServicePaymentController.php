@@ -6,8 +6,20 @@ use Yii;
 use common\models\AppointmentSearch;
 use common\models\Appointment;
 use common\models\AppointmentService;
+use kartik\mpdf\Pdf;
 
 class ServicePaymentController extends \yii\web\Controller {
+
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
 
     public function actionIndex() {
         $searchModel = new AppointmentSearch();
@@ -22,29 +34,36 @@ class ServicePaymentController extends \yii\web\Controller {
         ]);
     }
 
-    public function actionServicePayment($id) {
+    public function actionServicePayment($id, $prfrma_id = NULL) {
         $services = AppointmentService::findAll(['appointment_id' => $id]);
         $appointment = Appointment::findOne($id);
-        if (Yii::$app->request->post()) {
-            $data = Yii::$app->request->post();
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                if ($this->SaveServiceDetails($data, $appointment) && $this->SaveMultipleChequeDetails($data, $appointment) && $this->SaveOneTimeChequeDetails($data, $appointment) && $this->SecurityChequeDetails($data, $appointment)) {
-                    $transaction->commit();
-                    $appointment->status = 3;
-                    $appointment->save(FALSE);
-                    Yii::$app->session->setFlash('success', "Payment Details Added successfully");
-                } else {
-                    $transaction->rollBack();
-                    Yii::$app->session->setFlash('error', "There was a problem adding payment details. Please try again.");
-                }
-            } catch (Exception $e) {
-                $transaction->rollBack();
-                Yii::$app->session->setFlash('error', "There was a problem creating adding payment details. Please try again.");
-            }
-            return $this->redirect(['index']);
+        if (!isset($prfrma_id)) {
+            $model = new AppointmentService();
+        } else {
+            $model = AppointmentService::findOne($prfrma_id);
         }
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
+            $model->appointment_id = $id;
+            $tax_amount = 0;
+            if ($model->tax != '') {
+                $tax_data = \common\models\Tax::find()->where(['id' => $model->tax])->one();
+                $model->tax_percentage = $tax_data->value;
+                if ($model->amount > 0) {
+                    if ($tax_data->value != '' && $tax_data->value > 0) {
+                        $tax_amount = ($model->amount * $tax_data->value) / 100;
+                    }
+                }
+                $model->tax_amount = $tax_amount;
+            }
+            $model->total = $model->amount + $tax_amount;
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', "Services Updated Successfully");
+                return $this->redirect(['service-payment', 'id' => $id]);
+            }
+        }
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
         return $this->render('add', [
+                    'model' => $model,
                     'services' => $services,
                     'appointment' => $appointment,
                     'id' => $id,
@@ -52,6 +71,38 @@ class ServicePaymentController extends \yii\web\Controller {
     }
 
     public function actionServicePaymentUpdate($id) {
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
+        $appointment = Appointment::findOne($id);
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post();
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                if ($this->SaveMultipleChequeDetails($data, $appointment) && $this->SaveOneTimeChequeDetails($data, $appointment) && $this->SecurityChequeDetails($data, $appointment) && $this->AppointmentUpdate($data, $appointment)) {
+                    $transaction->commit();
+                    $appointment->sub_status = 2;
+                    $appointment->save(FALSE);
+                    Yii::$app->session->setFlash('success', "Payment Details Added successfully");
+                    return $this->redirect(['service-payment-details', 'id' => $id]);
+                } else {
+                    $transaction->rollBack();
+                    Yii::$app->session->setFlash('error', "There was a problem adding payment details. Please try again.");
+                    return $this->redirect(Yii::$app->request->referrer);
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error', "There was a problem creating adding payment details. Please try again.");
+                return $this->redirect(Yii::$app->request->referrer);
+            }
+            return $this->redirect(['index']);
+        }
+        return $this->render('update', [
+                    'services' => $services,
+                    'appointment' => $appointment,
+                    'id' => $id,
+        ]);
+    }
+
+    public function actionServicePaymentDetails($id) {
         $services = AppointmentService::findAll(['appointment_id' => $id]);
         $security_cheque = \common\models\SecurityCheque::find()->where(['appointment_id' => $id])->one();
         $services_ontime_amount = AppointmentService::find()->where(['appointment_id' => $id, 'payment_type' => 2])->sum('total');
@@ -65,11 +116,13 @@ class ServicePaymentController extends \yii\web\Controller {
             $update = $data['update'];
             $arr = [];
             $i = 0;
-            foreach ($update as $key => $val) {
-                $arr[$key]['cheque_num'] = $val['cheque_num'][0];
-                $arr[$key]['cheque_date'] = $val['cheque_date'][0];
-                $arr[$key]['amount'] = $val['amount'][0];
-                $i++;
+            if (isset($update)) {
+                foreach ($update as $key => $val) {
+                    $arr[$key]['cheque_num'] = $val['cheque_num'][0];
+                    $arr[$key]['cheque_date'] = $val['cheque_date'][0];
+                    $arr[$key]['amount'] = $val['amount'][0];
+                    $i++;
+                }
             }
             foreach ($arr as $key => $value) {
                 $aditional = \common\models\ServiceChequeDetails::findOne($key);
@@ -88,9 +141,10 @@ class ServicePaymentController extends \yii\web\Controller {
                     $security_cheque->save();
                 }
             }
+            $this->AppointmentUpdate($data, $appointment);
             return $this->redirect(Yii::$app->request->referrer);
         }
-        return $this->render('update', [
+        return $this->render('payment_details', [
                     'services' => $services,
                     'appointment' => $appointment,
                     'id' => $id,
@@ -137,8 +191,8 @@ class ServicePaymentController extends \yii\web\Controller {
      */
     public function SaveMultipleChequeDetails($data, $appointment) {
         $flag = 0;
-        $creatematerial = $data['create'];
-        if (isset($creatematerial) && $creatematerial != '') {
+        if (isset($data['create']) && $data['create'] != '') {
+            $creatematerial = $data['create'];
             $arr = [];
             $i = 0;
 
@@ -181,8 +235,8 @@ class ServicePaymentController extends \yii\web\Controller {
      */
     public function SaveOneTimeChequeDetails($data, $appointment) {
         $flag = 0;
-        $creatematerial = $data['createone'];
-        if (isset($creatematerial) && $creatematerial != '') {
+        if (isset($data['createone']) && $data['createone'] != '') {
+            $creatematerial = $data['createone'];
             if ($creatematerial['amount'] > 0) {
                 $aditional = new \common\models\ServiceChequeDetails();
                 $aditional->appointment_id = $appointment->id;
@@ -217,8 +271,8 @@ class ServicePaymentController extends \yii\web\Controller {
      */
     public function SecurityChequeDetails($data, $appointment) {
         $flag = 0;
-        $createsecurity = $data['Security'];
-        if (isset($createsecurity) && $createsecurity != '') {
+        if (isset($data['Security']) && $data['Security'] != '') {
+            $createsecurity = $data['Security'];
             if ($createsecurity['amount'] > 0) {
                 $aditional = new \common\models\SecurityCheque();
                 $aditional->appointment_id = $appointment->id;
@@ -243,6 +297,21 @@ class ServicePaymentController extends \yii\web\Controller {
         } else {
             return FALSE;
         }
+    }
+
+    /**
+     * To Save Security Cheque details
+     */
+    public function AppointmentUpdate($data, $appointment) {
+
+        if (isset($data['Appointment']) && $data['Appointment'] != '') {
+            $updateappointment = $data['Appointment'];
+            $appointment->license_expiry_date = $updateappointment['license_expiry_date'];
+            $appointment->contract_start_date = $updateappointment['contract_start_date'];
+            $appointment->contract_end_date = $updateappointment['contract_end_date'];
+            $appointment->update();
+        }
+        return TRUE;
     }
 
     /**
@@ -314,6 +383,7 @@ class ServicePaymentController extends \yii\web\Controller {
                     'cash_paid' => $cash_paid,
                     'total_received' => $total_received,
                     'total_balance' => $total_balance,
+                    'id' => $id,
         ]);
     }
 
@@ -546,6 +616,19 @@ class ServicePaymentController extends \yii\web\Controller {
         return $data;
     }
 
+    public function actionChangeServiceTotal() {
+        if (Yii::$app->request->isAjax) {
+            $total_amt = $_POST['amt_val'];
+            $service_id = $_POST['service_id'];
+            $services = AppointmentService::find()->where(['id' => $service_id])->one();
+            if (!empty($services)) {
+                $services->total = $total_amt;
+                $services->update();
+            }
+        }
+        return 1;
+    }
+
     public function actionGetSecurityChequeDetails() {
         if (Yii::$app->request->isAjax) {
             $data = $this->renderPartial('_form_security_cheque', [
@@ -580,6 +663,229 @@ class ServicePaymentController extends \yii\web\Controller {
         ]);
         echo $data;
         exit;
+    }
+
+    /*
+     * This function delete services based on the esimate id
+     */
+
+    public function actionDeletePerforma($id) {
+        $model = AppointmentService::findOne($id);
+        if ($model->delete()) {
+            Yii::$app->session->setFlash('success', "Service Removed Successfully");
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /*
+     * This function get tax details
+     */
+
+    public function actionGetTax() {
+        $data = '';
+        if (Yii::$app->request->isAjax) {
+            $tax_id = $_POST['tax'];
+            $tax_data = \common\models\Tax::find()->where(['id' => $tax_id])->one();
+            if (!empty($tax_data)) {
+                $data = $tax_data->value;
+            }
+        }
+        return $data;
+    }
+
+    /*
+     * This function will edit the close estimate text field on double click
+     * and also save changes to the database
+     */
+
+    public function actionEditService() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $name = $_POST['name'];
+            $value = $_POST['valuee'];
+            $service = AppointmentService::find()->where(['id' => $id])->one();
+            if ($value != '') {
+                $service->$name = $value;
+                $service->UB = Yii::$app->user->identity->id;
+                if ($name == 'amount') {
+                    $tax_amount = 0;
+                    if ($service->amount != '' && $service->amount > 0) {
+                        $tax_val = $service->tax != '' ? \common\models\Tax::findOne($service->tax)->value : '';
+                        if ($tax_val != '' && $tax_val > 0) {
+                            $tax_amount = ($service->amount * $tax_val) / 100;
+                        }
+                        $service->tax_amount = $tax_amount;
+                        $service->tax_percentage = $tax_val;
+                        $tot = $service->amount + $tax_amount;
+                        $service->total = $tot;
+                    }
+                }
+                if ($service->save()) {
+                    return $service->total;
+                }
+            }
+        }
+    }
+
+    public function actionEditServiceTax() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $name = $_POST['name'];
+            $value = $_POST['valuee'];
+            $service = AppointmentService::find()->where(['id' => $id])->one();
+            if ($value != '') {
+                $service->$name = $value;
+                $service->UB = Yii::$app->user->identity->id;
+                $tax_amount = 0;
+                if ($service->amount != '' && $service->amount > 0) {
+                    $tax_val = $value != '' ? \common\models\Tax::findOne($value)->value : '';
+                    if ($tax_val != '' && $tax_val > 0) {
+                        $tax_amount = ($service->amount * $tax_val) / 100;
+                    }
+                    $service->tax_amount = $tax_amount;
+                    $service->tax_percentage = $tax_val;
+                    $tot = $service->amount + $tax_amount;
+                    $service->total = $tot;
+                }
+                if ($service->save()) {
+                    return $service->total;
+                }
+            }
+        }
+    }
+
+    public function actionEditPaymentType() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $value = $_POST['valuee'];
+            $service = AppointmentService::find()->where(['id' => $id])->one();
+            if ($value != '') {
+                $service->payment_type = $value;
+                $service->UB = Yii::$app->user->identity->id;
+                if ($service->save()) {
+                    return $service->payment_type;
+                }
+            }
+        }
+    }
+
+    public function actionServiceComplete($id) {
+        $apointment = Appointment::findOne($id);
+        $services = AppointmentService::findAll(['appointment_id' => $id]);
+        if (!empty($services)) {
+            if (!empty($apointment)) {
+                $apointment->sub_status = 1; //appointmrnt complete
+                if ($apointment->save(FALSE)) {
+                    if ($apointment->sub_status == 1) {
+                        if ($this->AddSponsorPayment($apointment)) {
+                            Yii::$app->session->setFlash('success', "Services Completed");
+                            return $this->redirect(['service-payment-update', 'id' => $id]);
+                        } else {
+                            $apointment->sub_status == 0;
+                            $apointment->save(FALSE);
+                            Yii::$app->session->setFlash('error', "Something went wrong.Please try again.");
+                            return $this->redirect(Yii::$app->request->referrer);
+                        }
+                    } else {
+                        Yii::$app->session->setFlash('error', "Something went wrong.Please try again.");
+                        return $this->redirect(Yii::$app->request->referrer);
+                    }
+                }
+            }
+        } else {
+            Yii::$app->session->setFlash('success', "Services not completed");
+            return $this->redirect(Yii::$app->request->referrer);
+        }
+        return $this->redirect(['service-payment/index']);
+    }
+
+    public function actionServiceDetailsComplete($id) {
+        $apointment = Appointment::findOne($id);
+        if (!empty($apointment)) {
+            $service_cheque_details = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'cheque_number' => ''])->all();
+            if (empty($service_cheque_details)) {
+                $apointment->sub_status = 3; //appointmrnt complete
+                if ($apointment->save(FALSE)) {
+                    if ($apointment->sub_status == 3) {
+                        Yii::$app->session->setFlash('success', "Services Completed");
+                        return $this->redirect(['payment', 'id' => $id]);
+                    } else {
+                        Yii::$app->session->setFlash('error', "Something went wrong.Please try again.");
+                        return $this->redirect(Yii::$app->request->referrer);
+                    }
+                }
+            } else {
+                Yii::$app->session->setFlash('error', "Cheque Details Not complete.Please fill the cheque nunber");
+                return $this->redirect(Yii::$app->request->referrer);
+            }
+        }
+        return $this->redirect(['service-payment-details/index']);
+    }
+
+    public function AddSponsorPayment($apointment) {
+        $flag = 0;
+        if ($apointment->sponsor != '') {
+            $sponsor = \common\models\Sponsor::find()->where(['id' => $apointment->sponsor])->one();
+            if (!empty($sponsor) && $sponsor->yearly_charge != '' && $sponsor->yearly_charge >= 1) {
+                $sponsor_payment = \common\models\SponsorPayment::find()->where(['sponsor_id' => $sponsor->id])->orderBy(['id' => SORT_DESC])->one();
+                if (empty($sponsor_payment)) {
+                    $balance = $sponsor->yearly_charge;
+                } else {
+                    $balance = $sponsor->yearly_charge + $sponsor_payment->balance;
+                }
+                $model = new \common\models\SponsorPayment();
+                $model->sponsor_id = $sponsor->id;
+                $model->appointment_id = $apointment->id;
+                $model->customer_id = $apointment->customer;
+                $model->type = 1;
+                $model->amount = $sponsor->yearly_charge;
+                $model->balance = $balance;
+                Yii::$app->SetValues->Attributes($model);
+                if ($model->save()) {
+                    $flag = 1;
+                } else {
+                    $flag = 0;
+                }
+            } else {
+                $flag = 1;
+            }
+        } else {
+            $flag = 1;
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function actionReport($id) {
+        $model = \common\models\PaymentDetails::find()->where(['id' => $id])->one();
+        $content = $this->renderPartial('report', [
+            'model' => $model
+        ]);
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/custom.css',
+            'methods' => [
+                'SetHeader' => ['Generated By: Universal Business Links||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+        return $pdf->render();
+    }
+
+    public function actionSideAgreement() {
+        $model = new \common\models\SideAgreement();
+
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
+            Yii::$app->getSession()->setFlash('success', 'New Currency Created Successfully');
+            return $this->redirect(['index']);
+        }
+        return $this->renderAjax('side_agreement_form', [
+                    'model' => $model,
+        ]);
     }
 
 }

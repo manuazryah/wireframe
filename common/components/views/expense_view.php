@@ -10,24 +10,26 @@ if (!empty($appointment)) {
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
             <ul>
                 <li>Total Received</li>
-                <span><?= $paymentmaster->amount_paid ?></span>
+                <span><?= !empty($paymentmaster) ? sprintf('%0.2f', $paymentmaster->amount_paid) : sprintf('%0.2f', 0); ?></span>
             </ul>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
             <ul>
                 <li>Total Expense</li>
-                <span><?= $paymentmaster->total_amount ?></span>
+                <span><?= sprintf('%0.2f', $projection_amount); ?></span>
             </ul>
         </div>
         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
             <ul>
                 <li>Balance</li>
-                <span style="color: #939b21"><?= $paymentmaster->balance_amount ?></span>
+                <span style="color: #939b21"><?= !empty($paymentmaster) ? sprintf('%0.2f', $paymentmaster->balance_amount) : sprintf('%0.2f', 0); ?></span>
             </ul>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
             <ul>
-                <li><a href="" class="button">View payment history</a></li>
+                <li>
+                    <?= Html::a('View payment history', ['/accounts/service-payment/payment-history', 'id' => $appointment->id], ['class' => 'button', 'target' => '_blank']) ?>
+                </li>
             </ul>
         </div>
     </div>

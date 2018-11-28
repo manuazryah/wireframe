@@ -14,6 +14,17 @@ use yii\filters\VerbFilter;
  */
 class ServicesController extends Controller {
 
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @inheritdoc
      */
@@ -35,6 +46,7 @@ class ServicesController extends Controller {
     public function actionIndex() {
         $searchModel = new ServicesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination = ['pageSize' => 40,];
 
         return $this->render('index', [
                     'searchModel' => $searchModel,

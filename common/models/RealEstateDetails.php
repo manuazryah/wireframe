@@ -30,6 +30,9 @@ use Yii;
  */
 class RealEstateDetails extends \yii\db\ActiveRecord {
 
+    public $customer;
+    public $appointment;
+
     /**
      * {@inheritdoc}
      */
@@ -42,7 +45,7 @@ class RealEstateDetails extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['master_id', 'category', 'availability', 'customer_id', 'square_feet', 'status', 'CB', 'UB'], 'integer'],
+            [['type', 'master_id', 'category', 'availability', 'customer_id', 'square_feet', 'status', 'CB', 'UB'], 'integer'],
             [['cost', 'rent_cost', 'off_rent'], 'number'],
             [['comment'], 'string'],
             [['DOC', 'DOU', 'code'], 'safe'],

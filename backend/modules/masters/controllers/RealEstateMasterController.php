@@ -15,6 +15,17 @@ use yii\web\UploadedFile;
  */
 class RealEstateMasterController extends Controller {
 
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @inheritdoc
      */
@@ -23,7 +34,7 @@ class RealEstateMasterController extends Controller {
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+//                    'delete' => ['POST'],
                 ],
             ],
         ];
@@ -36,6 +47,7 @@ class RealEstateMasterController extends Controller {
     public function actionIndex() {
         $searchModel = new RealEstateMasterSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination = ['pageSize' => 40,];
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -67,6 +79,7 @@ class RealEstateMasterController extends Controller {
             $aggrement = UploadedFile::getInstance($model, 'aggrement');
             $ejari = UploadedFile::getInstance($model, 'ejari');
             $cheque_copy = UploadedFile::getInstance($model, 'cheque_copy');
+            $model->ejari_expiry = $model->ejari_expiry != '' ? date('Y-m-d', strtotime($model->ejari_expiry)) : '';
             if (!empty($aggrement)) {
                 $model->aggrement = $aggrement->extension;
             }
@@ -92,12 +105,12 @@ class RealEstateMasterController extends Controller {
     }
 
     public function EstateDetails($model) {
-        if ($model->number_of_license >= 1) {
+        if (isset($model->number_of_license) && $model->number_of_license >= 1) {
             for ($i = 1; $i <= $model->number_of_license; $i++) {
                 $this->SaveEstateDetails($model, 1, $i);
             }
         }
-        if ($model->number_of_plots >= 1) {
+        if (isset($model->number_of_plots) && $model->number_of_plots >= 1) {
             for ($i = 1; $i <= $model->number_of_plots; $i++) {
                 $this->SaveEstateDetails($model, 2, $i);
             }
@@ -107,6 +120,7 @@ class RealEstateMasterController extends Controller {
 
     public function SaveEstateDetails($model_master, $category, $code) {
         $model = new \common\models\RealEstateDetails();
+        $model->type = $model_master->type;
         $model->master_id = $model_master->id;
         $model->category = $category;
         if ($category == 2) {
@@ -116,6 +130,14 @@ class RealEstateMasterController extends Controller {
             $model->code = $code;
         }
         $model->save();
+        return;
+    }
+
+    public function RemoveEstateDetails($model_master, $category) {
+        $model = \common\models\RealEstateDetails::find()->where(['category' => $category, 'master_id' => $model_master->id])->orderBy(['id' => SORT_DESC])->one();
+        if (!empty($model)) {
+            $model->delete();
+        }
         return;
     }
 
@@ -212,6 +234,7 @@ class RealEstateMasterController extends Controller {
      * @return mixed
      */
     public function actionUpdate($id) {
+        $model_ = $this->findModel($id);
         $model = $this->findModel($id);
         $aggrement_ = $model->aggrement;
         $ejari_ = $model->ejari;
@@ -221,6 +244,7 @@ class RealEstateMasterController extends Controller {
             $aggrement = UploadedFile::getInstance($model, 'aggrement');
             $ejari = UploadedFile::getInstance($model, 'ejari');
             $cheque_copy = UploadedFile::getInstance($model, 'cheque_copy');
+            $model->ejari_expiry = $model->ejari_expiry != '' ? date('Y-m-d', strtotime($model->ejari_expiry)) : '';
             if (!empty($aggrement)) {
                 $model->aggrement = $aggrement->extension;
             } else {
@@ -237,7 +261,9 @@ class RealEstateMasterController extends Controller {
                 $model->cheque_copy = $cheque_copy_;
             }
             if ($model->save()) {
+                $this->UpdateRealEstateDetails($model, $model_);
                 $this->upload($model, $aggrement, $ejari, $cheque_copy);
+                Yii::$app->session->setFlash('success', "Real Estate Updated successfully");
             }
             return $this->redirect(['update', 'id' => $model->id]);
         } return $this->render('update', [
@@ -246,11 +272,40 @@ class RealEstateMasterController extends Controller {
         ]);
     }
 
+    public function UpdateRealEstateDetails($model, $model_) {
+        $license_count = $model->number_of_license - $model_->number_of_license;
+        $plot_count = $model->number_of_plots - $model_->number_of_plots;
+        if ($license_count >= 1) {
+            for ($i = $model_->number_of_license + 1; $i <= $model->number_of_license; $i++) {
+                $this->SaveEstateDetails($model, 1, $i);
+            }
+        }
+        if ($plot_count >= 1) {
+            for ($i = $model_->number_of_plots + 1; $i <= $model->number_of_plots; $i++) {
+                $this->SaveEstateDetails($model, 2, $i);
+            }
+        }
+        $license_reduce_count = $model_->number_of_license - $model->number_of_license;
+        $plot_reduce_count = $model_->number_of_plots - $model->number_of_plots;
+        if ($license_reduce_count >= 1) {
+            for ($i = 1; $i <= $license_reduce_count; $i++) {
+                $this->RemoveEstateDetails($model, 1);
+            }
+        }
+        if ($plot_reduce_count >= 1) {
+            for ($i = 1; $i <= $plot_reduce_count; $i++) {
+                $this->RemoveEstateDetails($model, 2);
+            }
+        }
+        return;
+    }
+
     public function actionRealEstateDetails($id) {
         $real_estate_master = RealEstateMaster::findOne($id);
         $searchModel = new \common\models\RealEstateDetailsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['master_id' => $id]);
+        $dataProvider->pagination = false;
 
         return $this->render('estate_details', [
                     'searchModel' => $searchModel,
@@ -278,9 +333,66 @@ class RealEstateMasterController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            if ($this->RemoveDetails($model) && $this->RemoveChequeDetails($model) && $model->delete()) {
+                $transaction->commit();
+                Yii::$app->session->setFlash('success', "Real Estate Removed successfully");
+            } else {
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error', "There was a problem for deletion. Please try again.");
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('error', "There was a problem for deletion. Please try again.");
+        }
 
         return $this->redirect(['index']);
+    }
+
+    public function RemoveDetails($model) {
+        $flag = 0;
+        $model_details = \common\models\RealEstateDetails::find()->where(['master_id' => $model->id])->all();
+        if (!empty($model_details)) {
+            foreach ($model_details as $value) {
+                if ($value->delete()) {
+                    $flag = 1;
+                } else {
+                    $flag = 0;
+                    break;
+                }
+            }
+        } else {
+            $flag = 1;
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function RemoveChequeDetails($model) {
+        $flag = 0;
+        $model_cheque = \common\models\ChequeDetails::find()->where(['master_id' => $model->id])->all();
+        if (!empty($model_cheque)) {
+            foreach ($model_cheque as $value) {
+                if ($value->delete()) {
+                    $flag = 1;
+                } else {
+                    $flag = 0;
+                    break;
+                }
+            }
+        } else {
+            $flag = 1;
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     /**

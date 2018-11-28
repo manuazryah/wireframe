@@ -8,11 +8,25 @@ use common\models\AppointmentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use common\models\RealEstateDetails;
+use common\models\RealEstateMaster;
 
 /**
  * AppointmentController implements the CRUD actions for Appointment model.
  */
 class AppointmentController extends Controller {
+
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
 
     /**
      * @inheritdoc
@@ -35,7 +49,8 @@ class AppointmentController extends Controller {
     public function actionIndex() {
         $searchModel = new AppointmentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andWhere(['status' => 1]);
+//        $dataProvider->query->andWhere(['status' => 1]);
+        $dataProvider->pagination = ['pageSize' => 40,];
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -49,8 +64,10 @@ class AppointmentController extends Controller {
      * @return mixed
      */
     public function actionView($id) {
+        $services = \common\models\AppointmentService::findAll(['appointment_id' => $id]);
         return $this->render('view', [
                     'model' => $this->findModel($id),
+                    'services' => $services,
         ]);
     }
 
@@ -64,6 +81,12 @@ class AppointmentController extends Controller {
 
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
             $model->sales_employee_id = Yii::$app->user->identity->post_id;
+            if (isset($model->plot) && $model->plot != '') {
+                $model->plot = implode(',', $model->plot);
+            }
+            if (isset($model->space_for_license) && $model->space_for_license != '') {
+                $model->space_for_license = implode(',', $model->space_for_license);
+            }
             if ($model->save()) {
                 $this->updateEstateManagement($model);
                 if ($model->service_type == 2 || $model->service_type == 3) {
@@ -78,14 +101,28 @@ class AppointmentController extends Controller {
 
     public function updateEstateManagement($model) {
         if ($model->plot != '') {
-            $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $model->plot])->one();
-            $estate_details->availability = 0;
-            $estate_details->update();
+            $plots = explode(',', $model->plot);
+            if (!empty($plots)) {
+                foreach ($plots as $plot) {
+                    $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $plot])->one();
+                    if (!empty($estate_details)) {
+                        $estate_details->status = 0;
+                        $estate_details->save(FALSE);
+                    }
+                }
+            }
         }
         if ($model->space_for_license != '') {
-            $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $model->space_for_license])->one();
-            $estate_details->availability = 0;
-            $estate_details->update();
+            $space_for_license = explode(',', $model->space_for_license);
+            if (!empty($space_for_license)) {
+                foreach ($space_for_license as $license) {
+                    $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $license])->one();
+                    if (!empty($estate_details)) {
+                        $estate_details->status = 0;
+                        $estate_details->save(FALSE);
+                    }
+                }
+            }
         }
     }
 
@@ -115,16 +152,70 @@ class AppointmentController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
-
+        $service_type = $model->service_type;
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
             $model->sales_employee_id = Yii::$app->user->identity->post_id;
+            if (isset($model->plot) && $model->plot != '') {
+                $model->plot = implode(',', $model->plot);
+            }
+            if (isset($model->space_for_license) && $model->space_for_license != '') {
+                $model->space_for_license = implode(',', $model->space_for_license);
+            }
             if ($model->save()) {
-                //   Yii::$app->session->setFlash('success', "Appointment Updated Successfully");
+                if ($model->service_type != $service_type) {
+                    $this->removeService($model);
+                }
+                $this->removeEstateDetails($model);
+                $this->updateEstateManagement($model);
+                Yii::$app->session->setFlash('success', "Appointment Updated Successfully");
             }
             return $this->redirect(['update', 'id' => $model->id]);
         } return $this->render('update', [
                     'model' => $model,
         ]);
+    }
+
+    public function removeEstateDetails($model) {
+        if ($model->plot != '') {
+            $plots = explode(',', $model->plot);
+            if (!empty($plots)) {
+                foreach ($plots as $plot) {
+                    $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $plot])->one();
+                    if (!empty($estate_details)) {
+                        $estate_details->status = 1;
+                        $estate_details->save(FALSE);
+                    }
+                }
+            }
+        }
+        if ($model->space_for_license != '') {
+            $space_for_license = explode(',', $model->space_for_license);
+            if (!empty($space_for_license)) {
+                foreach ($space_for_license as $license) {
+                    $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $license])->one();
+                    if (!empty($estate_details)) {
+                        $estate_details->status = 1;
+                        $estate_details->save(FALSE);
+                    }
+                }
+            }
+        }
+        return;
+    }
+
+    /**
+     * Remove Appointment service when change the service type
+     */
+    public function removeService($model) {
+        $services = \common\models\AppointmentService::find()->where(['appointment_id' => $model->id])->all();
+        if (!empty($services)) {
+            foreach ($services as $service) {
+                if (!empty($service)) {
+                    $service->delete();
+                }
+            }
+        }
+        return;
     }
 
     /**
@@ -214,6 +305,122 @@ class AppointmentController extends Controller {
         return $this->renderAjax('_form_debtor', [
                     'model' => $model,
         ]);
+    }
+
+    /*
+     * This function select supplier based on real estate space
+     * return result to the view
+     */
+
+    public function actionGetSupplier() {
+        if (Yii::$app->request->isAjax) {
+            $space = $_POST['space'];
+            $arr = [];
+            $sponsor = '';
+            if (!empty($space)) {
+                foreach ($space as $value) {
+                    if ($value != '') {
+                        $realestate_details = RealEstateDetails::find()->where(['id' => $value])->one();
+                        $arr[] = $realestate_details->master_id;
+                    }
+                }
+            }
+            if (!empty($arr)) {
+                if (count(array_unique($arr)) === 1) {
+                    $realestate_master = RealEstateMaster::find()->where(['id' => array_shift(array_values($arr))])->one();
+                    if (!empty($realestate_master)) {
+                        $sponsor = $realestate_master->sponsor;
+                    }
+                }
+            }
+            echo $sponsor;
+            exit;
+        }
+    }
+
+    /*
+     * This function select ports based on service_type
+     * return result to the view
+     */
+
+    public function actionGetPlots() {
+        if (Yii::$app->request->isAjax) {
+            $type = $_POST['type'];
+            $id = $_POST['id'];
+            $plot_arr = [];
+            $licence_arr = [];
+            $model = Appointment::find()->where(['id' => $id])->one();
+            if (empty($model)) {
+                if ($model->service_type != 5) {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                } else {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                }
+            } else {
+                if ($model->service_type != 5) {
+                    if ($model->plot == '') {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 0])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    } else {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 0])->orWhere(['in', 'id', explode(',', $model->plot)])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    }
+                    if ($model->space_for_license == '') {
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    } else {
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 0])->orWhere(['in', 'id', explode(',', $model->space_for_license)])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    }
+                } else {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 1])->all(), 'id', function($model) {
+                                return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                }
+            }
+            $options = '';
+            if (!empty($plots)) {
+                foreach ($plots as $key => $value) {
+                    $options .= "<option value='" . $key . "'>" . $value . "</option>";
+                }
+            }
+            $options1 = '';
+            if (!empty($licenses)) {
+                foreach ($licenses as $key => $value) {
+                    $options1 .= "<option value='" . $key . "'>" . $value . "</option>";
+                }
+            }
+            $arr_variable1 = array('plots' => $options, 'license' => $options1);
+            $data['result'] = $arr_variable1;
+            echo json_encode($data);
+        }
     }
 
 }

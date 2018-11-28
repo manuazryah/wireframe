@@ -10,16 +10,15 @@ use common\models\Appointment;
 /**
  * AppointmentSearch represents the model behind the search form about `common\models\Appointment`.
  */
-class AppointmentSearch extends Appointment
-{
+class AppointmentSearch extends Appointment {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['id', 'customer', 'service_type', 'plot', 'space_for_license', 'sponsor', 'tax', 'supplier', 'no_partners', 'approval_status', 'sales_employee_id', 'accounts_employee_id', 'operations_employee_id', 'status', 'CB', 'UB'], 'integer'],
-            [['service_id', 'start_date', 'expiry_date', 'total_amount', 'paid_amount', 'comment', 'DOC', 'DOU'], 'safe'],
+            [['id', 'customer', 'service_type', 'sponsor', 'tax', 'supplier', 'no_partners', 'approval_status', 'sales_employee_id', 'accounts_employee_id', 'operations_employee_id', 'status', 'CB', 'UB'], 'integer'],
+            [['service_id', 'start_date', 'expiry_date', 'total_amount', 'paid_amount', 'comment', 'DOC', 'DOU', 'plot', 'space_for_license'], 'safe'],
             [['estimated_cost'], 'number'],
         ];
     }
@@ -27,8 +26,7 @@ class AppointmentSearch extends Appointment
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -40,9 +38,8 @@ class AppointmentSearch extends Appointment
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
-        $query = Appointment::find();
+    public function search($params) {
+        $query = Appointment::find()->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 
@@ -84,10 +81,11 @@ class AppointmentSearch extends Appointment
         ]);
 
         $query->andFilterWhere(['like', 'service_id', $this->service_id])
-            ->andFilterWhere(['like', 'total_amount', $this->total_amount])
-            ->andFilterWhere(['like', 'paid_amount', $this->paid_amount])
-            ->andFilterWhere(['like', 'comment', $this->comment]);
+                ->andFilterWhere(['like', 'total_amount', $this->total_amount])
+                ->andFilterWhere(['like', 'paid_amount', $this->paid_amount])
+                ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;
     }
+
 }

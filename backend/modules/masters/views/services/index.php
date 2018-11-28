@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter' => ArrayHelper::map(ServiceCategory::find()->asArray()->all(), 'id', 'category_name'),
                         'filterOptions' => array('id' => "service_category_search"),
                     ],
-                                [
+                    [
                         'attribute' => 'type',
                         'value' => function($data) {
                             return ServiceType::findOne($data->type)->type;
@@ -48,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'service_name',
                     'service_code',
+                    'estimated_cost',
                     // 'supplier',
                     // 'estimated_cost',
                     // 'tax_id',

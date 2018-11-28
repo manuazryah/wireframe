@@ -5,12 +5,28 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use common\models\CompanyManagement;
 use common\models\Sponsor;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\RealEstateMaster */
 /* @var $form yii\widgets\ActiveForm */
+$plots = common\models\RealEstateDetails::find()->where(['master_id' => $model->id, 'category' => 2])->all();
+$plots_arr = [];
+if (!empty($plots)) {
+    foreach ($plots as $plot) {
+        $plots_arr[] = $plot->id;
+    }
+}
+$licenses = common\models\RealEstateDetails::find()->where(['master_id' => $model->id, 'category' => 1])->all();
+$license_arr = [];
+if (!empty($licenses)) {
+    foreach ($licenses as $license) {
+        $license_arr[] = $license->id;
+    }
+}
+$plot_count = common\models\Appointment::find()->where(['plot' => $plots_arr])->count();
+$license_count = common\models\Appointment::find()->where(['space_for_license' => $license_arr])->count();
 ?>
-
 <div class="real-estate-master-form form-inline">
     <?= \common\components\AlertMessageWidget::widget() ?>
     <?php $form = ActiveForm::begin(); ?>
@@ -38,6 +54,10 @@ use common\models\Sponsor;
     </section>
     <div class="row">
         <div class='col-md-4  col-xs-12 left_padd'>
+            <?= $form->field($model, 'type')->dropDownList(['1' => 'Istadama'], ['prompt' => 'Choose Type', 'readonly' => true]) ?>
+
+        </div>
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?php $companies = ArrayHelper::map(CompanyManagement::findAll(['status' => 1]), 'id', 'company_name'); ?>
             <?= $form->field($model, 'company')->dropDownList($companies, ['prompt' => 'Choose Company']) ?>
 
@@ -60,21 +80,21 @@ use common\models\Sponsor;
 
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>    
-            <?= $form->field($model, 'number_of_license')->textInput() ?>
+            <?= $form->field($model, 'number_of_license')->textInput(['type' => 'number', 'min' => 1, 'readonly' => $model->type == 1 || $license_count > 0 ? TRUE : FALSE]) ?>
+
+        </div>
+        <div class='col-md-4  col-xs-12 left_padd'>    
+            <?= $form->field($model, 'number_of_plots')->textInput(['type' => 'number', 'min' => 1, 'readonly' => $plot_count > 0 ? TRUE : FALSE]) ?>
+
+        </div>
+        <div class='col-md-4  col-xs-12 left_padd'>    
+            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
 
         </div>
     </div>
     <div class="row">
-        <div class='col-md-8  col-xs-12 left_padd'>    
+        <div class='col-md-12  col-xs-12 left_padd'>    
             <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
-        </div>
-        <div class='col-md-4  col-xs-12 left_padd'>
-            <div class='col-md-12 col-xs-12 pad-0'>
-                <?= $form->field($model, 'number_of_plots')->textInput() ?>
-            </div>
-            <div class='col-md-12 col-xs-12 pad-0'>
-                <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
-            </div>
         </div>
     </div>
     <div class="row">
@@ -170,7 +190,7 @@ use common\models\Sponsor;
         </div>
     </div>
     <div class="row">
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-3 col-xs-12 left_padd'>    
             <?= $form->field($model, 'aggrement')->fileInput(['multiple' => true]) ?>
             <?php
             if (!empty($model->aggrement)) {
@@ -180,7 +200,7 @@ use common\models\Sponsor;
             }
             ?>
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-3 col-xs-12 left_padd'>    
             <?= $form->field($model, 'ejari')->fileInput(['multiple' => true]) ?>
             <?php
             if (!empty($model->ejari)) {
@@ -190,7 +210,26 @@ use common\models\Sponsor;
             }
             ?>
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-3  col-xs-12 left_padd'>   
+            <?php
+            if (!$model->isNewRecord) {
+                $model->ejari_expiry = date('d-m-Y', strtotime($model->ejari_expiry));
+            } else {
+                $model->ejari_expiry = date('d-m-y');
+            }
+            ?>
+            <?=
+            $form->field($model, 'ejari_expiry')->widget(DatePicker::classname(), [
+                'type' => DatePicker::TYPE_INPUT,
+                'pluginOptions' => [
+                    'autoclose' => true,
+                    'format' => 'dd-m-yyyy'
+                ]
+            ]);
+            ?>
+
+        </div>
+        <div class='col-md-3 col-xs-12 left_padd'>    
             <?= $form->field($model, 'cheque_copy')->fileInput(['multiple' => true]) ?>
             <?php
             if (!empty($model->cheque_copy)) {

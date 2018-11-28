@@ -26,73 +26,71 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="box-body table-responsive">
             <?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
-            <section id="tabs">
-                <div class="card1">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation">
-                            <?php
-                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 1</span>', ['service-payment/service-payment-update', 'id' => $id]);
-                            ?>
-                        </li>
-                        <li role="presentation" class="active">
-                            <?php
-                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 2</span>', ['service-payment/payment', 'id' => $id]);
-                            ?>
-                        </li>
-                    </ul>
-                </div>
-            </section>
+            <?= \common\components\AlertMessageWidget::widget() ?>
             <div class="row">
-                <div class="col-md-6">
-                    <table class="table table-bordered">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-responsive">
                         <thead>
                             <tr>
-                                <th>PARTICULAR</th>
-                                <th>COMMENTS</th>
-                                <th>AMOUNT</th>
+                                <th>Particular</th>
+                                <th>Comment</th>
+                                <th>Amount</th>
+                                <th>Tax Amount</th>
+                                <th>Projection Amount</th>
+                                <th>Actual Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $projection_amount = 0;
                             if (!empty($services)) {
+                                $amount_tot = 0;
+                                $tax_tot = 0;
+                                $grand_tot = 0;
+                                $onetime_tot = 0;
+                                $cheque_tot = 0;
                                 foreach ($services as $service) {
-                                    if (!empty($service)) {
-                                        ?>
-                                        <tr>
-                                            <td><?= $service->service != '' ? Services::findOne($service->service)->service_name : '' ?></td>
-                                            <td><?= $service->comment ?></td>
-                                            <td style="text-align: right;"><?= $service->total ?></td>
-                                        </tr>
-                                        <?php
-                                        $projection_amount += $service->total;
+                                    ?>
+                                    <tr>
+                                        <td><?= Services::findOne($service->service)->service_name ?></td>
+                                        <td><?= $service->comment ?></td>
+                                        <td style="text-align:right"><?= $service->amount ?></td>
+                                        <td style="text-align: right;"><?= $service->tax_amount ?> <?= $service->tax_percentage != '' && $service->tax_percentage > 0 ? '( ' . $service->tax_percentage : '' ?> <?= $service->tax_percentage != '' ? '% )' : '' ?></td>
+                                        <td style="text-align: right;"><?= $service->total ?></td>
+                                        <td style="text-align: right;"><?= $service->total ?></td>
+                                    </tr>
+                                    <?php
+                                    $amount_tot += $service->amount;
+                                    $tax_tot += $service->tax_amount;
+                                    $grand_tot += $service->total;
+                                    if ($service->payment_type == 1) {
+                                        $cheque_tot += $service->total;
+                                    } elseif ($service->payment_type == 2) {
+                                        $onetime_tot += $service->total;
                                     }
                                 }
-                            }
+                                ?>
+                                <tr>
+                                    <td colspan="2" style="text-align: right;">Total</td>
+                                    <td style="text-align: right;"><?= sprintf('%0.2f', $amount_tot); ?></td>
+                                    <td style="text-align: right;"><?= sprintf('%0.2f', $tax_tot); ?></td>
+                                    <td style="text-align: right;"><?= sprintf('%0.2f', $grand_tot); ?></td>
+                                    <td style="text-align: right;"><?= sprintf('%0.2f', $grand_tot); ?></td>
+                                </tr>
+
+                            <?php }
                             ?>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="acc-print">
                         <?php
                         echo Html::a('<i class="fa fa-print"></i>Print', ['service-payment/accounts-report', 'id' => $appointment->id], ['target' => '_blank']);
                         ?>
                     </div>
-                    <table class="table">
-                        <tr>
-                            <th>Projection Amount</th>
-                            <td>:</td>
-                            <td><?= sprintf('%0.2f', $projection_amount); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Actual Amount</th>
-                            <td>:</td>
-                            <td><?= sprintf('%0.2f', 00); ?></td>
-                        </tr>
-                    </table>
                 </div>
             </div>
+            <br/>
             <?php Pjax::begin(['id' => 'products-table']); ?>
             <table class="table table-bordered">
                 <tr>
@@ -168,7 +166,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="customer-info-footer">
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                         <ul>
-                            <li>Total Expense</li>
+                            <li>Total Cost</li>
                             <span><?= sprintf('%0.2f', $projection_amount); ?></span>
                         </ul>
                     </div>
@@ -187,8 +185,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                         <ul>
-                            <li><a href="<?= Yii::$app->homeUrl ?>accounts/service-payment/payment-history?id=<?= $appointment->id ?>" class="button">View payment history</a></li>
-
+                            <li>
+                                <?= Html::a('View payment history', ['/accounts/service-payment/payment-history', 'id' => $appointment->id], ['class' => 'button']) ?>
                             <li>
                                 <a id="<?= $appointment->id ?>" type="button" class="pay-btn button" data-toggle="modal" data-target="#modal-default" >
                                     Make a receipt

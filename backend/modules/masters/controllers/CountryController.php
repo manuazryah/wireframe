@@ -14,6 +14,17 @@ use yii\filters\VerbFilter;
  */
 class CountryController extends Controller {
 
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @inheritdoc
      */
@@ -35,6 +46,7 @@ class CountryController extends Controller {
     public function actionIndex() {
         $searchModel = new CountrySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination = ['pageSize' => 40,];
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -82,8 +94,8 @@ class CountryController extends Controller {
             Yii::$app->session->setFlash('success', "Country Updated Successfully");
             return $this->redirect(['update', 'id' => $model->id]);
         } return $this->render('update', [
-                        'model' => $model,
-            ]);
+                    'model' => $model,
+        ]);
     }
 
     /**

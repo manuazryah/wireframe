@@ -28,7 +28,7 @@ if ($count != '' && $count > 0 && $total_amt != '' && $total_amt > 0 && $count <
             <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
                 <div class="form-group">
                     <label class="control-label" for="">Amount</label>
-                    <input class="form-control mul_cheque_amt" id="mul_cheque_amt-<?= $i ?>" type = "number" name = "create[amount][]" value="<?= $amt ?>" required>
+                    <input class="form-control mul_cheque_amt" id="mul_cheque_amt-<?= $i ?>" type="number" name="create[amount][]" value="<?= $amt ?>" step="any" required>
                 </div>
             </div>
         </div>

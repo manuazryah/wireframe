@@ -15,7 +15,7 @@
     <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
         <div class="form-group">
             <label class="control-label" for="">Cheque Date</label>
-            <input type="date" class="form-control" name="Security[cheque_date]" required>
+            <input type="date" class="form-control" name="Security[cheque_date]">
         </div>
     </div>
     <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>

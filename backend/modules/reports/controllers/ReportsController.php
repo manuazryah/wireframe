@@ -2,11 +2,30 @@
 
 namespace backend\modules\reports\controllers;
 
+use Yii;
+use common\models\RealEstateDetailsSearch;
+
 class ReportsController extends \yii\web\Controller {
 
-        public function actionIndex() {
-                $companys = \common\models\CompanyManagement::find()->where(['status' => 1])->all();
-                return $this->render('index', ['companys' => $companys]);
+    public function beforeAction($action) {
+        if (!parent::beforeAction($action)) {
+            return false;
         }
+        if (Yii::$app->user->isGuest) {
+            $this->redirect(['/site/index']);
+            return false;
+        }
+        return true;
+    }
+
+    public function actionIndex() {
+        $searchModel = new RealEstateDetailsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
 
 }

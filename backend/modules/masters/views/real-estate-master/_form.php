@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use common\models\CompanyManagement;
 use common\models\Sponsor;
 use kartik\select2\Select2;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\RealEstateMaster */
@@ -22,6 +23,9 @@ use kartik\select2\Select2;
         </div>
     </div>
     <div class="row">
+        <div class='col-md-4  col-xs-12 left_padd'>
+            <?= $form->field($model, 'type')->dropDownList(['1' => 'Istadama'], ['prompt' => 'Choose Type']) ?>
+        </div>
         <div class='col-md-4  col-xs-12 left_padd'>
             <?php $companies = ArrayHelper::map(CompanyManagement::findAll(['status' => 1]), 'id', 'company_name'); ?>
             <?php
@@ -66,18 +70,18 @@ use kartik\select2\Select2;
             <?= $form->field($model, 'number_of_license')->textInput() ?>
 
         </div>
-    </div>
-    <div class="row">
-        <div class='col-md-8  col-xs-12 left_padd'>
-            <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
+        <div class='col-md-4  col-xs-12 left_padd'>
+            <?= $form->field($model, 'number_of_plots')->textInput() ?>
+
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>
-            <div class='col-md-12 col-xs-12 pad-0'>
-                <?= $form->field($model, 'number_of_plots')->textInput() ?>
-            </div>
-            <div class='col-md-12 col-xs-12 pad-0'>
-                <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
-            </div>
+            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class='col-md-12  col-xs-12 left_padd'>
+            <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
         </div>
     </div>
     <div class="row">
@@ -136,15 +140,34 @@ use kartik\select2\Select2;
         </div>
     </div>
     <div class="row">
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-3  col-xs-12 left_padd'>    
             <?= $form->field($model, 'aggrement')->fileInput(['multiple' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-3  col-xs-12 left_padd'>    
             <?= $form->field($model, 'ejari')->fileInput(['multiple' => true]) ?>
 
         </div>
-        <div class='col-md-4  col-xs-12 left_padd'>    
+        <div class='col-md-3  col-xs-12 left_padd'>   
+            <?php
+            if (!$model->isNewRecord) {
+                $model->ejari_expiry = date('d-m-Y', strtotime($model->ejari_expiry));
+            } else {
+                $model->ejari_expiry = date('d-m-Y');
+            }
+            ?>
+            <?=
+            $form->field($model, 'ejari_expiry')->widget(DatePicker::classname(), [
+                'type' => DatePicker::TYPE_INPUT,
+                'pluginOptions' => [
+                    'autoclose' => true,
+                    'format' => 'dd-m-yyyy'
+                ]
+            ]);
+            ?>
+
+        </div>
+        <div class='col-md-3  col-xs-12 left_padd'>    
             <?= $form->field($model, 'cheque_copy')->fileInput(['multiple' => true]) ?>
 
         </div>
@@ -161,11 +184,20 @@ use kartik\select2\Select2;
 </div>
 <script>
     $("document").ready(function () {
-
+        $(document).on('change', '#realestatemaster-type', function (e) {
+            $("#realestatemaster-total_square_feet").trigger("blur");
+        });
         $("#realestatemaster-total_square_feet").blur(function () {
+            var type = $("#realestatemaster-type").val();
             var total = $(this).val();
             var res = total / 100;
-            $("#realestatemaster-number_of_license").val(res);
+            if (type == 0) {
+                $("#realestatemaster-number_of_license").val(res);
+                $("#realestatemaster-number_of_license").prop("disabled", false);
+            } else {
+                $("#realestatemaster-number_of_license").val('');
+                $("#realestatemaster-number_of_license").prop("disabled", true);
+            }
             $("#realestatemaster-number_of_plots").val(res);
         });
         $(document).on('keyup mouseup', '#realestatemaster-rent_total', function (e) {

@@ -1,3 +1,6 @@
+body{
+    position: relative;
+}
 #yii-debug-toolbar{
     display: none !important;
 }
@@ -19,6 +22,7 @@
     bottom: -10px;
 }
 .btn-block{
+    width: -moz-fit-content;
     width: max-content;
     margin-bottom: 15px;
 }
@@ -110,6 +114,7 @@
     background: #0081c9;
     border-color: #0081c9;
     color: #fff;
+    width: -moz-fit-content;
 }
 .manage-btn:hover{
     transition: ease-in-out 600ms;
@@ -118,7 +123,7 @@
     color: #fff;
 }
 .form-inline .form-group{
-    height: 90px;
+    /*height: 90px;*/
 }
 .form-inline .form-control{
     margin-bottom: 0px;
@@ -158,6 +163,7 @@
     border-color: #ed7700;
     transition: ease-in-out 600ms;
     color: #fff;
+    width: -moz-fit-content;
 }
 .action-btn-right a.cancel-btn:hover{
     transition: ease-in-out 600ms;
@@ -503,6 +509,7 @@ input[type="file"] {
     color: #278acb;
 }
 .pay-btn{
+    cursor: pointer;
     /*    background: white;
         border: none;
         float: right;
@@ -577,3 +584,135 @@ input[type="file"] {
 .acc-print .fa-print{
     padding-right: 5px;
 }
+.grid-view th{
+    white-space: nowrap;
+}
+.grid-view td{
+    white-space: nowrap;
+}
+.grid-view a{
+    color: #333;
+    display: block;
+}
+.grid-view .glyphicon-pencil{
+    color: #2196F3;
+}
+.grid-view .fa-pencil{
+    color: #2196F3;
+}
+.grid-view .glyphicon-trash{
+    color: #ff0505;
+}
+.grid-view .fa-trash-o{
+    color: #ff0505;
+}
+.grid-view .fa-credit-card{
+    color: lightseagreen;
+}
+.grid-view .fa-eye{
+    color: #ff9800;
+}
+.grid-view .fa-database{
+    color: green;
+}
+.main-header {
+    position: fixed;
+    max-height: 100px;
+    z-index: 1030;
+    width: 100%;
+}
+.content-wrapper{
+    margin-top: 50px;
+}
+/************* Loader******************************/
+.page-loader{
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background: #232d3214;
+    display: none;
+    transition: ease-in-out .5s;
+    -webkit-transition: opacity 3s ease-in-out;
+    -moz-transition: opacity 3s ease-in-out;
+    -ms-transition: opacity 3s ease-in-out;
+    -o-transition: opacity 3s ease-in-out;
+    opacity: 0;
+}
+.page-loader.show{
+    opacity: 1;
+    display: grid !important;
+}
+.loader {
+    position: relative;
+    padding-top: 100px;
+    width: 40px;
+    margin: auto;
+}
+.loader .circle {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    opacity: 0;
+    transform: rotate(225deg);
+    animation-iteration-count: infinite;
+    animation-name: orbit;
+    animation-duration: 5.5s;
+}
+.loader .circle:after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 5px;
+    background: #8a8a8a;
+}
+.loader .circle:nth-child(2) {
+    animation-delay: 240ms;
+}
+.loader .circle:nth-child(3) {
+    animation-delay: 480ms;
+}
+.loader .circle:nth-child(4) {
+    animation-delay: 720ms;
+}
+.loader .circle:nth-child(5) {
+    animation-delay: 960ms;
+}
+@keyframes orbit {
+    0% {
+        transform: rotate(225deg);
+        opacity: 1;
+        animation-timing-function: ease-out;
+    }
+    7% {
+        transform: rotate(345deg);
+        animation-timing-function: linear;
+    }
+    30% {
+        transform: rotate(455deg);
+        animation-timing-function: ease-in-out;
+    }
+    39% {
+        transform: rotate(690deg);
+        animation-timing-function: linear;
+    }
+    70% {
+        transform: rotate(815deg);
+        opacity: 1;
+        animation-timing-function: ease-out;
+    }
+    75% {
+        transform: rotate(945deg);
+        animation-timing-function: ease-out;
+    }
+    76% {
+        transform: rotate(945deg);
+        opacity: 0;
+    }
+    100% {
+        transform: rotate(945deg);
+        opacity: 0;
+    }
+}
+/************* Loader******************************/

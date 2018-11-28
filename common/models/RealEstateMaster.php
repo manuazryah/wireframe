@@ -48,11 +48,16 @@ class RealEstateMaster extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['company', 'total_square_feet', 'sponsor', 'number_of_license', 'number_of_plots', 'reference_code', 'comany_name_for_ejari'], 'required'],
-            [['company', 'total_square_feet', 'sponsor', 'number_of_license', 'number_of_plots', 'no_of_cheques', 'status', 'CB', 'UB'], 'integer'],
+            [['number_of_license'], 'required', 'when' => function ($model) {
+                    
+                }, 'whenClient' => "function (attribute, value) {
+               return $('#realestatemaster-type').val() == '';
+            }"],
+            [['company', 'total_square_feet', 'sponsor', 'number_of_plots', 'reference_code', 'comany_name_for_ejari'], 'required'],
+            [['type', 'company', 'sponsor', 'number_of_license', 'number_of_plots', 'no_of_cheques', 'status', 'CB', 'UB'], 'integer'],
             [['comment'], 'string'],
             [['rent_total', 'commission', 'deposit', 'sponser_fee', 'furniture_expense', 'office_renovation_expense', 'other_expense'], 'number'],
-            [['DOC', 'DOU'], 'safe'],
+            [['DOC', 'DOU', 'ejari_expiry'], 'safe'],
             [['aggrement', 'ejari', 'cheque_copy'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, pdf, doc, docx'],
             [['reference_code', 'comany_name_for_ejari'], 'string', 'max' => 500],
             [['company'], 'exist', 'skipOnError' => true, 'targetClass' => CompanyManagement::className(), 'targetAttribute' => ['company' => 'id']],
@@ -83,6 +88,8 @@ class RealEstateMaster extends \yii\db\ActiveRecord {
             'office_renovation_expense' => 'Office Renovation Expense',
             'other_expense' => 'Other Expense',
             'attachments' => 'Attachments',
+            'aggrement' => 'Agreement',
+            'ejari_expiry' => 'Expiry Date',
             'status' => 'Status',
             'CB' => 'C B',
             'UB' => 'U B',
