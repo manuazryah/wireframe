@@ -12,16 +12,19 @@ use common\models\RealEstateDetails;
  */
 class RealEstateDetailsSearch extends RealEstateDetails {
 
-    public $customer;
-    public $appointment;
+    public $total_amount;
+    public $paid_amount;
+    public $balance_amount;
+    public $contract_expiry;
+    public $next_payment;
 
     /**
      * @inheritdoc
      */
     public function rules() {
         return [
-            [['id', 'master_id', 'category', 'availability', 'customer_id', 'square_feet', 'status', 'CB', 'UB'], 'integer'],
-            [['code', 'comment', 'DOC', 'DOU', 'customer', 'appointment'], 'safe'],
+            [['id', 'master_id', 'category', 'availability', 'customer_id', 'square_feet', 'status', 'CB', 'UB', 'appointment_id', 'sponsor', 'sales_person', 'office_type',], 'integer'],
+            [['code', 'comment', 'DOC', 'DOU'], 'safe'],
             [['cost', 'rent_cost', 'off_rent'], 'number'],
         ];
     }
@@ -43,7 +46,7 @@ class RealEstateDetailsSearch extends RealEstateDetails {
      */
     public function search($params) {
         $query = RealEstateDetails::find();
-
+        $query->joinWith(['master']);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -65,6 +68,10 @@ class RealEstateDetailsSearch extends RealEstateDetails {
             'category' => $this->category,
             'availability' => $this->availability,
             'customer_id' => $this->customer_id,
+            'appointment_id' => $this->appointment_id,
+            'sponsor' => $this->sponsor,
+            'sales_person' => $this->sales_person,
+            'office_type' => $this->office_type,
             'cost' => $this->cost,
             'rent_cost' => $this->rent_cost,
             'off_rent' => $this->off_rent,
@@ -77,6 +84,7 @@ class RealEstateDetailsSearch extends RealEstateDetails {
         ]);
 
         $query->andFilterWhere(['like', 'code', $this->code])
+                ->andFilterWhere(['like', 'real_estate_master.id', $this->master_id])
                 ->andFilterWhere(['like', 'comment', $this->comment]);
 
         return $dataProvider;

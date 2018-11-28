@@ -50,7 +50,7 @@ class AppointmentController extends Controller {
         $searchModel = new AppointmentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 //        $dataProvider->query->andWhere(['status' => 1]);
-        $dataProvider->pagination = ['pageSize' => 40,];
+        $dataProvider->pagination = ['pageSize' => '',];
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
@@ -107,6 +107,11 @@ class AppointmentController extends Controller {
                     $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $plot])->one();
                     if (!empty($estate_details)) {
                         $estate_details->status = 0;
+                        $estate_details->customer_id = $model->customer;
+                        $estate_details->appointment_id = $model->id;
+                        $estate_details->sponsor = $model->sponsor;
+                        $estate_details->sales_person = $model->sales_man;
+                        $estate_details->office_type = $model->service_type;
                         $estate_details->save(FALSE);
                     }
                 }
@@ -119,6 +124,11 @@ class AppointmentController extends Controller {
                     $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $license])->one();
                     if (!empty($estate_details)) {
                         $estate_details->status = 0;
+                        $estate_details->customer_id = $model->customer;
+                        $estate_details->appointment_id = $model->id;
+                        $estate_details->sponsor = $model->sponsor;
+                        $estate_details->sales_person = $model->sales_man;
+                        $estate_details->office_type = $model->service_type;
                         $estate_details->save(FALSE);
                     }
                 }
@@ -153,7 +163,7 @@ class AppointmentController extends Controller {
     public function actionUpdate($id) {
         $model = $this->findModel($id);
         $service_type = $model->service_type;
-        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
             $model->sales_employee_id = Yii::$app->user->identity->post_id;
             if (isset($model->plot) && $model->plot != '') {
                 $model->plot = implode(',', $model->plot);
@@ -183,6 +193,11 @@ class AppointmentController extends Controller {
                     $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $plot])->one();
                     if (!empty($estate_details)) {
                         $estate_details->status = 1;
+                        $estate_details->customer_id = '';
+                        $estate_details->appointment_id = '';
+                        $estate_details->sponsor = '';
+                        $estate_details->sales_person = '';
+                        $estate_details->office_type = '';
                         $estate_details->save(FALSE);
                     }
                 }
@@ -195,6 +210,11 @@ class AppointmentController extends Controller {
                     $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $license])->one();
                     if (!empty($estate_details)) {
                         $estate_details->status = 1;
+                        $estate_details->customer_id = '';
+                        $estate_details->appointment_id = '';
+                        $estate_details->sponsor = '';
+                        $estate_details->sales_person = '';
+                        $estate_details->office_type = '';
                         $estate_details->save(FALSE);
                     }
                 }

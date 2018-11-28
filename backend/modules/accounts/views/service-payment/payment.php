@@ -167,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                         <ul>
                             <li>Total Cost</li>
-                            <span><?= sprintf('%0.2f', $projection_amount); ?></span>
+                            <span><?= sprintf('%0.2f', $grand_tot); ?></span>
                         </ul>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">

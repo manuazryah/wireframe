@@ -624,6 +624,9 @@ input[type="file"] {
 .content-wrapper{
     margin-top: 50px;
 }
+.treeview-menu li:last-child a{
+    border-bottom: 0px;
+}
 /************* Loader******************************/
 .page-loader{
     position: absolute;

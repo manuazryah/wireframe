@@ -184,7 +184,7 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
                             </a>
                             <ul class="treeview-menu">
                                 <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Simple Report', ['/reports/reports/index'], ['class' => 'title']) ?>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Full Report', ['/reports/reports/index'], ['class' => 'title']) ?>
                                 </li>
                             </ul>
                         </li>

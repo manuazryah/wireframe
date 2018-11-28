@@ -21,7 +21,7 @@ class ReportsController extends \yii\web\Controller {
     public function actionIndex() {
         $searchModel = new RealEstateDetailsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider->pagination = FALSE;
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
