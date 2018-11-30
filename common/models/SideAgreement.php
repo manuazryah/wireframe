@@ -26,24 +26,22 @@ use Yii;
  * @property string $DOC
  * @property string $DOU
  */
-class SideAgreement extends \yii\db\ActiveRecord
-{
+class SideAgreement extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'side_agreement';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['appointment_id', 'status', 'CB', 'UB'], 'integer'],
-            [['date', 'office_statrt_date', 'office_end_date', 'DOC', 'DOU'], 'safe'],
+            [['date', 'office_start_date', 'office_end_date', 'DOC', 'DOU'], 'safe'],
             [['payment', 'sponsor_amount'], 'number'],
             [['payment_details'], 'string'],
             [['company_name', 'represented_by', 'offfice_address', 'activity'], 'string', 'max' => 255],
@@ -54,8 +52,7 @@ class SideAgreement extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'appointment_id' => 'Appointment ID',
@@ -77,4 +74,5 @@ class SideAgreement extends \yii\db\ActiveRecord
             'DOU' => 'D O U',
         ];
     }
+
 }

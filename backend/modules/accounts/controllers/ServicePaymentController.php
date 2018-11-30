@@ -366,6 +366,7 @@ class ServicePaymentController extends \yii\web\Controller {
     public function actionPayment($id) {
         $appointment = Appointment::findOne($id);
         $services = AppointmentService::findAll(['appointment_id' => $id]);
+        $security_cheque = \common\models\SecurityCheque::find()->where(['appointment_id' => $id])->one();
         $onetime_total = \common\models\AppointmentService::find()->where(['appointment_id' => $id, 'payment_type' => 2])->sum('total');
         $onetime_cheque_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 2])->sum('amount');
         $total_cash_amount = $onetime_total - $onetime_cheque_total;
@@ -375,6 +376,21 @@ class ServicePaymentController extends \yii\web\Controller {
 //        $onetime_cash_total = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id, 'type' => 2])->sum('amount');
         $this->ChangeChequeStatus($id);
         $cheque_dates = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $id])->groupBy('cheque_date')->all();
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post();
+            $createsecurity = $data['Security'];
+            if (isset($createsecurity) && $createsecurity != '') {
+                if ($createsecurity['amount'] > 0) {
+                    $security_cheque->cheque_no = $createsecurity['cheque_num'];
+                    $security_cheque->cheque_date = $createsecurity['cheque_date'];
+                    $security_cheque->amount = $createsecurity['amount'];
+                    Yii::$app->SetValues->Attributes($security_cheque);
+                    $security_cheque->save();
+                }
+            }
+            $this->AppointmentUpdate($data, $appointment);
+            return $this->redirect(Yii::$app->request->referrer);
+        }
         return $this->render('payment', [
                     'services' => $services,
                     'appointment' => $appointment,
@@ -384,6 +400,7 @@ class ServicePaymentController extends \yii\web\Controller {
                     'total_received' => $total_received,
                     'total_balance' => $total_balance,
                     'id' => $id,
+                    'security_cheque' => $security_cheque,
         ]);
     }
 
@@ -877,15 +894,183 @@ class ServicePaymentController extends \yii\web\Controller {
     }
 
     public function actionSideAgreement() {
-        $model = new \common\models\SideAgreement();
-
-        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->save()) {
-            Yii::$app->getSession()->setFlash('success', 'New Currency Created Successfully');
-            return $this->redirect(['index']);
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $model = \common\models\SideAgreement::find()->where(['appointment_id' => $id])->one();
+            if (empty($model)) {
+                $model = new \common\models\SideAgreement();
+            }
+            $content = $this->renderPartial('side_agreement_form', [
+                'model' => $model,
+                'id' => $id
+            ]);
+            return $content;
         }
-        return $this->renderAjax('side_agreement_form', [
-                    'model' => $model,
+    }
+
+    public function actionSaveSideAgreement() {
+
+        if (Yii::$app->request->post()) {
+            $url = '';
+            $id = Yii::$app->request->post()['SideAgreement']['appointment_id'];
+            $model = \common\models\SideAgreement::find()->where(['appointment_id' => $id])->one();
+            if (empty($model)) {
+                $model = new \common\models\SideAgreement();
+                $model->appointment_id = $id;
+            }
+            $model->company_name = Yii::$app->request->post()['SideAgreement']['company_name'];
+            $model->represented_by = Yii::$app->request->post()['SideAgreement']['represented_by'];
+            $model->date = date("Y-m-d", strtotime(Yii::$app->request->post()['SideAgreement']['date']));
+            $model->office_start_date = date("Y-m-d", strtotime(Yii::$app->request->post()['SideAgreement']['office_start_date']));
+            $model->office_end_date = date("Y-m-d", strtotime(Yii::$app->request->post()['SideAgreement']['office_end_date']));
+            $model->office_no = Yii::$app->request->post()['SideAgreement']['office_no'];
+            $model->offfice_address = Yii::$app->request->post()['SideAgreement']['offfice_address'];
+            $model->activity = Yii::$app->request->post()['SideAgreement']['activity'];
+            $model->payment = Yii::$app->request->post()['SideAgreement']['payment'];
+            $model->sponsor_amount = Yii::$app->request->post()['SideAgreement']['sponsor_amount'];
+            $model->payment_details = Yii::$app->request->post()['SideAgreement']['payment_details'];
+            Yii::$app->SetValues->Attributes($model);
+            if ($model->save()) {
+                $url = Yii::$app->homeUrl . 'accounts/service-payment/view-side-agreement?id=' . $model->id;
+            }
+            return $url;
+        }
+    }
+
+    public function actionViewSideAgreement($id) {
+        $model = \common\models\SideAgreement::find()->where(['id' => $id])->one();
+        $content = $this->renderPartial('side_agreement', [
+            'model' => $model
         ]);
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/custom.css',
+            'methods' => [
+                'SetHeader' => ['Generated By: Universal Business Links||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+        return $pdf->render();
+    }
+
+    public function actionSideAgreementAdding() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $model = \common\models\SideAgreementAdding::find()->where(['appointment_id' => $id])->one();
+            if (empty($model)) {
+                $model = new \common\models\SideAgreementAdding();
+            }
+            $content = $this->renderPartial('side_agreement_adding_form', [
+                'model' => $model,
+                'id' => $id
+            ]);
+            return $content;
+        }
+    }
+
+    public function actionSaveSideAgreementAdding() {
+
+        if (Yii::$app->request->post()) {
+            $url = '';
+            $id = Yii::$app->request->post()['SideAgreementAdding']['appointment_id'];
+            $model = \common\models\SideAgreementAdding::find()->where(['appointment_id' => $id])->one();
+            if (empty($model)) {
+                $model = new \common\models\SideAgreementAdding();
+                $model->appointment_id = $id;
+            }
+            $model->second_party_name = Yii::$app->request->post()['SideAgreementAdding']['second_party_name'];
+            $model->represented_by = Yii::$app->request->post()['SideAgreementAdding']['represented_by'];
+            $model->date = date("Y-m-d", strtotime(Yii::$app->request->post()['SideAgreementAdding']['date']));
+            $model->ejari_start_date = date("Y-m-d", strtotime(Yii::$app->request->post()['SideAgreementAdding']['ejari_start_date']));
+            $model->ejari_end_date = date("Y-m-d", strtotime(Yii::$app->request->post()['SideAgreementAdding']['ejari_end_date']));
+            $model->office_no = Yii::$app->request->post()['SideAgreementAdding']['office_no'];
+            $model->office_address = Yii::$app->request->post()['SideAgreementAdding']['office_address'];
+            $model->location = Yii::$app->request->post()['SideAgreementAdding']['location'];
+            $model->activity = Yii::$app->request->post()['SideAgreementAdding']['activity'];
+            $model->amount = Yii::$app->request->post()['SideAgreementAdding']['amount'];
+            $model->sponsor_amount = Yii::$app->request->post()['SideAgreementAdding']['sponsor_amount'];
+            $model->payment_details = Yii::$app->request->post()['SideAgreementAdding']['payment_details'];
+            Yii::$app->SetValues->Attributes($model);
+            if ($model->save()) {
+                $url = Yii::$app->homeUrl . 'accounts/service-payment/view-side-agreement-adding?id=' . $model->id;
+            }
+            return $url;
+        }
+    }
+
+    public function actionViewSideAgreementAdding($id) {
+        $model = \common\models\SideAgreementAdding::find()->where(['id' => $id])->one();
+        $content = $this->renderPartial('side_agreement_adding', [
+            'model' => $model
+        ]);
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/custom.css',
+            'methods' => [
+                'SetHeader' => ['Generated By: Universal Business Links||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+        return $pdf->render();
+    }
+
+    public function actionSittingAgreement() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $model = \common\models\SittingAgreement::find()->where(['appointment_id' => $id])->one();
+            if (empty($model)) {
+                $model = new \common\models\SittingAgreement();
+            }
+            $content = $this->renderPartial('sitting_agreement_form', [
+                'model' => $model,
+                'id' => $id
+            ]);
+            return $content;
+        }
+    }
+
+    public function actionSaveSittingAgreement() {
+
+        if (Yii::$app->request->post()) {
+            $url = '';
+            $id = Yii::$app->request->post()['SittingAgreement']['appointment_id'];
+            $model = \common\models\SittingAgreement::find()->where(['appointment_id' => $id])->one();
+            if (empty($model)) {
+                $model = new \common\models\SittingAgreement();
+                $model->appointment_id = $id;
+            }
+            $model->company_name = Yii::$app->request->post()['SittingAgreement']['company_name'];
+            $model->represented_by = Yii::$app->request->post()['SittingAgreement']['represented_by'];
+            $model->date = date("Y-m-d", strtotime(Yii::$app->request->post()['SittingAgreement']['date']));
+            $model->office_no = Yii::$app->request->post()['SittingAgreement']['office_no'];
+            $model->office_address = Yii::$app->request->post()['SittingAgreement']['office_address'];
+            $model->location = Yii::$app->request->post()['SittingAgreement']['location'];
+            $model->activity = Yii::$app->request->post()['SittingAgreement']['activity'];
+            Yii::$app->SetValues->Attributes($model);
+            if ($model->save()) {
+                $url = Yii::$app->homeUrl . 'accounts/service-payment/view-sitting-agreement?id=' . $model->id;
+            }
+            return $url;
+        }
+    }
+
+    public function actionViewSittingAgreement($id) {
+        $model = \common\models\SittingAgreement::find()->where(['id' => $id])->one();
+        $content = $this->renderPartial('sitting_agreement', [
+            'model' => $model
+        ]);
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/custom.css',
+            'methods' => [
+                'SetHeader' => ['Generated By: Universal Business Links||Generated On: ' . date("r")],
+                'SetFooter' => ['|Page {PAGENO}|'],
+            ]
+        ]);
+        return $pdf->render();
     }
 
 }

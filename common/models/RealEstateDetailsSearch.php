@@ -17,6 +17,7 @@ class RealEstateDetailsSearch extends RealEstateDetails {
     public $balance_amount;
     public $contract_expiry;
     public $next_payment;
+    public $contract_start;
 
     /**
      * @inheritdoc

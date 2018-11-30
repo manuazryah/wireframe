@@ -33,6 +33,7 @@ class RealEstateDetails extends \yii\db\ActiveRecord {
     public $total_amount;
     public $paid_amount;
     public $balance_amount;
+    public $contract_start;
     public $contract_expiry;
     public $next_payment;
 
@@ -191,14 +192,41 @@ class RealEstateDetails extends \yii\db\ActiveRecord {
         }
     }
 
+    public function getContractStartDate($id) {
+        if ($id == '') {
+            return '';
+        } else {
+            $appointment = Appointment::find()->where(['id' => $id])->one();
+            if (empty($appointment)) {
+                return '';
+            } else {
+                if ($appointment->contract_start_date != '') {
+                    return $appointment->contract_start_date;
+                } else {
+                    return '';
+                }
+            }
+        }
+    }
+
     public function getSummary($data) {
         $total_amount = 0;
         $paid_amount = 0;
         $balance_amount = 0;
         $result = [];
+        $arr = [];
         if (!empty($data)) {
             foreach ($data as $value) {
-                $appointment = Appointment::find()->where(['id' => $value->appointment_id])->one();
+                if ($value->appointment_id != '') {
+                    if (!in_array($value->appointment_id, $arr)) {
+                        $arr[] = $value->appointment_id;
+                    }
+                }
+            }
+        }
+        if (!empty($arr)) {
+            foreach ($arr as $arr_val) {
+                $appointment = Appointment::find()->where(['id' => $arr_val])->one();
                 if (!empty($appointment)) {
                     $payment = PaymentMaster::find()->where(['appointment_id' => $appointment->id])->one();
                     if (!empty($payment)) {

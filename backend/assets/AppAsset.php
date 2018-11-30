@@ -17,6 +17,7 @@ class AppAsset extends AssetBundle {
         'css/ionicons.min.css',
         'css/AdminLTE.min.css',
         'css/_all-skins.min.css',
+        'css/bootstrap3-wysihtml5.min.css',
         'https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic',
         'css/custom.css',
     ];
@@ -27,6 +28,10 @@ class AppAsset extends AssetBundle {
         'js/Chart.js',
         'js/fastclick.js',
         'js/adminlte.min.js',
+        'js/ckeditor.js',
+        'js/bootstrap3-wysihtml5.all.min.js',
+        'js/jquery.inputmask.js',
+        'js/jquery.inputmask.date.extensions.js',
         'js/demo.js',
     ];
     public $depends = [

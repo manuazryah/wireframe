@@ -1,12 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
-use common\models\Debtor;
-use common\models\AppointmentServices;
-use common\models\Sponsor;
-use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 use common\models\Services;
 
@@ -27,6 +22,81 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box-body table-responsive">
             <?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
             <?= \common\components\AlertMessageWidget::widget() ?>
+            <?php
+            $form = ActiveForm::begin([
+                        'id' => 'account-form',
+            ]);
+            ?>
+            <?php if (!empty($security_cheque)) { ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="security-cheque-details">
+                            <div class="row">
+                                <div class='col-md-12 col-xs-12 expense-head'>
+                                    <span class="sub-heading">Security Cheque Details</span>
+                                    <div class="horizontal_line"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                    <div class = "form-group">
+                                        <label class="control-label" for="">Cheque Number</label>
+                                        <input class="form-control" type = "text" name = "Security[cheque_num]" required value="<?= $security_cheque->cheque_no ?>">
+
+                                    </div>
+                                </div>
+                                <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                    <div class="form-group">
+                                        <label class="control-label" for="">Cheque Date</label>
+                                        <input type="date" class="form-control" name="Security[cheque_date]" required value="<?= $security_cheque->cheque_date ?>">
+                                    </div>
+                                </div>
+                                <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                    <div class="form-group">
+                                        <label class="control-label" for="">Amount</label>
+                                        <input class="form-control" type = "number" name = "Security[amount]" required min="1" value="<?= $security_cheque->amount ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php }
+            ?>
+            <div class="row">
+                <div class='col-md-12 col-xs-12 expense-head'>
+                    <span class="sub-heading">Contract Details</span>
+                    <div class="horizontal_line"></div>
+                </div>
+                <div class="col-md-12">
+                    <div id="expiry-details">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                                <div class="form-group">
+                                    <label class="control-label" for="">License Expiry Date</label>
+                                    <input type="date" class="form-control" name="Appointment[license_expiry_date]" value="<?= $appointment->license_expiry_date ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                                <div class="form-group">
+                                    <label class="control-label" for="">Contract Start Date</label>
+                                    <input type="date" class="form-control" name="Appointment[contract_start_date]" value="<?= $appointment->contract_start_date ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                                <div class="form-group">
+                                    <label class="control-label" for="">Contract End Date</label>
+                                    <input type="date" class="form-control" name="Appointment[contract_end_date]" value="<?= $appointment->contract_end_date ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group action-btn-right">
+                <?= Html::submitButton('Update', ['class' => 'btn btn-success create-btn']) ?>
+            </div>
+            <?php ActiveForm::end(); ?>
             <div class="row">
                 <div class="col-md-12">
                     <table class="table table-bordered table-responsive">

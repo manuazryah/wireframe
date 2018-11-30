@@ -7,7 +7,7 @@ use dosamigos\ckeditor\CKEditor;
 /* @var $this yii\web\View */
 /* @var $model common\models\SideAgreement */
 
-$this->title = 'Side Agreement';
+$this->title = 'Side Agreement Adding';
 $this->params['breadcrumbs'][] = ['label' => 'Side Agreements', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -22,18 +22,18 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="side-agreement-create">
             <div class="side-agreement-form form-inline">
 
-                <?php $form = ActiveForm::begin(['id' => 'side-agreement-form',]); ?>
+                <?php $form = ActiveForm::begin(['id' => 'side-agreement-adding-form',]); ?>
                 <div class="row">
-                    <input type="hidden" id="sideagreement-appointment_id" class="form-control" name="SideAgreement[appointment_id]" value="<?= $id ?>">
+                    <input type="hidden" id="sideagreement-appointment_id" class="form-control" name="SideAgreementAdding[appointment_id]" value="<?= $id ?>">
                     <div class='col-md-6 col-sm-6 col-xs-12 left_padd'>    
-                        <?= $form->field($model, 'company_name')->textInput(['required' => true]) ?>
+                        <?= $form->field($model, 'second_party_name')->textInput(['required' => true]) ?>
 
                     </div>
                     <div class='col-md-6 col-sm-6 col-xs-12 left_padd'>    
                         <?= $form->field($model, 'represented_by')->textInput(['required' => true]) ?>
 
                     </div>
-                    <div class='col-md-3 col-sm-6 col-xs-12 left_padd'> 
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
                         <div class="form-group">
                             <label class="control-label">Date</label>
 
@@ -41,55 +41,58 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input id="sideagreement-date" name="SideAgreement[date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask required value="<?= $model->date != '' ? date("d/m/Y", strtotime($model->date)) : '' ?>">
+                                <input id="sideagreementadding-date" name="SideAgreementAdding[date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask required value="<?= $model->date != '' ? date("d/m/Y", strtotime($model->date)) : '' ?>">
                             </div>
                             <!-- /.input group -->
                         </div>
                     </div>
-                    <div class='col-md-3 col-sm-6 col-xs-12 left_padd'> 
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
                         <div class="form-group">
-                            <label class="control-label">Office Start Date</label>
+                            <label class="control-label">Ejari Start Date</label>
 
                             <div class="input-group">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input id="sideagreement-office_start_date" name="SideAgreement[office_start_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask required value="<?= $model->office_start_date != '' ? date("d/m/Y", strtotime($model->office_start_date)) : '' ?>">
+                                <input id="sideagreementadding-ejari_start_date" name="SideAgreementAdding[ejari_start_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask required value="<?= $model->ejari_start_date != '' ? date("d/m/Y", strtotime($model->ejari_start_date)) : '' ?>">
                             </div>
                             <!-- /.input group -->
                         </div>
                     </div>
-                    <div class='col-md-3 col-sm-6 col-xs-12 left_padd'> 
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
                         <div class="form-group">
-                            <label class="control-label">Office End Date</label>
+                            <label class="control-label">Ejari End Date</label>
 
                             <div class="input-group">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input id="sideagreement-office_end_date" name="SideAgreement[office_end_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask required value="<?= $model->office_end_date != '' ? date("d/m/Y", strtotime($model->office_end_date)) : '' ?>">
+                                <input id="sideagreementadding-ejari_end_date" name="SideAgreementAdding[ejari_end_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask required value="<?= $model->ejari_end_date != '' ? date("d/m/Y", strtotime($model->ejari_end_date)) : '' ?>">
                             </div>
                             <!-- /.input group -->
                         </div>
                     </div>
-                    <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'office_no')->textInput(['required' => true]) ?>
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'office_no')->textInput(['required' => true]) ?>
 
                     </div>
-                    <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'offfice_address')->textInput(['required' => true]) ?>
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'office_address')->textInput(['required' => true]) ?>
 
                     </div>
-                    <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'activity')->textInput(['required' => true]) ?>
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'location')->textInput(['required' => true]) ?>
 
                     </div>
-                    <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'payment')->textInput(['required' => true]) ?>
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'activity')->textInput(['required' => true]) ?>
 
                     </div>
-                    <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'sponsor_amount')->textInput(['required' => true]) ?>
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'amount')->textInput(['required' => true]) ?>
+
+                    </div>
+                    <div class='col-md-4 col-sm-6 col-xs-12 left_padd'>    <?= $form->field($model, 'sponsor_amount')->textInput(['required' => true]) ?>
 
                     </div>
                     <div class='col-md-12 col-sm-12 col-xs-12 left_padd'> 
-                        <label class="control-label" for="sideagreement-payment">Payment Details</label>
-                        <textarea class="textarea" placeholder="" name="SideAgreement[payment_details]" id="sideagreement-payment_details" required style="width: 100%; height: 150px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">
+                        <label class="control-label" for="sideagreementadding-payment">Payment Details</label>
+                        <textarea class="textarea" placeholder="" name="SideAgreementAdding[payment_details]" id="sideagreementadding-payment_details" required style="width: 100%; height: 150px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">
                             <?= $model->payment_details ?> 
                         </textarea>
                     </div>
@@ -112,10 +115,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <!-- /.box -->
 <script>
     $("document").ready(function () {
-        $('#side-agreement-form').submit(function (e) {
+        $('#side-agreement-adding-form').submit(function (e) {
             e.preventDefault();
             $.ajax({
-                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/save-side-agreement',
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/save-side-agreement-adding',
                 type: "POST",
                 data: $(this).serialize(),
                 success: function (data) {

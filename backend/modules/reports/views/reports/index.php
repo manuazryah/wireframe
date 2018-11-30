@@ -6,6 +6,7 @@ use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use common\models\Debtor;
 use common\models\RealEstateDetails;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\RealEstateDetailsSearch */
@@ -18,15 +19,15 @@ $this->params['breadcrumbs'][] = $this->title;
     .grid-view .form-control{
         border-radius: 5px;
     }
-    .grid-view{
-        max-height: 700px;
-        overflow-y: scroll;
-    }
-    .grid-view .summary{
-        border: 1px solid #bbb9b9;
-        border-bottom: 0px;
-        border-right: 0px;
-    }
+    /*    .grid-view{
+            max-height: 700px;
+            overflow-y: scroll;
+        }
+        .grid-view .summary{
+            border: 1px solid #bbb9b9;
+            border-bottom: 0px;
+            border-right: 0px;
+        }*/
 </style>
 <!-- Default box -->
 <div class="box table-responsive">
@@ -35,24 +36,99 @@ $this->params['breadcrumbs'][] = $this->title;
             <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
         </div>
         <div class="box-body">
+            <div class="row" style="margin-bottom:15px;">
+                <div class="col-md-12">
+                    <?php $form = ActiveForm::begin(); ?>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Contract [From - To] </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input id="contract_from" name="contract_from" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $contract_from != '' ? $contract_from : '' ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <input id="contract_to" name="contract_to" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $contract_to != '' ? $contract_to : '' ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Total Amount [From - To] </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="number" name="total_from" class="form-control" id="exampleInputEmail1" placeholder="From" value="<?= $total_from != '' ? $total_from : '' ?>">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="total_to" class="form-control" id="exampleInputEmail1" placeholder="To" value="<?= $total_to != '' ? $total_to : '' ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Paid Amount [From - To] </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="number" name="paid_from"class="form-control" id="exampleInputEmail1" placeholder="From" value="<?= $paid_from != '' ? $paid_from : '' ?>">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="paid_to" class="form-control" id="exampleInputEmail1" placeholder="To" value="<?= $paid_to != '' ? $paid_to : '' ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Balance Amount [From - To] </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="number" name="balance_from" class="form-control" id="exampleInputEmail1" placeholder="From" value="<?= $balance_from != '' ? $balance_from : '' ?>">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="number" name="balance_to" class="form-control" id="exampleInputEmail1" placeholder="To" value="<?= $balance_to != '' ? $balance_to : '' ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div style="display: inline-flex;float: right;">
+                                <?= Html::submitButton('Search', ['class' => 'btn btn-success']) ?>
+                                <?= Html::a('Reset', ['/reports/reports/index/'], ['class' => 'btn btn-danger', 'style' => 'display:block;margin-left:10px;']) ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php ActiveForm::end(); ?>
+                </div>
+            </div>
             <div class="row">
-                <div class="col-md-6"></div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <?php
                     $summary = RealEstateDetails::instance()->getSummary($dataProvider->models);
                     ?>
                     <table class="table table-bordered table-responsive">
-                        <thead>
+                        <tbody>
                             <tr>
-                                <th colspan="3">Report Summary</th>
-                            </tr>
-                            <tr>
+                                <th rowspan="2" style="text-align: center;text-transform: uppercase;">Report Summary</th>
                                 <th>Total Amount</th>
                                 <th>Amount Paid</th>
                                 <th>Balance Amount</th>
                             </tr>
-                        </thead>
-                        <tbody>
                             <tr>
                                 <th><?= sprintf('%0.2f', $summary['total_amount']) ?></th>
                                 <th><?= sprintf('%0.2f', $summary['paid_amount']) ?></th>
@@ -62,7 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </table>
                 </div>
                 <div class="col-md-12">
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="height: 275px;">
                         <?=
                         GridView::widget([
                             'dataProvider' => $dataProvider,
@@ -206,6 +282,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ]),
                                 ],
                                 [
+                                    'attribute' => 'availability',
+                                    'format' => 'raw',
+                                    'filter' => [1 => 'Available', 0 => 'Not Available'],
+                                    'value' => function ($model) {
+                                        return $model->availability == 0 ? 'Not Available' : 'Available';
+                                    },
+                                ],
+                                [
                                     'attribute' => 'total_amount',
                                     'filter' => false,
                                     'format' => 'raw',
@@ -230,6 +314,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     },
                                 ],
                                 [
+                                    'attribute' => 'contract_start',
+                                    'filter' => false,
+                                    'format' => 'raw',
+                                    'value' => function ($model) {
+                                        return $model->getContractStartDate($model->appointment_id);
+                                    },
+                                ],
+                                [
                                     'attribute' => 'contract_expiry',
                                     'filter' => false,
                                     'format' => 'raw',
@@ -245,14 +337,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return $model->getNextPaymentDate($model->appointment_id);
                                     },
                                 ],
-                                [
-                                    'attribute' => 'availability',
-                                    'format' => 'raw',
-                                    'filter' => [1 => 'Available', 0 => 'Not Available'],
-                                    'value' => function ($model) {
-                                        return $model->availability == 0 ? 'Not Available' : 'Available';
-                                    },
-                                ],
 //                    ['class' => 'yii\grid\ActionColumn'],
                             ],
                         ]);
@@ -265,4 +349,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- /.box-body -->
 </div>
 <!-- /.box -->
+<script>
+    $("document").ready(function () {
+        $('#contract_from').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+        $('#contract_to').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+    });
+</script>
 

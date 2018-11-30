@@ -2,9 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use yii\helpers\ArrayHelper;
 use common\models\Services;
-use common\models\Tax;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\AppointmentService */
@@ -79,6 +77,10 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php }
         ?>
         <div class="row">
+            <div class='col-md-12 col-xs-12 expense-head'>
+                <span class="sub-heading">Contract Details</span>
+                <div class="horizontal_line"></div>
+            </div>
             <div class="col-md-12">
                 <div id="expiry-details">
                     <div class="row">

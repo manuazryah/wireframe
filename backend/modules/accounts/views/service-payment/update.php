@@ -56,6 +56,10 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="row">
+            <div class='col-md-12 col-xs-12 expense-head'>
+                <span class="sub-heading">Contract Details</span>
+                <div class="horizontal_line"></div>
+            </div>
             <div class="col-md-12">
                 <div id="expiry-details">
                     <div class="row">

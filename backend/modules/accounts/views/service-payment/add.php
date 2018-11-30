@@ -21,6 +21,21 @@ $this->params['breadcrumbs'][] = $this->title;
     .inner
     {
         display: inline-block;
+        margin-right: 15px;
+    }
+    .inner .sitting-agreement, .inner .side-agreement, .inner .adding-agreement{
+        background: #607D8B;
+        border-color: #607D8B;
+        outline: none;
+        width: 135px;
+    }
+    .inner .sitting-agreement:hover, .inner .side-agreement:hover, .inner .adding-agreement:hover{
+        background: #607D8B;
+        border-color: #607D8B;
+        outline: none;
+    }
+    .modal-dialog{
+        width: 80%;
     }
 </style>
 <!-- Default box -->
@@ -31,9 +46,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="box-body">
         <div id="outer">
             <div class="inner"><?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?></div>
-            <div class="inner"><button type="button" class="btn btn-block manage-btn sitting-agreement">Sitting</button></div>
-            <div class="inner"><button type="button" class="btn btn-block manage-btn side-agreement">Side agreement</button></div>
-            <div class="inner"><button type="button" class="btn btn-block manage-btn adding-agreement">Adding</button></div>
+            <div class="inner"><button type="button" class="btn btn-block manage-btn sitting-agreement">Sitting Agreement</button></div>
+            <div class="inner"><button type="button" class="btn btn-block manage-btn side-agreement">Side Agreement</button></div>
+            <div class="inner"><button type="button" class="btn btn-block manage-btn adding-agreement">Adding Agreement</button></div>
         </div>
         <div class="appointment-history">
             <table class="table table-responsive">
@@ -200,179 +215,185 @@ $this->params['breadcrumbs'][] = $this->title;
 <script>
     $("document").ready(function () {
 
-    $(document).on('keyup mouseup', '#appointmentservice-amount', function (e) {
-    calculateTotal();
-    });
-            $(document).on('change', '#appointmentservice-tax', function (e) {
-    var tax = $(this).val();
+        $(document).on('keyup mouseup', '#appointmentservice-amount', function (e) {
+            calculateTotal();
+        });
+        $(document).on('change', '#appointmentservice-tax', function (e) {
+            var tax = $(this).val();
             $.ajax({
-            type: 'POST',
-                    cache: false,
-                    async: false,
-                    data: {tax: tax},
-                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/get-tax',
-                    success: function (data) {
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: {tax: tax},
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/get-tax',
+                success: function (data) {
                     $("#tax-val").val(data);
-                            calculateTotal();
-                    }
+                    calculateTotal();
+                }
             });
-    });
-            /*
-             * Double click enter function
-             * */
+        });
+        /*
+         * Double click enter function
+         * */
 
-            $('.edit_text').on('dblclick', function () {
-    var val = $(this).attr('val');
+        $('.edit_text').on('dblclick', function () {
+            var val = $(this).attr('val');
             var idd = this.id;
             var res_data = idd.split("-");
             if (res_data[1] == 'comment') {
-    $(this).html('<textarea class="' + idd + ' form-control" value="' + val + '">' + val + '</textarea>');
-    } else {
-    $(this).html('<input class="' + idd + ' form-control" type="text" value="' + val + '"/>');
-    }
+                $(this).html('<textarea class="' + idd + ' form-control" value="' + val + '">' + val + '</textarea>');
+            } else {
+                $(this).html('<input class="' + idd + ' form-control" type="text" value="' + val + '"/>');
+            }
 
-    $('.' + idd).focus();
-    });
-            $('.edit_text').on('focusout', 'input,textarea', function () {
-    var thiss = $(this).parent('.edit_text');
+            $('.' + idd).focus();
+        });
+        $('.edit_text').on('focusout', 'input,textarea', function () {
+            var thiss = $(this).parent('.edit_text');
             var data_id = thiss.attr('id');
             var res_id = data_id.split("-");
             var res_val = $(this).val();
             $.ajax({
-            type: 'POST',
-                    cache: false,
-                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
-                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-service',
-                    success: function (data) {
+                type: 'POST',
+                cache: false,
+                data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-service',
+                success: function (data) {
                     if (data == '') {
-                    data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     }
                     thiss.html(res_val);
-                            if (res_id[1] == 'amount') {
-                    $('.total-' + data_id).text(data);
+                    if (res_id[1] == 'amount') {
+                        $('.total-' + data_id).text(data);
                     }
                     location.reload();
-                    }
+                }
             });
-    });
-            /*
-             * Double click Dropdown
-             * */
+        });
+        /*
+         * Double click Dropdown
+         * */
 
-            $('.edit_dropdown').on('dblclick', function () {
-    var val = $(this).attr('val');
+        $('.edit_dropdown').on('dblclick', function () {
+            var val = $(this).attr('val');
             var drop_id = $(this).attr('drop_id');
             var idd = this.id;
             var option = $('#' + drop_id).html();
             $(this).html('<select class="' + drop_id + ' form-control" value="' + val + '">' + option + '</select>');
             $('.' + drop_id + ' option[value="' + val + '"]').attr("selected", "selected");
             $('.' + drop_id).focus();
-    });
-            $('.edit_dropdown').on('focusout', 'select', function () {
-    var thiss = $(this).parent('.edit_dropdown');
+        });
+        $('.edit_dropdown').on('focusout', 'select', function () {
+            var thiss = $(this).parent('.edit_dropdown');
             var data_id = thiss.attr('id');
             var res_id = data_id.split("-");
             var res_val = $(this).val();
             $.ajax({
-            type: 'POST',
-                    cache: false,
-                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
-                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-service-tax',
-                    success: function (data) {
+                type: 'POST',
+                cache: false,
+                data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-service-tax',
+                success: function (data) {
                     if (data == '') {
-                    data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     }
 //                    thiss.html(data);
                     location.reload();
-                    }
+                }
             });
-    });
-            $('.edit_dropdown_pay').on('dblclick', function () {
-    var val = $(this).attr('val');
+        });
+        $('.edit_dropdown_pay').on('dblclick', function () {
+            var val = $(this).attr('val');
             var drop_id = $(this).attr('drop_id');
             var idd = this.id;
             var option = $('#' + drop_id).html();
             $(this).html('<select class="' + drop_id + ' form-control" value="' + val + '">' + option + '</select>');
             $('.' + drop_id + ' option[value="' + val + '"]').attr("selected", "selected");
             $('.' + drop_id).focus();
-    });
-            $('.edit_dropdown_pay').on('focusout', 'select', function () {
-    var thiss = $(this).parent('.edit_dropdown_pay');
+        });
+        $('.edit_dropdown_pay').on('focusout', 'select', function () {
+            var thiss = $(this).parent('.edit_dropdown_pay');
             var data_id = thiss.attr('id');
             var res_id = data_id.split("-");
             var res_val = $(this).val();
             $.ajax({
-            type: 'POST',
-                    cache: false,
-                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
-                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-payment-type',
-                    success: function (data) {
+                type: 'POST',
+                cache: false,
+                data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-payment-type',
+                success: function (data) {
                     if (data == '') {
-                    data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                     }
 //                    thiss.html(data);
                     location.reload();
-                    }
+                }
             });
-    });
-            /******************** Agreements**********************************************/
+        });
+        /******************** Agreements**********************************************/
 
-            $(document).on('click', '.sitting-agreement', function () {
-    var appointment_id = '<?php echo $appointment->id; ?>';
-            if (appointment_id != ''){
-    $.ajax({
-    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/sitting-agreement',
-            type: "POST",
-            data: {},
-            success: function (data) {
-            var res = $.parseJSON(data);
-                    $('.modal-content').html(res.result['report']);
+        $(document).on('click', '.side-agreement', function () {
+            var appointment_id = '<?php echo $appointment->id; ?>';
+            $.ajax({
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/side-agreement',
+                type: "POST",
+                data: {id: appointment_id},
+                success: function (data) {
+                    $('.modal-content').html(data);
+                    $('.textarea').wysihtml5();
+                    $('#sideagreement-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#sideagreement-office_start_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#sideagreement-office_end_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
                     $('#modal-default').modal('show');
-            }
-    });
-    });
-            $(document).on('click', '.side-agreement', function () {
-    var appointment_id = '<?php echo $appointment->id; ?>';
-            $.ajax({
-            url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/side-agreement',
-                    type: "POST",
-                    data: {},
-                    success: function (data) {
-                    var res = $.parseJSON(data);
-                            $('.modal-content').html(res.result['report']);
-                            $('#modal-default').modal('show');
-                    }
+                }
             });
-    });
-            $(document).on('click', '.sitting-agreement', function () {
-    var appointment_id = '<?php echo $appointment->id; ?>';
+        });
+        $(document).on('click', '.adding-agreement', function () {
+            var appointment_id = '<?php echo $appointment->id; ?>';
             $.ajax({
-            url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/adding-agreement',
-                    type: "POST",
-                    data: {},
-                    success: function (data) {
-                    var res = $.parseJSON(data);
-                            $('.modal-content').html(res.result['report']);
-                            $('#modal-default').modal('show');
-                    }
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/side-agreement-adding',
+                type: "POST",
+                data: {id: appointment_id},
+                success: function (data) {
+                    $('.modal-content').html(data);
+                    $('.textarea').wysihtml5();
+                    $('#sideagreementadding-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#sideagreementadding-ejari_start_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#sideagreementadding-ejari_end_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#modal-default').modal('show');
+                }
             });
-    });
-            /******************** Agreements**********************************************/
+        });
+
+        $(document).on('click', '.sitting-agreement', function () {
+            var appointment_id = '<?php echo $appointment->id; ?>';
+            $.ajax({
+                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/sitting-agreement',
+                type: "POST",
+                data: {id: appointment_id},
+                success: function (data) {
+                    $('.modal-content').html(data);
+                    $('#sittingagreement-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#modal-default').modal('show');
+                }
+            });
+        });
+        /******************** Agreements**********************************************/
 
     });
-            function calculateTotal() {
-            var tot = 0;
-                    var tax_amount = 0;
-                    var amount = $("#appointmentservice-amount").val();
-                    var tax_val = $("#tax-val").val();
-                    if (amount != '' && amount > 0) {
+    function calculateTotal() {
+        var tot = 0;
+        var tax_amount = 0;
+        var amount = $("#appointmentservice-amount").val();
+        var tax_val = $("#tax-val").val();
+        if (amount != '' && amount > 0) {
             if (tax_val != '' && tax_val > 0) {
-            tax_amount = (parseFloat(amount) * parseFloat(tax_val)) / 100;
+                tax_amount = (parseFloat(amount) * parseFloat(tax_val)) / 100;
             }
             tot = (parseFloat(amount) + parseFloat(tax_amount));
-            }
-            $("#appointmentservice-total").val(tot.toFixed(2));
-            }
+        }
+        $("#appointmentservice-total").val(tot.toFixed(2));
+    }
 </script>
 
 
