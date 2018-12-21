@@ -138,7 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </table>
                 </div>
                 <div class="col-md-12">
-                    <div class="table-responsive" style="height: 275px;">
+                    <div class="table-responsive" style="height: 475px;">
                         <?=
                         GridView::widget([
                             'dataProvider' => $dataProvider,

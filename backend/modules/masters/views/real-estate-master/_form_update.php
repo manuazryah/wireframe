@@ -54,7 +54,7 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
     </section>
     <div class="row">
         <div class='col-md-4  col-xs-12 left_padd'>
-            <?= $form->field($model, 'type')->dropDownList(['1' => 'Istadama'], ['prompt' => 'Choose Type', 'readonly' => true]) ?>
+            <?= $form->field($model, 'type')->dropDownList(['1' => 'Istadama'], ['prompt' => 'Choose Type', 'readonly' => true, 'autofocus' => 'true']) ?>
 
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>
@@ -253,12 +253,12 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
 <script>
     $("document").ready(function () {
 
-        $("#realestatemaster-total_square_feet").blur(function () {
-            var total = $(this).val();
-            var res = total / 100;
-            $("#realestatemaster-number_of_license").val(res);
-            $("#realestatemaster-number_of_plots").val(res);
-        });
+//        $("#realestatemaster-total_square_feet").blur(function () {
+//            var total = $(this).val();
+//            var res = total / 100;
+//            $("#realestatemaster-number_of_license").val(res);
+//            $("#realestatemaster-number_of_plots").val(res);
+//        });
         $(document).on('keyup mouseup', '#realestatemaster-rent_total', function (e) {
             calculateTotal();
         });

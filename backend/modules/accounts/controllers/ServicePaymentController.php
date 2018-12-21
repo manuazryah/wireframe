@@ -119,7 +119,7 @@ class ServicePaymentController extends \yii\web\Controller {
             if (isset($update)) {
                 foreach ($update as $key => $val) {
                     $arr[$key]['cheque_num'] = $val['cheque_num'][0];
-                    $arr[$key]['cheque_date'] = $val['cheque_date'][0];
+                    $arr[$key]['cheque_date'] = $this->ChangeDateFormate($val['cheque_date'][0]);
                     $arr[$key]['amount'] = $val['amount'][0];
                     $i++;
                 }
@@ -131,11 +131,12 @@ class ServicePaymentController extends \yii\web\Controller {
                 $aditional->amount = $value['amount'];
                 $aditional->save(FALSE);
             }
-            $createsecurity = $data['Security'];
-            if (isset($createsecurity) && $createsecurity != '') {
+
+            if (isset($data['Security']) && $data['Security'] != '') {
+                $createsecurity = $data['Security'];
                 if ($createsecurity['amount'] > 0) {
                     $security_cheque->cheque_no = $createsecurity['cheque_num'];
-                    $security_cheque->cheque_date = $createsecurity['cheque_date'];
+                    $security_cheque->cheque_date = $this->ChangeDateFormate($createsecurity['cheque_date']);
                     $security_cheque->amount = $createsecurity['amount'];
                     Yii::$app->SetValues->Attributes($security_cheque);
                     $security_cheque->save();
@@ -205,7 +206,7 @@ class ServicePaymentController extends \yii\web\Controller {
             $i = 0;
             if (!empty($creatematerial['cheque_date'])) {
                 foreach ($creatematerial['cheque_date'] as $val) {
-                    $arr[$i]['cheque_date'] = $val;
+                    $arr[$i]['cheque_date'] = $this->ChangeDateFormate($val);
                     $i++;
                 }
             }
@@ -244,7 +245,7 @@ class ServicePaymentController extends \yii\web\Controller {
 //            $aditional->service_id = $service->service;
                 $aditional->type = 2;
                 $aditional->cheque_number = $creatematerial['cheque_num'];
-                $aditional->cheque_date = $creatematerial['cheque_date'];
+                $aditional->cheque_date = $this->ChangeDateFormate($creatematerial['cheque_date']);
                 $aditional->amount = $creatematerial['amount'];
                 Yii::$app->SetValues->Attributes($aditional);
                 if ($aditional->save()) {
@@ -277,7 +278,7 @@ class ServicePaymentController extends \yii\web\Controller {
                 $aditional = new \common\models\SecurityCheque();
                 $aditional->appointment_id = $appointment->id;
                 $aditional->cheque_no = $createsecurity['cheque_num'];
-                $aditional->cheque_date = $createsecurity['cheque_date'];
+                $aditional->cheque_date = $this->ChangeDateFormate($createsecurity['cheque_date']);
                 $aditional->amount = $createsecurity['amount'];
                 Yii::$app->SetValues->Attributes($aditional);
                 if ($aditional->save()) {
@@ -306,9 +307,9 @@ class ServicePaymentController extends \yii\web\Controller {
 
         if (isset($data['Appointment']) && $data['Appointment'] != '') {
             $updateappointment = $data['Appointment'];
-            $appointment->license_expiry_date = $updateappointment['license_expiry_date'];
-            $appointment->contract_start_date = $updateappointment['contract_start_date'];
-            $appointment->contract_end_date = $updateappointment['contract_end_date'];
+            $appointment->license_expiry_date = $this->ChangeDateFormate($updateappointment['license_expiry_date']);
+            $appointment->contract_start_date = $this->ChangeDateFormate($updateappointment['contract_start_date']);
+            $appointment->contract_end_date = $this->ChangeDateFormate($updateappointment['contract_end_date']);
             $appointment->update();
         }
         return TRUE;
@@ -382,7 +383,7 @@ class ServicePaymentController extends \yii\web\Controller {
             if (isset($createsecurity) && $createsecurity != '') {
                 if ($createsecurity['amount'] > 0) {
                     $security_cheque->cheque_no = $createsecurity['cheque_num'];
-                    $security_cheque->cheque_date = $createsecurity['cheque_date'];
+                    $security_cheque->cheque_date = $this->ChangeDateFormate($createsecurity['cheque_date']);
                     $security_cheque->amount = $createsecurity['amount'];
                     Yii::$app->SetValues->Attributes($security_cheque);
                     $security_cheque->save();
@@ -525,7 +526,7 @@ class ServicePaymentController extends \yii\web\Controller {
                         }
                         $payment_master->amount_paid = $payment_master->amount_paid + $amount;
                         $payment_master->balance_amount = $payment_master->total_amount - $payment_master->amount_paid;
-                        if ($payment_details->save() && $payment_master->save()) {
+                        if ($payment_details->save() && $payment_master->save() && $this->AddNotification($payment_details)) {
                             $transaction->commit();
                             $result = 1;
                         }
@@ -538,6 +539,21 @@ class ServicePaymentController extends \yii\web\Controller {
                 $result = 0;
             }
             return $result;
+        }
+    }
+
+    public function AddNotification($payment_details) {
+        $apointment = Appointment::findOne($payment_details->appointment_id);
+        $notification = new \common\models\Notifications();
+        $notification->master_id = $payment_details->id;
+        $notification->notification_type = 5;
+        $notification->notification_content = 'Amount ' . $payment_details->amount . ' against appointment ' . $apointment->service_id . ' has to been paid on ' . date('d-m-Y');
+        $notification->date = date('Y-m-d');
+        $notification->doc = date('Y-m-d');
+        if ($notification->save()) {
+            return TRUE;
+        } else {
+            return FALSE;
         }
     }
 
@@ -1071,6 +1087,15 @@ class ServicePaymentController extends \yii\web\Controller {
             ]
         ]);
         return $pdf->render();
+    }
+
+    public function ChangeDateFormate($date) {
+        $res = '';
+        if ($date != '') {
+            $myArray = explode('/', $date);
+            $res = $myArray[2] . '-' . $myArray[1] . '-' . $myArray[0];
+        }
+        return $res;
     }
 
 }

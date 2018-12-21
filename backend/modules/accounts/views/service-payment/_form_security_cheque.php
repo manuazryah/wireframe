@@ -14,8 +14,15 @@
     </div>
     <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
         <div class="form-group">
-            <label class="control-label" for="">Cheque Date</label>
-            <input type="date" class="form-control" name="Security[cheque_date]">
+            <label class="control-label">Cheque Date</label>
+
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input id="security-cheque_date" name="Security[cheque_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+            </div>
+            <!-- /.input group -->
         </div>
     </div>
     <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>

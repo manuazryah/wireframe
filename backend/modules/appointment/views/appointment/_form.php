@@ -30,7 +30,7 @@ use common\components\ModalViewWidget;
             echo $form->field($model, 'customer')->widget(Select2::classname(), [
                 'data' => $customers,
                 'language' => 'en',
-                'options' => ['placeholder' => 'Choose Customer'],
+                'options' => ['placeholder' => 'Choose Customer', 'autofocus' => 'true'],
                 'pluginOptions' => [
                     'allowClear' => true
                 ],
@@ -88,7 +88,7 @@ use common\components\ModalViewWidget;
             echo $form->field($model, 'plot')->widget(Select2::classname(), [
                 'data' => $plots,
                 'language' => 'en',
-                'options' => ['placeholder' => 'Choose Plot', 'multiple' => true, 'disabled' => $model->service_type == 2 || $model->service_type == 4 ? TRUE : FALSE],
+                'options' => ['placeholder' => 'Choose Plot', 'multiple' => true, 'disabled' => $model->service_type == 2 || $model->service_type == 4 ? TRUE : FALSE,],
                 'pluginOptions' => [
                     'allowClear' => true,
                 ],
@@ -160,7 +160,7 @@ use common\components\ModalViewWidget;
 
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
-            <?= $form->field($model, 'estimated_cost')->textInput(['maxlength' => true]) ?>
+            <?= $form->field($model, 'service_cost')->textInput(['maxlength' => true]) ?>
 
         </div>
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
@@ -218,6 +218,8 @@ use common\components\ModalViewWidget;
         $(document).on('change', '#appointment-service_type', function (e) {
             var type = $(this).val();
             var idd = '<?php echo $model->id; ?>';
+            $('#appointment-plot').val('').trigger('change');
+            $('#appointment-space_for_license').val('').trigger('change');
             $.ajax({
                 type: 'POST',
                 cache: false,
@@ -228,54 +230,87 @@ use common\components\ModalViewWidget;
                     var res = $.parseJSON(data);
                     $("#appointment-plot").html(res.result['plots']);
                     $("#appointment-space_for_license").html(res.result['license']);
-                    $("#appointment-plot").val('');
-                    $("#appointment-space_for_license").val('');
                     e.preventDefault();
                 }
             });
             if (type == 1) {
+                $(".field-appointment-service_cost .control-label").text("Estimate to  Office Rent");
                 $("#appointment-plot").prop("disabled", false);
                 $("#appointment-space_for_license").prop("disabled", true);
+                $("#appointment-service_cost").prop("disabled", false);
             } else if (type == 2) {
+                $(".field-appointment-service_cost .control-label").text("Ejari cost");
                 $("#appointment-plot").prop("disabled", true);
                 $("#appointment-space_for_license").prop("disabled", false);
+                $("#appointment-service_cost").prop("disabled", false);
             } else if (type == 3) {
+                $(".field-appointment-service_cost .control-label").text("Office rent");
                 $("#appointment-plot").prop("disabled", false);
                 $("#appointment-space_for_license").prop("disabled", false);
+                $("#appointment-service_cost").prop("disabled", false);
             } else if (type == 4) {
+                $(".field-appointment-service_cost .control-label").text("Sponsorship cost");
                 $("#appointment-plot").prop("disabled", true);
                 $("#appointment-space_for_license").prop("disabled", true);
+                $("#appointment-service_cost").prop("disabled", false);
             } else if (type == 5) {
+                $("#appointment-service_cost").val("");
+                $(".field-appointment-service_cost .control-label").text("");
                 $("#appointment-plot").prop("disabled", false);
                 $("#appointment-space_for_license").prop("disabled", false);
+                $("#appointment-service_cost").prop("disabled", true);
+            } else {
+                $(".field-appointment-service_cost .control-label").text("");
+                $("#appointment-service_cost").prop("disabled", true);
             }
 
         });
         $(document).on('change', '#appointment-space_for_license', function (e) {
             var space = $(this).val();
             var idd = '<?php echo $model->id; ?>';
-            alert(space);
             if (space == "") {
                 $("#appointment-sponsor").val(null).trigger("change");
             } else {
-                if (idd === "") {
-                    $.ajax({
-                        type: 'POST',
-                        cache: false,
-                        async: false,
-                        data: {space: space},
-                        url: '<?= Yii::$app->homeUrl; ?>appointment/appointment/get-supplier',
-                        success: function (data) {
-                            if (data === '') {
-                                $("#appointment-sponsor").val(null).trigger("change");
-                            } else {
-                                $('#appointment-sponsor').select2("val", data);
-                            }
-                            e.preventDefault();
+//                if (idd === "") {
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: {space: space},
+                    url: '<?= Yii::$app->homeUrl; ?>appointment/appointment/get-supplier',
+                    success: function (data) {
+                        if (data === '') {
+                            $("#appointment-sponsor").val(null).trigger("change");
+                        } else {
+                            $('#appointment-sponsor').select2("val", data);
                         }
-                    });
-                }
+                        e.preventDefault();
+                    }
+                });
+//                }
             }
         });
     });
+    function setLabel() {
+        var type = $('#appointment-service_type').val();
+        if (type == 1) {
+            $(".field-appointment-service_cost .control-label").text("Estimate to  Office Rent");
+            $("#appointment-service_cost").prop("disabled", false);
+        } else if (type == 2) {
+            $(".field-appointment-service_cost .control-label").text("Ejari cost");
+            $("#appointment-service_cost").prop("disabled", false);
+        } else if (type == 3) {
+            $(".field-appointment-service_cost .control-label").text("Office rent");
+            $("#appointment-service_cost").prop("disabled", false);
+        } else if (type == 4) {
+            $(".field-appointment-service_cost .control-label").text("Sponsorship cost");
+            $("#appointment-service_cost").prop("disabled", false);
+        } else if (type == 5) {
+            $(".field-appointment-service_cost .control-label").text("");
+            $("#appointment-service_cost").prop("disabled", true);
+        } else {
+            $(".field-appointment-service_cost .control-label").text("");
+            $("#appointment-service_cost").prop("disabled", true);
+        }
+    }
 </script>

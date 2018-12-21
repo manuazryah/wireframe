@@ -460,7 +460,7 @@ use yii\helpers\Html;
                         <div style="width:100%;display: inline-flex;" class="contents">
                             <div style="width:50%">
                                 <p>For Universal Business Links</p>
-                                <p>Name: ..................................</p>
+                                <p>Name: <?= $apointment->sales_man != '' ? common\models\AdminUsers::findOne($apointment->sales_man)->name : '' ?></p>
                                 <p>Sign: ....................................</p>
                             </div>
                             <div style="width:50%">

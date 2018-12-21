@@ -13,7 +13,7 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class='col-md-3 col-xs-12'>
-            <?= $form->field($model, 'post_name')->textInput(['maxlength' => true, 'placeholder' => 'Post Name']) ?>
+            <?= $form->field($model, 'post_name')->textInput(['maxlength' => true, 'placeholder' => 'Post Name', 'autofocus' => 'true']) ?>
 
         </div>
         <div class='col-md-3 col-xs-12'>
@@ -28,6 +28,8 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'sales')->dropDownList(['1' => 'Yes', '0' => 'No'], ['prompt' => 'Appointment  Module Permission']) ?>
 
         </div>
+    </div>
+    <div class="row">
         <div class='col-md-3 col-xs-12'>
             <?= $form->field($model, 'accounts')->dropDownList(['1' => 'Yes', '0' => 'No'], ['prompt' => 'Accounts  Module Permission']) ?>
 

@@ -4,10 +4,12 @@
 
 use backend\assets\AppAsset;
 use yii\helpers\Html;
+use yii\db\Expression;
 
 AppAsset::register($this);
 $controler = Yii::$app->controller->id;
-$new_notifications = \common\models\Notifications::find()->where(['status' => 0])->all();
+//$new_notifications = \common\models\Notifications::find()->where(['status' => 0])->all();
+$new_notifications = common\models\Notifications::find()->where(new Expression('!FIND_IN_SET(:users, users)'))->addParams([':users' => Yii::$app->user->identity->id])->orWhere(['IS', 'users', (new Expression('Null'))])->all();
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -61,19 +63,9 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
                                         <ul class="menu">
                                             <?php
                                             foreach ($new_notifications as $notifications) {
-                                                if ($notifications->notification_type == 1) {
-                                                    $link = Yii::$app->homeUrl . 'masters/real-estate-master/cheque-details?id=' . $notifications->master_id;
-                                                } elseif ($notifications->notification_type == 2) {
-                                                    $link = Yii::$app->homeUrl . 'accounts/service-payment/payment?id=' . $notifications->master_id;
-                                                } elseif ($notifications->notification_type == 3) {
-                                                    $link = Yii::$app->homeUrl . 'accounts/service-payment/service-payment?id=' . $notifications->master_id;
-                                                }
                                                 ?>
                                                 <li>
-                                                    <a href="<?= Yii::$app->homeUrl ?>site/view-notification?id=<?= $notifications->id ?>" title="<?= $notifications->notification_content; ?>">
-                                                        <i class="fa fa-credit-card text-aqua"></i> <?= $notifications->notification_content; ?>
-
-                                                    </a>
+                                                    <?= Html::a('<i class="fa fa-credit-card text-aqua"></i> ' . $notifications->notification_content, ['/notifications/notifications/view', 'id' => $notifications->id], ['title' => $notifications->notification_content]) ?>
                                                 </li>
                                                 <?php
                                             }
@@ -82,7 +74,9 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
 
                                         </ul>
                                     </li>
-                                    <li class="footer"><a href="<?= Yii::$app->homeUrl ?>site/all-notifications">View all</a></li>
+                                    <li class="footer">
+                                        <?= Html::a('View all', ['/notifications/notifications/index'], ['class' => '']) ?>
+                                    </li>
                                 </ul>
                             </li>
                             <!-- User Account: style can be found in dropdown.less -->
@@ -186,6 +180,12 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
                                 <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Full Report', ['/reports/reports/index'], ['class' => 'title']) ?>
                                 </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> PDC Report', ['/reports/reports/pdc-report'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Realestate Cheque Report', ['/reports/reports/realestate-cheque-report'], ['class' => 'title']) ?>
+                                </li>
                             </ul>
                         </li>
 
@@ -266,6 +266,7 @@ $new_notifications = \common\models\Notifications::find()->where(['status' => 0]
             });
             function showLoader() {
                 $('.page-loader').addClass('show');
+                $('.page-loader').removeClass('hide');
             }
             function hideLoader() {
                 $('.page-loader').addClass('hide');

@@ -24,7 +24,7 @@ use kartik\date\DatePicker;
     </div>
     <div class="row">
         <div class='col-md-4  col-xs-12 left_padd'>
-            <?= $form->field($model, 'type')->dropDownList(['1' => 'Istadama'], ['prompt' => 'Choose Type']) ?>
+            <?= $form->field($model, 'type')->dropDownList(['1' => 'Istadama'], ['prompt' => 'Choose Type', 'autofocus' => 'true']) ?>
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>
             <?php $companies = ArrayHelper::map(CompanyManagement::findAll(['status' => 1]), 'id', 'company_name'); ?>

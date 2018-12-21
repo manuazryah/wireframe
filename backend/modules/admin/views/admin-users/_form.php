@@ -16,7 +16,7 @@ use common\models\AdminPosts;
     <div class="row">
         <div class='col-md-4 col-sm-6 col-xs-12'>
             <?php $posts = ArrayHelper::map(AdminPosts::findAll(['status' => 1]), 'id', 'post_name'); ?>
-            <?= $form->field($model, 'post_id')->dropDownList($posts, ['prompt' => '-Choose a Post-']) ?>
+            <?= $form->field($model, 'post_id')->dropDownList($posts, ['prompt' => '-Choose a Post-', 'autofocus' => 'true']) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12'>

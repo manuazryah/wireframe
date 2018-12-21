@@ -15,7 +15,7 @@ use common\models\Country;
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class='col-md-4 col-xs-12 left_padd'>    
-            <?= $form->field($model, 'company_name')->textInput(['maxlength' => true, 'placeholder' => 'Company Name']) ?>
+            <?= $form->field($model, 'company_name')->textInput(['maxlength' => true, 'placeholder' => 'Company Name', 'autofocus' => 'true']) ?>
 
         </div>
         <div class='col-md-4 col-xs-12 left_padd'>  
@@ -24,7 +24,7 @@ use common\models\Country;
                 $model->reference_code = $this->context->generateReferenceCode();
             }
             ?>
-            <?= $form->field($model, 'reference_code')->textInput(['maxlength' => true, 'readonly' => TRUE]) ?>
+            <?= $form->field($model, 'reference_code')->textInput(['maxlength' => true, 'readonly' => TRUE, 'tabindex' => "-1"]) ?>
 
         </div>
         <div class='col-md-4 col-xs-12 left_padd'>    

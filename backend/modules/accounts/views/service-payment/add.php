@@ -114,7 +114,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                                     } else {
                                         ?>
-                                        <?= $service->tax_percentage != '' && $service->tax_percentage > 0 ? $service->tax_percentage : '' ?> <?= $service->tax_percentage != '' ? '%' : '' ?>
+                                        <?= $service->tax_amount ?> <?= $service->tax_percentage != '' && $service->tax_percentage > 0 ? '( ' . $service->tax_percentage : '' ?> <?= $service->tax_percentage != '' ? '% )' : '' ?>
                                     <?php }
                                     ?>
 
@@ -341,9 +341,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 success: function (data) {
                     $('.modal-content').html(data);
                     $('.textarea').wysihtml5();
-                    $('#sideagreement-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
-                    $('#sideagreement-office_start_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
-                    $('#sideagreement-office_end_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#sideagreement-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+                    $('#sideagreement-office_start_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+                    $('#sideagreement-office_end_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
                     $('#modal-default').modal('show');
                 }
             });
@@ -357,9 +357,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 success: function (data) {
                     $('.modal-content').html(data);
                     $('.textarea').wysihtml5();
-                    $('#sideagreementadding-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
-                    $('#sideagreementadding-ejari_start_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
-                    $('#sideagreementadding-ejari_end_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#sideagreementadding-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+                    $('#sideagreementadding-ejari_start_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+                    $('#sideagreementadding-ejari_end_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
                     $('#modal-default').modal('show');
                 }
             });
@@ -373,7 +373,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 data: {id: appointment_id},
                 success: function (data) {
                     $('.modal-content').html(data);
-                    $('#sittingagreement-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'})
+                    $('#sittingagreement-date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
                     $('#modal-default').modal('show');
                 }
             });

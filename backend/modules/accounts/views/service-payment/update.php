@@ -65,20 +65,41 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="row">
                         <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                             <div class="form-group">
-                                <label class="control-label" for="">License Expiry Date</label>
-                                <input type="date" class="form-control" name="Appointment[license_expiry_date]">
+                                <label class="control-label">License Expiry Date</label>
+
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="appointment-license_expiry_date" name="Appointment[license_expiry_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="" autofocus>
+                                </div>
+                                <!-- /.input group -->
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                             <div class="form-group">
-                                <label class="control-label" for="">Contract Start Date</label>
-                                <input type="date" class="form-control" name="Appointment[contract_start_date]">
+                                <label class="control-label">Contract Start Date</label>
+
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="appointment-contract_start_date" name="Appointment[contract_start_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask >
+                                </div>
+                                <!-- /.input group -->
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                             <div class="form-group">
-                                <label class="control-label" for="">Contract End Date</label>
-                                <input type="date" class="form-control" name="Appointment[contract_end_date]">
+                                <label class="control-label">Contract End Date</label>
+
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="appointment-contract_end_date" name="Appointment[contract_end_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask >
+                                </div>
+                                <!-- /.input group -->
                             </div>
                         </div>
                     </div>
@@ -203,6 +224,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <!-- /.box -->
 <script>
     $("document").ready(function () {
+
+        $('#appointment-license_expiry_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+        $('#appointment-contract_start_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+        $('#appointment-contract_end_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
         $(document).on('change', '.payment-type', function (e) {
             var type = $(this).val();
             calculateTotal();
@@ -242,6 +267,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/multiple-cheque-details',
                 success: function (data) {
                     $("#cheque-details-content-multiple").html(data);
+                    SetDateFormateCreate(count);
                 }
             });
             hideLoader();
@@ -272,6 +298,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/one-time-cheque-details',
                     success: function (data) {
                         $("#cheque-details-content-one-time").html(data);
+                        $('#createone-cheque_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
                     }
                 });
             } else {
@@ -305,6 +332,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/get-security-cheque-details',
                     success: function (data) {
                         $("#security-cheque-details").html(data);
+                        $('#security-cheque_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
                     }
                 });
             } else {
@@ -380,6 +408,13 @@ $this->params['breadcrumbs'][] = $this->title;
         if (multi_tot == 0 || multi_tot == '') {
             $('#multiple-cheque-count').val(0);
             $('#multiple-cheque-count').trigger("change");
+        }
+    }
+    function SetDateFormateCreate(row_count) {
+        if (row_count >= 0) {
+            for (i = 1; i <= row_count; i++) {
+                $('#create-' + i).inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+            }
         }
     }
 </script>

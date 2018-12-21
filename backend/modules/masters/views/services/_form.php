@@ -19,7 +19,7 @@ use common\models\Supplier;
     <div class="row">
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
             <?php $service_category = ArrayHelper::map(ServiceCategory::findAll(['status' => 1]), 'id', 'category_name'); ?>
-            <?= $form->field($model, 'service_category')->dropDownList($service_category, ['prompt' => 'Service Category']) ?>
+            <?= $form->field($model, 'service_category')->dropDownList($service_category, ['prompt' => 'Service Category', 'autofocus' => 'true']) ?>
 
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
@@ -46,18 +46,19 @@ use common\models\Supplier;
         </div>
     </div>
     <div class="row">
-        <div class='col-md-8 col-sm-6 col-xs-12 left_padd'> 
-            <?= $form->field($model, 'comment')->textarea(['rows' => 6]) ?>
-
+        <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
+            <?= $form->field($model, 'payment_type')->dropDownList(['1' => 'Multiple', '2' => 'One Time']) ?>
         </div>
         <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
-            <div class='col-md-12 col-xs-12 pad-0'> 
-                <?php $tax = ArrayHelper::map(Tax::findAll(['status' => 1]), 'id', 'name'); ?>
-                <?= $form->field($model, 'tax_id')->dropDownList($tax)->label('Tax') ?>
-            </div>
-            <div class='col-md-12 col-xs-12 pad-0'> 
-                <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
-            </div>
+            <?php $tax = ArrayHelper::map(Tax::findAll(['status' => 1]), 'id', 'name'); ?>
+            <?= $form->field($model, 'tax_id')->dropDownList($tax)->label('Tax') ?>
+        </div>
+        <div class='col-md-4 col-sm-6 col-xs-12 left_padd'> 
+            <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
+        </div>
+        <div class='col-md-12 col-sm-12 col-xs-12 left_padd'> 
+            <?= $form->field($model, 'comment')->textarea(['rows' => 4]) ?>
+
         </div>
     </div>
 

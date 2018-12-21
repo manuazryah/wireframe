@@ -16,33 +16,30 @@ use Yii;
  * @property int $status
  * @property string $doc
  */
-class Notifications extends \yii\db\ActiveRecord
-{
+class Notifications extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'notifications';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['data_id', 'master_id', 'notification_type', 'status'], 'integer'],
-            [['notification_content'], 'string'],
-            [['date', 'doc'], 'safe'],
+            [['notification_content', 'link'], 'string'],
+            [['date', 'doc', 'users'], 'safe'],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'data_id' => 'Data ID',
@@ -54,4 +51,5 @@ class Notifications extends \yii\db\ActiveRecord
             'doc' => 'Doc',
         ];
     }
+
 }

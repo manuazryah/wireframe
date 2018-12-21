@@ -42,7 +42,10 @@ return [
         ],
         'gridview' => [
             'class' => 'kartik\grid\Module',
-        ]
+        ],
+        'notifications' => [
+            'class' => 'backend\modules\notifications\Module',
+        ],
     ],
     'components' => [
         'request' => [

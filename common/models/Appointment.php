@@ -80,8 +80,8 @@ class Appointment extends \yii\db\ActiveRecord {
 //               return $('#appointment-service_type').val() == '5';
 //            }"],
             [['customer', 'service_type', 'sponsor', 'tax', 'supplier', 'no_partners', 'approval_status', 'sales_employee_id', 'accounts_employee_id', 'operations_employee_id', 'status', 'CB', 'UB', 'sub_status'], 'integer'],
-            [['estimated_cost'], 'number'],
-            [['start_date', 'expiry_date', 'DOC', 'DOU', 'paid_amount', 'license_expiry_date', 'contract_start_date', 'contract_end_date', 'plot', 'space_for_license'], 'safe'],
+            [['estimated_cost', 'service_cost'], 'number'],
+            [['start_date', 'expiry_date', 'DOC', 'DOU', 'paid_amount', 'license_expiry_date', 'contract_start_date', 'contract_end_date', 'plot', 'space_for_license', 'service_cost'], 'safe'],
             [['service_id', 'total_amount',], 'string', 'max' => 100],
             [['comment'], 'string', 'max' => 1000],
             [['operations_employee_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminUsers::className(), 'targetAttribute' => ['operations_employee_id' => 'id']],
@@ -107,6 +107,7 @@ class Appointment extends \yii\db\ActiveRecord {
             'space_for_license' => 'Space For License',
             'service_id' => 'Service ID',
             'estimated_cost' => 'Estimated Cost',
+            'service_cost' => '',
             'sponsor' => 'Sponsor',
             'tax' => 'Tax',
             'supplier' => 'Supplier',

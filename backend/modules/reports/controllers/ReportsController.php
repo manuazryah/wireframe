@@ -257,4 +257,76 @@ class ReportsController extends \yii\web\Controller {
         return $app_ids;
     }
 
+    public function actionPdcReport() {
+        $searchModel = new \common\models\ServiceChequeDetailsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['or', ['!=', 'status', 1], ['IS', 'status', NULL]]);
+        $dataProvider->query->andWhere(['>=', 'cheque_date', date('Y-m-d')]);
+        return $this->render('pdc_report', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionRealestateChequeReport() {
+        $searchModel = new \common\models\ChequeDetailsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['>=', 'due_date', date('Y-m-d')]);
+        return $this->render('realestate-cheque-report', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionAjaxChequePayment() {
+        if (Yii::$app->request->isAjax) {
+            $data = Yii::$app->request->post();
+
+            if (!empty($data['id'])) {
+                $cheque_data = \common\models\ServiceChequeDetails::findOne(['id' => $data['id']]);
+                if ($data['status'] == 1) {
+                    $transaction = Yii::$app->db->beginTransaction();
+                    try {
+                        $payment_master = \common\models\PaymentMaster::find()->where(['appointment_id' => $cheque_data->appointment_id])->one();
+                        if (empty($payment_master)) {
+                            $total_amount = \common\models\AppointmentService::find()->where(['appointment_id' => $cheque_data->appointment_id])->sum('total');
+                            $payment_master = new \common\models\PaymentMaster();
+                            $payment_master->appointment_id = $cheque_data->appointment_id;
+                            $payment_master->total_amount = $total_amount;
+                            Yii::$app->SetValues->Attributes($payment_master);
+                            $payment_master->save();
+                        }
+                        if (!empty($payment_master)) {
+                            $payment_details = new \common\models\PaymentDetails();
+                            $payment_details->appointment_id = $payment_master->appointment_id;
+                            $payment_details->master_id = $payment_master->id;
+                            $payment_details->amount = $cheque_data->amount;
+                            $payment_details->cheque_no = $cheque_data->cheque_number;
+                            $payment_details->cheque_date = $cheque_data->cheque_date;
+                            $payment_details->payment_type = 2;
+                            Yii::$app->SetValues->Attributes($payment_details);
+                            $payment_master->amount_paid = $payment_master->amount_paid + $cheque_data->amount;
+                            $payment_master->balance_amount = $payment_master->total_amount - $payment_master->amount_paid;
+                            if ($payment_details->save() && $payment_master->save()) {
+                                $transaction->commit();
+                                $cheque_data->status = 1;
+                                $cheque_data->update();
+                                $result = 1;
+                            }
+                        }
+                    } catch (Exception $e) {
+                        $transaction->rollBack();
+                        $result = 0;
+                    }
+                } else {
+                    $cheque_data->status = 2;
+                    $cheque_data->update();
+                    $result = 1;
+                }
+            } else {
+                $result = 0;
+            }
+        }
+    }
+
 }

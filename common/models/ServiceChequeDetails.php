@@ -21,21 +21,19 @@ use Yii;
  * @property string $DOC
  * @property string $DOU
  */
-class ServiceChequeDetails extends \yii\db\ActiveRecord
-{
+class ServiceChequeDetails extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'service_cheque_details';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['type', 'appointment_id', 'appointment_service_id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
             [['cheque_date', 'DOC', 'DOU'], 'safe'],
@@ -47,8 +45,7 @@ class ServiceChequeDetails extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'type' => 'Type',
@@ -65,4 +62,5 @@ class ServiceChequeDetails extends \yii\db\ActiveRecord
             'DOU' => 'D O U',
         ];
     }
+
 }

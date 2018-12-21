@@ -41,14 +41,21 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
                                     <div class = "form-group">
                                         <label class="control-label" for="">Cheque Number</label>
-                                        <input class="form-control" type = "text" name = "Security[cheque_num]" required value="<?= $security_cheque->cheque_no ?>">
+                                        <input class="form-control" type = "text" name = "Security[cheque_num]" required value="<?= $security_cheque->cheque_no ?>" autofocus>
 
                                     </div>
                                 </div>
                                 <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
                                     <div class="form-group">
-                                        <label class="control-label" for="">Cheque Date</label>
-                                        <input type="date" class="form-control" name="Security[cheque_date]" required value="<?= $security_cheque->cheque_date ?>">
+                                        <label class="control-label">Cheque Date</label>
+
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input id="security-cheque_date" name="Security[cheque_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask required value="<?= $security_cheque->cheque_date != '' ? date("d/m/Y", strtotime($security_cheque->cheque_date)) : '' ?>">
+                                        </div>
+                                        <!-- /.input group -->
                                     </div>
                                 </div>
                                 <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
@@ -73,20 +80,41 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="row">
                             <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                 <div class="form-group">
-                                    <label class="control-label" for="">License Expiry Date</label>
-                                    <input type="date" class="form-control" name="Appointment[license_expiry_date]" value="<?= $appointment->license_expiry_date ?>">
+                                    <label class="control-label">License Expiry Date</label>
+
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input id="appointment-license_expiry_date" name="Appointment[license_expiry_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $appointment->license_expiry_date != '' ? date("d/m/Y", strtotime($appointment->license_expiry_date)) : '' ?>" autofocus>
+                                    </div>
+                                    <!-- /.input group -->
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                 <div class="form-group">
-                                    <label class="control-label" for="">Contract Start Date</label>
-                                    <input type="date" class="form-control" name="Appointment[contract_start_date]" value="<?= $appointment->contract_start_date ?>">
+                                    <label class="control-label">Contract Start Date</label>
+
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input id="appointment-contract_start_date" name="Appointment[contract_start_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $appointment->contract_start_date != '' ? date("d/m/Y", strtotime($appointment->contract_start_date)) : '' ?>" >
+                                    </div>
+                                    <!-- /.input group -->
                                 </div>
                             </div>
                             <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
                                 <div class="form-group">
-                                    <label class="control-label" for="">Contract End Date</label>
-                                    <input type="date" class="form-control" name="Appointment[contract_end_date]" value="<?= $appointment->contract_end_date ?>">
+                                    <label class="control-label">Contract End Date</label>
+
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input id="appointment-contract_end_date" name="Appointment[contract_end_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $appointment->contract_end_date != '' ? date("d/m/Y", strtotime($appointment->contract_end_date)) : '' ?>">
+                                    </div>
+                                    <!-- /.input group -->
                                 </div>
                             </div>
                         </div>
@@ -286,6 +314,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <script>
 
     $("document").ready(function () {
+        $('#appointment-license_expiry_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+        $('#appointment-contract_start_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+        $('#appointment-contract_end_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
+        $('#security-cheque_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
         $(document).on('change', '.cheque_payment', function (e) {
             var cheque_id = this.id;
             var cheque_status = $('option:selected', this).val();

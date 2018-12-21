@@ -13,7 +13,7 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class='col-md-4 col-xs-12 left_padd'>
-            <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => 'Name']) ?>
+            <?= $form->field($model, 'name')->textInput(['maxlength' => true, 'placeholder' => 'Name', 'autofocus' => 'true']) ?>
 
         </div>
         <div class='col-md-4 col-xs-12 left_padd'>
@@ -43,7 +43,7 @@ use yii\widgets\ActiveForm;
             <?= $form->field($model, 'comment')->textarea(['rows' => 2, 'placeholder' => 'Comment']) ?>
 
         </div>
-         <div class='col-md-4 col-xs-12 left_padd'>
+        <div class='col-md-4 col-xs-12 left_padd'>
             <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
 
         </div>

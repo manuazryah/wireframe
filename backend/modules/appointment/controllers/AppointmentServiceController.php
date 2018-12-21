@@ -112,11 +112,11 @@ class AppointmentServiceController extends Controller {
         if (!empty($appointment)) {
             $services = '';
             if ($appointment->service_type == 1) {
-                $services = \common\models\Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->all();
+                $services = \common\models\Services::find()->where(['service_category' => 1])->all();
             } elseif ($appointment->service_type == 2) {
                 $services = \common\models\Services::find()->where(['service_category' => 2])->orWhere(['service_category' => 3])->all();
             } elseif ($appointment->service_type == 3) {
-                $services = \common\models\Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->orWhere(['service_category' => 3])->all();
+                $services = \common\models\Services::find()->where(['service_category' => 1])->orWhere(['service_category' => 2])->orWhere(['service_category' => 3])->andWhere(['<>', 'id', 11])->all();
             } elseif ($appointment->service_type == 4) {
                 $services = \common\models\Services::find()->where(['service_category' => 2])->all();
             } elseif ($appointment->service_type == 5) {
@@ -137,9 +137,51 @@ class AppointmentServiceController extends Controller {
         $model = new AppointmentService();
         $model->appointment_id = $appointment->id;
         $model->service = $service->id;
-        $model->amount = $service->estimated_cost;
+        $model->payment_type = $service->payment_type;
+        if ($appointment->service_type == 1 || $appointment->service_type == 3) {
+            if ($service->id == 7) {
+                if ($appointment->service_cost != '') {
+                    $model->amount = $appointment->service_cost;
+                    $model->total = $appointment->service_cost;
+                } else {
+                    $model->amount = $service->estimated_cost;
+                    $model->total = $service->estimated_cost;
+                }
+            } else {
+                $model->amount = $service->estimated_cost;
+                $model->total = $service->estimated_cost;
+            }
+        } elseif ($appointment->service_type == 2) {
+            if ($service->id == 11) {
+                if ($appointment->service_cost != '') {
+                    $model->amount = $appointment->service_cost;
+                    $model->total = $appointment->service_cost;
+                } else {
+                    $model->amount = $service->estimated_cost;
+                    $model->total = $service->estimated_cost;
+                }
+            } else {
+                $model->amount = $service->estimated_cost;
+                $model->total = $service->estimated_cost;
+            }
+        } elseif ($appointment->service_type == 4) {
+            if ($service->id == 8) {
+                if ($appointment->service_cost != '') {
+                    $model->amount = $appointment->service_cost;
+                    $model->total = $appointment->service_cost;
+                } else {
+                    $model->amount = $service->estimated_cost;
+                    $model->total = $service->estimated_cost;
+                }
+            } else {
+                $model->amount = $service->estimated_cost;
+                $model->total = $service->estimated_cost;
+            }
+        } else {
+            $model->amount = $service->estimated_cost;
+            $model->total = $service->estimated_cost;
+        }
         $model->comment = $service->comment;
-        $model->total = $service->estimated_cost;
         if ($service->tax_id != '') {
             $tax_data = \common\models\Tax::find()->where(['id' => $service->tax_id])->one();
             $tax_amount = 0;
@@ -264,8 +306,14 @@ class AppointmentServiceController extends Controller {
             if (!empty($apointment)) {
                 $apointment->status = 2; //appointmrnt complete
                 if ($apointment->update()) {
-                    $this->updateRealEstate($apointment);
-                    Yii::$app->session->setFlash('success', "Appointment Completed");
+                    if ($apointment->status == 2) {
+                        $this->setNotification($apointment);
+                        $this->updateRealEstate($apointment);
+                        Yii::$app->session->setFlash('success', "Appointment Completed");
+                    } else {
+                        Yii::$app->session->setFlash('success', "Services not completed");
+                        return $this->redirect(Yii::$app->request->referrer);
+                    }
                 }
             }
         } else {
@@ -273,6 +321,17 @@ class AppointmentServiceController extends Controller {
             return $this->redirect(Yii::$app->request->referrer);
         }
         return $this->redirect(['appointment/index']);
+    }
+
+    public function setNotification($apointment) {
+        $notification = new \common\models\Notifications();
+        $notification->master_id = $apointment->id;
+        $notification->notification_type = 4;
+        $notification->notification_content = 'Appointment ' . $apointment->service_id . ' has to been completed and proceed to accounts';
+        $notification->date = date('Y-m-d');
+        $notification->doc = date('Y-m-d');
+        $notification->save();
+        return;
     }
 
     public function updateRealEstate($model) {

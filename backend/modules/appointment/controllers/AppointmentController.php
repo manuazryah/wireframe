@@ -92,6 +92,7 @@ class AppointmentController extends Controller {
                 if ($model->service_type == 2 || $model->service_type == 3) {
                     $this->addLicencingMaster($model);
                 }
+                $this->AddNotification($model);
                 return $this->redirect(['/appointment/appointment-service/add', 'id' => $model->id]);
             }
         } return $this->render('create', [
@@ -441,6 +442,17 @@ class AppointmentController extends Controller {
             $data['result'] = $arr_variable1;
             echo json_encode($data);
         }
+    }
+
+    public function AddNotification($model) {
+        $notification = new \common\models\Notifications();
+        $notification->master_id = $model->id;
+        $notification->notification_type = 3;
+        $notification->notification_content = 'A New appointment created';
+        $notification->date = $model->DOC;
+        $notification->doc = date('Y-m-d');
+        $notification->save();
+        return;
     }
 
 }

@@ -39,8 +39,8 @@ class Services extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['service_category', 'type', 'service_name', 'service_code'], 'required'],
-            [['service_category', 'type', 'supplier', 'tax_id', 'tax_percentage', 'status', 'CB', 'UB'], 'integer'],
+            [['service_category', 'type', 'service_name', 'service_code',], 'required'],
+            [['service_category', 'type', 'supplier', 'tax_id', 'tax_percentage', 'status', 'CB', 'UB', 'payment_type'], 'integer'],
             [['estimated_cost'], 'number'],
             [['comment'], 'string'],
             [['DOC', 'DOU'], 'safe'],
