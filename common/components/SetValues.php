@@ -120,7 +120,7 @@ class SetValues extends Component {
             return TRUE;
 //                    echo 'ha';exit;
         } else {
-
+            
         }
     }
 
@@ -146,7 +146,7 @@ class SetValues extends Component {
             return TRUE;
 //                    echo 'ha';exit;
         } else {
-
+            
         }
     }
 
@@ -175,20 +175,56 @@ class SetValues extends Component {
         }
         return;
     }
-    public function Number() {
+
+    public function Number($count = NULL) {
         $number_array = array();
-        for ($i = 1; $i <= 10; $i++) {
+        if ($count != '') {
+            $j = $count + 1;
+        } else {
+            $j = 1;
+        }
+        for ($i = $j; $i <= 15; $i++) {
             $number_array[$i] = $i;
         }
         return $number_array;
     }
+
     public function NumberAlphabet($param) {
-        $dictionary = array(
-            1 => 'A', 2 => 'B', 3 => 'C', 4 => 'D', 5 => 'E', 6 => 'F', 7 => 'G', 8 => 'H',
-            9 => 'I', 10 => 'J', 11 => 'K', 12 => 'L', 13 => 'M', 14 => 'N', 15 => 'O',
-            16 => 'P', 17 => 'Q', 18 => 'R', 19 => 'S', 20 => 'T', 21 => 'U', 22 => 'V',
-            23 => 'W', 24 => 'X', 25 => 'Y', 26 => 'Z');
+        $dictionary = array();
+        $j = 0;
+        for ($x = 'A'; $x < 'ZZ'; $x++) {
+            $j++;
+            $dictionary[$j] = $x;
+        }
         return $dictionary[$param];
+    }
+
+    public function updateAppointment($id) {
+        $appointment = \common\models\Appointment::find()->where(['id' => $id])->one();
+        if (!empty($appointment)) {
+            $services = \common\models\AppointmentService::find()->where(['appointment_id' => $appointment->id])->all();
+            $sub_total = 0;
+            $tax_total = 0;
+            $multiple_total = 0;
+            $onetime_total = 0;
+            if (!empty($services)) {
+                foreach ($services as $service) {
+                    $sub_total += $service->total;
+                    $tax_total += $service->tax_amount;
+                    if ($service->payment_type == 1) {
+                        $multiple_total += $service->total;
+                    } elseif ($service->payment_type == 2) {
+                        $onetime_total += $service->total;
+                    }
+                }
+            }
+            $appointment->sub_total = $sub_total;
+            $appointment->tax_total = $tax_total;
+            $appointment->multiple_total = $multiple_total;
+            $appointment->one_time_total = $onetime_total;
+            $appointment->save(FALSE);
+        }
+        return true;
     }
 
 }

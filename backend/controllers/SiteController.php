@@ -152,13 +152,16 @@ class SiteController extends Controller {
                     $model->data_id = $cheques->id;
                     $model->master_id = $cheques->master_id;
                     $model->notification_type = 1;
-                    $model->notification_content = 'a cheque ' . $cheques->cheque_no . ' is going to be expired on ' . $cheques->due_date . ' under Real Estate Managemnt';
+                    $model->notification_content = 'A cheque ' . $cheques->cheque_no . ' is going to be expired on ' . $cheques->due_date . ' under Real Estate Managemnt';
                     $model->date = $cheques->due_date;
                     $model->status = 0;
                     $model->doc = date('Y-m-d');
-
                     if ($model->validate())
-                        $model->save();
+                        if ($model->save()) {
+                            $this->SendNotificationMail($model->notification_content);
+                        }
+                } else {
+                    $this->SendNotificationMail($check_exist->notification_content);
                 }
             }
         }
@@ -174,9 +177,13 @@ class SiteController extends Controller {
                     $model->date = $cheques->cheque_date;
                     $model->status = 0;
                     $model->doc = date('Y-m-d');
-
-                    if ($model->validate())
-                        $model->save();
+                    if ($model->validate()) {
+                        if ($model->save()) {
+//                            $this->SendNotificationMail($model->notification_content);
+                        }
+                    }
+                } else {
+//                    $this->SendNotificationMail($check_exist->notification_content);
                 }
             }
         }
@@ -229,6 +236,29 @@ class SiteController extends Controller {
             else
                 return 0;
         }
+    }
+
+    public function SendNotificationMail($message) {
+        $users = \common\models\AdminUsers::find()->where(['status' => 1])->andWhere(['or', ['post_id' => 1], ['post_id' => 3],])->all();
+        if (!empty($users)) {
+            foreach ($users as $user) {
+                if ($user->email != '') {
+                    $this->sendMail($user, $message);
+                }
+            }
+        }
+        return;
+    }
+
+    public function sendMail($user, $message) {
+        $to = $user->email;
+        $subject = 'New Appointment';
+        $message = $this->render('notification_mail', ['message' => $message, 'user' => $user]);
+        $headers = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= "Content-type: text/html; charset=iso-8859-1" . "\r\n" .
+                "From: 'info@coralepitome.com";
+//        mail($to, $subject, $message, $headers);
+        return;
     }
 
 }

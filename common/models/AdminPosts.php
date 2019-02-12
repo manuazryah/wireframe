@@ -47,6 +47,8 @@ class AdminPosts extends \yii\db\ActiveRecord {
             'post_name' => 'Post Name',
             'admin' => 'Admin',
             'masters' => 'Masters',
+            'sales' => 'Marketing',
+            'operations' => 'License',
             'status' => 'Status',
             'CB' => 'Cb',
             'UB' => 'Ub',

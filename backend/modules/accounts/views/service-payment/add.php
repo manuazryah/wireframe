@@ -44,6 +44,35 @@ $this->params['breadcrumbs'][] = $this->title;
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
+        <section id="tabs1">
+            <div class="card1">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <?php
+                        echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 1</span>', ['service-payment/service-payment', 'id' => $id]);
+                        ?>
+                    </li>
+                    <li role="presentation">
+                        <?php
+                        if ($appointment->sub_status != '' && $appointment->sub_status > 0) {
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 2</span>', ['service-payment/service-payment-details', 'id' => $id]);
+                        } else {
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 2</span>', ['service-payment/service-payment', 'id' => $id]);
+                        }
+                        ?>
+                    </li>
+                    <li role="presentation">
+                        <?php
+                        if ($appointment->sub_status != '' && $appointment->sub_status > 1) {
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 3</span>', ['service-payment/payment', 'id' => $id]);
+                        } else {
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 3</span>', ['service-payment/service-payment', 'id' => $id]);
+                        }
+                        ?>
+                    </li>
+                </ul>
+            </div>
+        </section>
         <div id="outer">
             <div class="inner"><?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?></div>
             <div class="inner"><button type="button" class="btn btn-block manage-btn sitting-agreement">Sitting Agreement</button></div>
@@ -64,9 +93,47 @@ $this->params['breadcrumbs'][] = $this->title;
                     <th>Sponsor</th>
                     <td>: <?= $appointment->sponsor != '' ? \common\models\Sponsor::findOne($appointment->sponsor)->name : '' ?></td>
                 </tr>
+                <tr>
+                    <th>Office ID</th>
+                    <?php
+                    $plot_id = '';
+                    $licence_id = '';
+                    $off_id = '';
+                    if ($appointment->plot != '') {
+                        $plot_dtl = \common\models\RealEstateDetails::find()->where(['id' => $appointment->plot])->one();
+                        if (!empty($plot_dtl)) {
+                            $plot_id = common\models\RealEstateMaster::findOne($plot_dtl->master_id)->reference_code . ' - ' . $plot_dtl->code;
+                        }
+                    }
+                    if ($appointment->space_for_license != '') {
+                        $licence_dtl = \common\models\RealEstateDetails::find()->where(['id' => $appointment->space_for_license])->one();
+                        if (!empty($licence_dtl)) {
+                            $licence_id = common\models\RealEstateMaster::findOne($licence_dtl->master_id)->reference_code . ' - ' . $licence_dtl->code;
+                        }
+                    }
+                    if ($licence_id != '' && $plot_id != '') {
+                        $off_id = $plot_id . ', ' . $licence_id;
+                    } elseif ($licence_id == '' && $plot_id != '') {
+                        $off_id = $plot_id;
+                    } elseif ($licence_id != '' && $plot_id == '') {
+                        $off_id = $licence_id;
+                    }
+                    ?>
+                    <td>: <?= $off_id ?></td>
+                    <th></th>
+                    <td></td>
+                </tr>
             </table>
         </div>
         <?= \common\components\AlertMessageWidget::widget() ?>
+        <?php if (isset($_SESSION['account_step1']) && $_SESSION['account_step1'] == 1) { ?>
+            <div class="alert alert-success alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                Payment Details Updated Successfully</div>
+            <?php
+            unset(Yii::$app->session['account_step1']);
+        }
+        ?>
         <div class="appointment-service-create">
             <table class="table table-bordered table-responsive">
                 <thead>
@@ -248,11 +315,40 @@ $this->params['breadcrumbs'][] = $this->title;
 
             $('.' + idd).focus();
         });
+
+
+        $('.edit_text').on('keypress', 'input,textarea', function (e) {
+            if (e.keyCode == 13) {
+                var thiss = $(this).parent('.edit_text');
+                var data_id = thiss.attr('id');
+                var res_id = data_id.split("-");
+                var res_val = $(this).val();
+                saveText(res_id[0], res_id[1], res_val);
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-service',
+                    success: function (data) {
+                        if (data == '') {
+                            data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        }
+                        thiss.html(res_val);
+                        if (res_id[1] == 'amount') {
+                            $('.total-' + data_id).text(data);
+                        }
+                        location.reload();
+                    }
+                });
+            }
+        });
+
         $('.edit_text').on('focusout', 'input,textarea', function () {
             var thiss = $(this).parent('.edit_text');
             var data_id = thiss.attr('id');
             var res_id = data_id.split("-");
             var res_val = $(this).val();
+            saveText(res_id[0], res_id[1], res_val);
             $.ajax({
                 type: 'POST',
                 cache: false,
@@ -283,6 +379,28 @@ $this->params['breadcrumbs'][] = $this->title;
             $('.' + drop_id + ' option[value="' + val + '"]').attr("selected", "selected");
             $('.' + drop_id).focus();
         });
+        $('.edit_dropdown').on('keypress', 'select', function (e) {
+            if (e.keyCode == 13) {
+                var thiss = $(this).parent('.edit_dropdown');
+                var data_id = thiss.attr('id');
+                var res_id = data_id.split("-");
+                var res_val = $(this).val();
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-service-tax',
+                    success: function (data) {
+                        if (data == '') {
+                            data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        }
+//                    thiss.html(data);
+                        location.reload();
+                    }
+                });
+            }
+        });
+
         $('.edit_dropdown').on('focusout', 'select', function () {
             var thiss = $(this).parent('.edit_dropdown');
             var data_id = thiss.attr('id');
@@ -311,6 +429,29 @@ $this->params['breadcrumbs'][] = $this->title;
             $('.' + drop_id + ' option[value="' + val + '"]').attr("selected", "selected");
             $('.' + drop_id).focus();
         });
+
+        $('.edit_dropdown_pay').on('keypress', 'select', function (e) {
+            if (e.keyCode == 13) {
+                var thiss = $(this).parent('.edit_dropdown_pay');
+                var data_id = thiss.attr('id');
+                var res_id = data_id.split("-");
+                var res_val = $(this).val();
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    data: {id: res_id[0], name: res_id[1], valuee: res_val},
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/edit-payment-type',
+                    success: function (data) {
+                        if (data == '') {
+                            data = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        }
+//                    thiss.html(data);
+                        location.reload();
+                    }
+                });
+            }
+        });
+
         $('.edit_dropdown_pay').on('focusout', 'select', function () {
             var thiss = $(this).parent('.edit_dropdown_pay');
             var data_id = thiss.attr('id');
@@ -381,6 +522,8 @@ $this->params['breadcrumbs'][] = $this->title;
         /******************** Agreements**********************************************/
 
     });
+    function saveText() {
+    }
     function calculateTotal() {
         var tot = 0;
         var tax_amount = 0;

@@ -23,6 +23,8 @@ use Yii;
  */
 class ServiceChequeDetails extends \yii\db\ActiveRecord {
 
+    public $customer;
+
     /**
      * {@inheritdoc}
      */
@@ -35,10 +37,10 @@ class ServiceChequeDetails extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['type', 'appointment_id', 'appointment_service_id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
-            [['cheque_date', 'DOC', 'DOU'], 'safe'],
-            [['amount'], 'number'],
-            [['cheque_number'], 'string', 'max' => 100],
+                [['type', 'appointment_id', 'appointment_service_id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
+                [['cheque_date', 'DOC', 'DOU'], 'safe'],
+                [['amount'], 'number'],
+                [['cheque_number'], 'string', 'max' => 100],
         ];
     }
 
@@ -61,6 +63,15 @@ class ServiceChequeDetails extends \yii\db\ActiveRecord {
             'DOC' => 'D O C',
             'DOU' => 'D O U',
         ];
+    }
+
+    public static function getCustomer($id) {
+        $appointment = Appointment::find()->where(['id' => $id])->one();
+        $customer_name = '';
+        if (!empty($appointment)) {
+            $customer_name = Debtor::findOne($appointment->customer)->company_name;
+        }
+        return $customer_name;
     }
 
 }

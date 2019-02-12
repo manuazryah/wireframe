@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="box-body">
             <?= Html::a('<span> Manage Appointment</span>', ['index'], ['class' => 'btn btn-warning mrg-bot-15']) ?>
+            <?= Html::a('<span> Generate Quotation</span>', ['/appointment/appointment-service/quotation', 'id' => $model->id], ['class' => 'btn btn-block manage-btn', 'style' => 'float:right;', 'target' => '_blank']) ?>
             <h4>Appointment Details</h4>
             <div class="appointment-history">
                 <table class="table table-responsive">

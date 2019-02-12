@@ -118,7 +118,14 @@ class DebtorController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
+        $appointment = \common\models\Appointment::find()->where(['customer' => $id])->all();
+        if (empty($appointment)) {
+            if ($this->findModel($id)->delete()) {
+                Yii::$app->session->setFlash('success', "Debtor Removed Successfully");
+            }
+        } else {
+            Yii::$app->session->setFlash('error', "Can't delete, because this debtor is choosed in an appointment");
+        }
 
         return $this->redirect(['index']);
     }

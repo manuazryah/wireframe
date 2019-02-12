@@ -241,6 +241,7 @@ class RealEstateMasterController extends Controller {
         $cheque_copy_ = $model->cheque_copy;
         $cheque_details = \common\models\ChequeDetails::find()->where(['master_id' => $id])->all();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $data = Yii::$app->request->post();
             $aggrement = UploadedFile::getInstance($model, 'aggrement');
             $ejari = UploadedFile::getInstance($model, 'ejari');
             $cheque_copy = UploadedFile::getInstance($model, 'cheque_copy');
@@ -263,6 +264,10 @@ class RealEstateMasterController extends Controller {
             if ($model->save()) {
                 $this->UpdateRealEstateDetails($model, $model_);
                 $this->upload($model, $aggrement, $ejari, $cheque_copy);
+                $this->ChequeDetails($model, $data);
+                if (isset($_POST['updatee']) && $_POST['updatee'] != '') {
+                    $this->UpdateChequeDetails($_POST['updatee']);
+                }
                 Yii::$app->session->setFlash('success', "Real Estate Updated successfully");
             }
             return $this->redirect(['update', 'id' => $model->id]);
@@ -270,6 +275,28 @@ class RealEstateMasterController extends Controller {
                     'model' => $model,
                     'cheque_details' => $cheque_details,
         ]);
+    }
+
+    /*
+     * for updating additional data
+     */
+
+    public function UpdateChequeDetails($update) {
+        $arr = [];
+        $i = 0;
+        foreach ($update as $key => $val) {
+            $arr[$key]['cheque_num'] = $val['cheque_num'][0];
+            $arr[$key]['expiry_date'] = $val['expiry_date'][0];
+            $arr[$key]['amount'] = $val['amount'][0];
+            $i++;
+        }
+        foreach ($arr as $key => $value) {
+            $aditional = \common\models\ChequeDetails::findOne($key);
+            $aditional->cheque_no = $value['cheque_num'];
+            $aditional->due_date = date("Y-m-d", strtotime($value['expiry_date']));
+            $aditional->amount = $value['amount'];
+            $aditional->save();
+        }
     }
 
     public function UpdateRealEstateDetails($model, $model_) {
@@ -426,6 +453,21 @@ class RealEstateMasterController extends Controller {
         return $this->render('cheque-details', [
                     'models' => $models
         ]);
+    }
+
+    public function actionUpdateChequeDetails() {
+        $data = '';
+        if (Yii::$app->request->isAjax) {
+            $no_of_cheque = $_POST['no_of_cheque'];
+            $cheque_count = $_POST['cheque_count'];
+            if ($cheque_count != '' && $cheque_count > 0 && $no_of_cheque > $cheque_count) {
+                $required_cheque = $no_of_cheque - $cheque_count;
+            }
+            $data = $this->renderPartial('_form_update_cheque', [
+                'no_of_cheque' => $required_cheque,
+            ]);
+        }
+        return $data;
     }
 
 }

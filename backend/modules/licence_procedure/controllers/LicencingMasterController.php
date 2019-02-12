@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use common\models\PartnerDetailsSearch;
 
 /**
  * LicencingMasterController implements the CRUD actions for LicencingMaster model.
@@ -722,6 +723,198 @@ class LicencingMasterController extends Controller {
             $receipt->saveAs(Yii::$app->basePath . '/../uploads/license_procedure/others/' . $folder . '/' . $model->id . '.' . $receipt->extension);
         }
         return TRUE;
+    }
+
+    /*
+     * Add Partner Informations
+     */
+
+    public function actionPartnerDetails($id) {
+        $license_master = $this->findModel($id);
+        $searchModel = new PartnerDetailsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('partner-details', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'license_master' => $license_master,
+        ]);
+    }
+
+    /**
+     * Creates a new PartnerDetails model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionAddPartner($id) {
+        $model = new \common\models\PartnerDetails();
+        $license_master = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->validate() && $model->save()) {
+            Yii::$app->getSession()->setFlash('success', 'New partner added successfully');
+            return $this->redirect(['partner-details', 'id' => $id]);
+        } else {
+            return $this->renderAjax('add-partner', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing PartnerDetails model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdatePartner($id, $licence_id) {
+        $model = \common\models\PartnerDetails::findOne($id);
+        $license_master = $this->findModel($licence_id);
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model) && $model->validate() && $model->save()) {
+            Yii::$app->getSession()->setFlash('success', 'Partner details updated successfully');
+            return $this->redirect(['partner-details', 'id' => $licence_id]);
+        } else {
+            return $this->renderAjax('add-partner', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    public function actionDeletePartner($id, $licence_id) {
+        $model = \common\models\PartnerDetails::findOne($id);
+        $documents = \common\models\PartnerDocuments::find()->where(['partner' => $model->id])->all();
+        if (empty($documents)) {
+            $model->delete();
+            Yii::$app->getSession()->setFlash('success', 'Partner details removed successfully');
+        } else {
+            Yii::$app->getSession()->setFlash('error', "Can't remove partner details");
+        }
+        return $this->redirect(['partner-details', 'id' => $licence_id]);
+    }
+
+    public function actionPartnerDocuments($id) {
+        $license_master = $this->findModel($id);
+        $searchModel = new \common\models\PartnerDocumentsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('partner-documents', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'license_master' => $license_master,
+        ]);
+    }
+
+    /**
+     * Creates a new PartnerDocuments model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionAddDocument($id) {
+        $model = new \common\models\PartnerDocuments();
+        $license_master = $this->findModel($id);
+        $appointment = \common\models\Appointment::findOne($license_master->appointment_id);
+        $model->setScenario('create');
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
+            $image = UploadedFile::getInstance($model, 'file');
+            $model->file = $appointment->service_id . '-' . $model->document_name . '-' . \common\models\PartnerDetails::findOne($model->partner)->name . '.' . $image->extension;
+            if ($model->validate() && $model->save()) {
+                $this->UploadDocument($model, $image, $appointment);
+                Yii::$app->getSession()->setFlash('success', 'New document added successfully');
+            }
+            return $this->redirect(['partner-documents', 'id' => $id]);
+        } else {
+            return $this->renderAjax('add-document', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing PartnerDocuments model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdatePartnerDocuments($id, $licence_id) {
+        $model = \common\models\PartnerDocuments::findOne($id);
+        $license_master = $this->findModel($licence_id);
+        $appointment = \common\models\Appointment::findOne($license_master->appointment_id);
+        $image_ = $model->file;
+        if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
+            $image = UploadedFile::getInstance($model, 'file');
+            $name = $appointment->service_id . '-' . $model->document_name . '-' . \common\models\PartnerDetails::findOne($model->partner)->name . '.' . $image->extension;
+            $model->file = !empty($image) ? $name : $image_;
+            if ($model->validate() && $model->save()) {
+                $this->UploadDocument($model, $image, $appointment);
+            }
+            Yii::$app->getSession()->setFlash('success', 'Partner documents updated successfully');
+            return $this->redirect(['partner-documents', 'id' => $licence_id]);
+        } else {
+            return $this->renderAjax('add-document', [
+                        'model' => $model,
+                        'license_master' => $license_master,
+            ]);
+        }
+    }
+
+    /*
+     * Upload images
+     */
+
+    public function UploadDocument($model, $image, $appointment) {
+        $path = Yii::$app->basePath . '/../uploads/partner_documents/' . $appointment->id;
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+        if (!empty($image)) {
+            $name = $appointment->service_id . '-' . $model->document_name . '-' . \common\models\PartnerDetails::findOne($model->partner)->name . '.' . $image->extension;
+            $image->saveAs($path . '/' . $name);
+        }
+        return TRUE;
+    }
+
+    /*
+     * Delete Partner Document
+     */
+
+    public function actionDeletePartnerDocuments($id, $licence_id) {
+        $model = \common\models\PartnerDocuments::findOne($id);
+        $license_master = $this->findModel($licence_id);
+        if (!empty($model)) {
+            if ($model->delete()) {
+                $file_name = Yii::$app->basePath . '/../uploads/partner_documents/' . $license_master->appointment_id . '/' . $model->file;
+                if (file_exists($file_name)) {
+                    unlink($file_name);
+                }
+                Yii::$app->getSession()->setFlash('success', 'Partner documents removed successfully');
+            }
+        }
+        return $this->redirect(['partner-documents', 'id' => $licence_id]);
+    }
+
+    /*
+     * Check same partner name exist in an appointment
+     */
+
+    public function actionCheckPartner() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $app_id = $_POST['app_id'];
+            $partner_name = $_POST['partner_name'];
+            if ($id == '') {
+                $data_exist = \common\models\PartnerDetails::find()->where(['appointment_id' => $app_id, 'name' => $partner_name])->all();
+            } else {
+                $data_exist = \common\models\PartnerDetails::find()->where(['appointment_id' => $app_id, 'name' => $partner_name])->andWhere(['!=', 'id', $id])->all();
+            }
+            if (empty($data_exist)) {
+                $flag = 0;
+            } else {
+                $flag = 1;
+            }
+            return $flag;
+        }
     }
 
 }

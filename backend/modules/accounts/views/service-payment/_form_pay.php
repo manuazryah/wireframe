@@ -13,12 +13,13 @@
 <div class="modal-body">
     <form method="post" id="payment-submit">
         <input type="hidden" name="appointment_id" id="appointment_id" value="<?= $appointment_id ?>">
+        <input type="hidden" id="transaction-amount-tot" value="<?= $balnce_to_pay ?>">
 
         <div class="row">
             <div class="col-md-6 col-sm-12 col-xs-12 left_padd">
                 <div class="form-group">
                     <label class="control-label" for="amount">Amount</label>
-                    <input type="text" id="transaction-amount" class="form-control" name="amount" value="<?= $balnce_to_pay ?>" aria-invalid="false" required>
+                    <input type="text" id="transaction-amount" class="form-control" name="amount" value="<?= $balnce_to_pay ?>" aria-invalid="false" autocomplete="off" required>
                 </div>
             </div>
             <div class="col-md-6 col-sm-12 col-xs-12 left_padd">
@@ -45,22 +46,45 @@
 
 <script>
     $("document").ready(function () {
-        $("#payment-submit").submit(function (e) {
 
-
-            var str = $(this).serialize();
-
-            $.ajax({
-                type: "POST",
-                url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/ajax-payment',
-                data: str, // serializes the form's elements.
-                success: function (data)
-                {
-                    $("#trigger_close").click();
-                    $.pjax.reload({container: '#products-table', timeout: false});
+        $(document).on('change keyup', '#transaction-amount', function (e) {
+            var amt = $(this).val();
+            var tot = $('#transaction-amount-tot').val();
+            if (amt == '') {
+                amt = 0;
+            }
+            if (parseFloat(amt) < parseFloat(tot)) {
+                var balance = tot - amt;
+                $('#bal-amount').remove();
+                $('#transaction-amount').after('<div id="bal-amount" style="color:red;">Balance Amount : <span id="bal-text"></span></div>');
+                $("#bal-text").text(balance);
+            } else {
+                if (parseFloat(amt) > parseFloat(tot)) {
+                    if ($("#bal-amount").length > 0) {
+                        $('#bal-amount').remove();
+                        $('#transaction-amount').after('<div id="bal-amount" style="color:red;">Amount exeeds the total amount</div>');
+                    }
+                } else {
+                    $('#bal-amount').remove();
                 }
-            });
-
+            }
+        });
+        $("#payment-submit").submit(function (e) {
+            var amt = $('#transaction-amount').val();
+            var tot = $('#transaction-amount-tot').val();
+            var str = $(this).serialize();
+            if ((parseFloat(amt) <= parseFloat(tot)) && amt > 0) {
+                $.ajax({
+                    type: "POST",
+                    url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/ajax-payment',
+                    data: str, // serializes the form's elements.
+                    success: function (data)
+                    {
+                        $("#trigger_close").click();
+                        $.pjax.reload({container: '#products-table', timeout: false});
+                    }
+                });
+            }
             e.preventDefault(); // avoid to execute the actual submit of the form.
         });
     });

@@ -4,6 +4,43 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 ?>
 <?php
+if (!empty($partner_documents)) {
+    ?>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordionMenu" href="#collapseZero" aria-expanded="true" aria-controls="collapseZero">
+                    Partner Documents
+                </a>
+            </h4>
+        </div>
+        <div id="collapseZero" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingZero">
+            <div class="panel-body">
+                <ul class="nav">
+                    <?php
+                    foreach ($partner_documents as $partner_document) {
+                        if (!empty($partner_document->file)) {
+                            $path = Yii::$app->basePath . '/../uploads/partner_documents/' . $partner_document->appointment_id . '/' . $partner_document->file;
+                            if (file_exists($path)) {
+                                ?>
+                                <li>
+                                    <a href="<?= Yii::$app->homeUrl ?>uploads/partner_documents/<?= $partner_document->appointment_id ?>/<?= $partner_document->file ?>" target="_blank"><?= $partner_document->file ?></a>
+                                </li>
+                                <?php
+                            }
+                            ?>
+                            <?php
+                        }
+                    }
+                    ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+?>
+<?php
 if (!empty($initial_approval)) {
     ?>
     <div class="panel panel-default">

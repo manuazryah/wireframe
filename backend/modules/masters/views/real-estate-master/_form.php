@@ -24,7 +24,7 @@ use kartik\date\DatePicker;
     </div>
     <div class="row">
         <div class='col-md-4  col-xs-12 left_padd'>
-            <?= $form->field($model, 'type')->dropDownList(['1' => 'Istadama'], ['prompt' => 'Choose Type', 'autofocus' => 'true']) ?>
+            <?= $form->field($model, 'type')->dropDownList(['0' => 'Choose Type', '1' => 'Istadama'], ['autofocus' => 'true']) ?>
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>
             <?php $companies = ArrayHelper::map(CompanyManagement::findAll(['status' => 1]), 'id', 'company_name'); ?>
@@ -235,37 +235,38 @@ use kartik\date\DatePicker;
                 }
             });
         });
-    });
-    function calculateTotal() {
-        var rent_total = $("#realestatemaster-rent_total").val();
-        var commission = $("#realestatemaster-commission").val();
-        var deposit = $("#realestatemaster-deposit").val();
+        function calculateTotal() {
+            var rent_total = $("#realestatemaster-rent_total").val();
+            var commission = $("#realestatemaster-commission").val();
+            var deposit = $("#realestatemaster-deposit").val();
 //        var sponsor_fee = $("#realestatemaster-sponser_fee").val();
-        var furniture_expense = $("#realestatemaster-furniture_expense").val();
-        var renovation_expense = $("#realestatemaster-office_renovation_expense").val();
-        var other_expense = $("#realestatemaster-other_expense").val();
-        if (rent_total == '') {
-            rent_total = 0;
-        }
-        if (commission == '') {
-            commission = 0;
-        }
-        if (deposit == '') {
-            deposit = 0;
-        }
+            var furniture_expense = $("#realestatemaster-furniture_expense").val();
+            var renovation_expense = $("#realestatemaster-office_renovation_expense").val();
+            var other_expense = $("#realestatemaster-other_expense").val();
+            if (rent_total == '') {
+                rent_total = 0;
+            }
+            if (commission == '') {
+                commission = 0;
+            }
+            if (deposit == '') {
+                deposit = 0;
+            }
 //        if (sponsor_fee == '') {
 //            sponsor_fee = 0;
 //        }
-        if (furniture_expense == '') {
-            furniture_expense = 0;
+            if (furniture_expense == '') {
+                furniture_expense = 0;
+            }
+            if (renovation_expense == '') {
+                renovation_expense = 0;
+            }
+            if (other_expense == '') {
+                other_expense = 0;
+            }
+            var total = parseFloat(rent_total) + parseFloat(commission) + parseFloat(deposit) + parseFloat(furniture_expense) + parseFloat(renovation_expense) + parseFloat(other_expense);
+            $('#expense-total').text(total.toFixed(2));
         }
-        if (renovation_expense == '') {
-            renovation_expense = 0;
-        }
-        if (other_expense == '') {
-            other_expense = 0;
-        }
-        var total = parseFloat(rent_total) + parseFloat(commission) + parseFloat(deposit) + parseFloat(furniture_expense) + parseFloat(renovation_expense) + parseFloat(other_expense);
-        $('#expense-total').text(total.toFixed(2));
-    }
+    });
+
 </script>

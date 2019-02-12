@@ -592,7 +592,7 @@ input[type="file"] {
 }
 .grid-view a{
     color: #333;
-    display: block;
+    /*display: block;*/
 }
 .grid-view .glyphicon-pencil{
     color: #2196F3;
@@ -729,4 +729,36 @@ input[type="file"] {
 }
 .sidebar-mini:not(.sidebar-mini-expand-feature).sidebar-collapse .sidebar-menu>li:hover>a>.pull-right-container {
     left: 205px !important;
+}
+#tabs1 {
+    background: #fafdff;
+}
+#tabs1 .nav-tabs {
+    border-bottom: 0px solid #0089c9;
+    margin-bottom: 20px;
+}
+#tabs1 .card1 .nav-tabs>li {
+    width: calc(100% / 3);
+}
+#tabs1 .nav-tabs>li>a {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border: 1px solid #c1bbbb2b;
+    margin-right: 0px;
+    background: #000000ab;
+    color: #fff;
+}
+#tabs1 .nav-tabs>li.active>a {
+    background: #1281c8;
+    color: #fff;
+    border-color: #1281c8;
+}
+#tabs1 .nav-tabs>li.active>a {
+    background: #1281c8;
+    color: #fff;
+    border-color: #1281c8;
+}
+#tabs1 .nav-tabs>li>a:hover {
+    background: #168cd8;
+    border-color: #168cd8;
 }

@@ -140,10 +140,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             if ($model->sub_status == 0) {
                                 $url = Url::to(['service-payment', 'id' => $model->id]);
                             } elseif ($model->sub_status == 1) {
-                                $url = Url::to(['service-payment-update', 'id' => $model->id]);
-                            } elseif ($model->sub_status == 2) {
                                 $url = Url::to(['service-payment-details', 'id' => $model->id]);
-                            } elseif ($model->sub_status == 3) {
+                            } elseif ($model->sub_status == 2) {
                                 $url = Url::to(['payment', 'id' => $model->id]);
                             }
                             return $url;

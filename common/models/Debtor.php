@@ -43,7 +43,8 @@ class Debtor extends \yii\db\ActiveRecord {
         return [
             [['email', 'contact_person', 'company_name', 'phone_number', 'reference_code'], 'required'],
             [['address', 'comment'], 'string'],
-            [['TRN'], 'unique'],
+            ['company_name', 'unique', 'targetClass' => '\common\models\Debtor', 'message' => 'Company name must be unique.'],
+            ['TRN', 'unique', 'targetClass' => '\common\models\Debtor', 'message' => 'TRN  must be unique.'],
             [['nationality', 'status', 'CB', 'UB'], 'integer'],
             [['DOC', 'DOU'], 'safe'],
             [['company_name'], 'string', 'max' => 200],

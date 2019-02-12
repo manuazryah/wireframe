@@ -109,7 +109,7 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>
             <?php
-            $numbers = Yii::$app->SetValues->Number();
+            $numbers = Yii::$app->SetValues->Number(count($cheque_details));
             ?>
             <?= $form->field($model, 'no_of_cheques')->dropDownList($numbers, ['prompt' => '- select -']) ?>
 
@@ -156,20 +156,20 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
                             <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
                                 <div class = "form-group">
                                     <label class="control-label" for="">Cheque Number</label>
-                                    <input class="form-control" type = "text" name = "updatee[cheque_num][]" value="<?= $cheque_detail->cheque_no ?>" required>
+                                    <input class="form-control" type = "text" name = "updatee[<?= $cheque_detail->id ?>][cheque_num][]" value="<?= $cheque_detail->cheque_no ?>" required>
 
                                 </div>
                             </div>
                             <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
                                 <div class="form-group">
                                     <label class="control-label" for="">Expiry Date</label>
-                                    <input type="date" class="form-control" name="updatee[expiry_date][]" required value="<?= $cheque_detail->due_date ?>">
+                                    <input type="date" class="form-control" name="updatee[<?= $cheque_detail->id ?>][expiry_date][]" required value="<?= $cheque_detail->due_date ?>">
                                 </div>
                             </div>
                             <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
                                 <div class="form-group">
                                     <label class="control-label" for="">Amount</label>
-                                    <input class="form-control" type = "number" name = "updatee[amount][]" value="<?= $cheque_detail->amount ?>" required>
+                                    <input class="form-control" type = "number" name = "updatee[<?= $cheque_detail->id ?>][amount][]" value="<?= $cheque_detail->amount ?>" required>
                                 </div>
                             </div>
                         </div>
@@ -178,6 +178,7 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
                 }
             }
             ?>
+            <input type="hidden" id="cheque-count" value="<?= count($cheque_details) ?>" />
             <div id="cheque-details-content">
 
             </div>
@@ -253,12 +254,6 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
 <script>
     $("document").ready(function () {
 
-//        $("#realestatemaster-total_square_feet").blur(function () {
-//            var total = $(this).val();
-//            var res = total / 100;
-//            $("#realestatemaster-number_of_license").val(res);
-//            $("#realestatemaster-number_of_plots").val(res);
-//        });
         $(document).on('keyup mouseup', '#realestatemaster-rent_total', function (e) {
             calculateTotal();
         });
@@ -281,50 +276,52 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
             calculateTotal();
         });
 
-//        $(document).on('change', '#realestatemaster-no_of_cheques', function (e) {
-//            var no_of_cheque = $(this).val();
-//            $.ajax({
-//                type: 'POST',
-//                cache: false,
-//                async: false,
-//                data: {no_of_cheque: no_of_cheque},
-//                url: '<?= Yii::$app->homeUrl; ?>masters/real-estate-master/add-cheque-details',
-//                success: function (data) {
-//                    $("#cheque-details-content").html(data);
-//                }
-//            });
-//        });
+        $(document).on('change', '#realestatemaster-no_of_cheques', function (e) {
+            var no_of_cheque = $(this).val();
+            var cheque_count = $('#cheque-count').val();
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                async: false,
+                data: {no_of_cheque: no_of_cheque, cheque_count: cheque_count},
+                url: '<?= Yii::$app->homeUrl; ?>masters/real-estate-master/update-cheque-details',
+                success: function (data) {
+                    $("#cheque-details-content").html(data);
+                }
+            });
+        });
+        function calculateTotal() {
+            var rent_total = $("#realestatemaster-rent_total").val();
+            var commission = $("#realestatemaster-commission").val();
+            var deposit = $("#realestatemaster-deposit").val();
+            var sponsor_fee = $("#realestatemaster-sponser_fee").val();
+            var furniture_expense = $("#realestatemaster-furniture_expense").val();
+            var renovation_expense = $("#realestatemaster-office_renovation_expense").val();
+            var other_expense = $("#realestatemaster-other_expense").val();
+            if (rent_total == '') {
+                rent_total = 0;
+            }
+            if (commission == '') {
+                commission = 0;
+            }
+            if (deposit == '') {
+                deposit = 0;
+            }
+            if (sponsor_fee == '') {
+                sponsor_fee = 0;
+            }
+            if (furniture_expense == '') {
+                furniture_expense = 0;
+            }
+            if (renovation_expense == '') {
+                renovation_expense = 0;
+            }
+            if (other_expense == '') {
+                other_expense = 0;
+            }
+            var total = parseFloat(rent_total) + parseFloat(commission) + parseFloat(deposit) + parseFloat(sponsor_fee) + parseFloat(furniture_expense) + parseFloat(renovation_expense) + parseFloat(other_expense);
+            $('#expense-total').text(total.toFixed(2));
+        }
     });
-    function calculateTotal() {
-        var rent_total = $("#realestatemaster-rent_total").val();
-        var commission = $("#realestatemaster-commission").val();
-        var deposit = $("#realestatemaster-deposit").val();
-        var sponsor_fee = $("#realestatemaster-sponser_fee").val();
-        var furniture_expense = $("#realestatemaster-furniture_expense").val();
-        var renovation_expense = $("#realestatemaster-office_renovation_expense").val();
-        var other_expense = $("#realestatemaster-other_expense").val();
-        if (rent_total == '') {
-            rent_total = 0;
-        }
-        if (commission == '') {
-            commission = 0;
-        }
-        if (deposit == '') {
-            deposit = 0;
-        }
-        if (sponsor_fee == '') {
-            sponsor_fee = 0;
-        }
-        if (furniture_expense == '') {
-            furniture_expense = 0;
-        }
-        if (renovation_expense == '') {
-            renovation_expense = 0;
-        }
-        if (other_expense == '') {
-            other_expense = 0;
-        }
-        var total = parseFloat(rent_total) + parseFloat(commission) + parseFloat(deposit) + parseFloat(sponsor_fee) + parseFloat(furniture_expense) + parseFloat(renovation_expense) + parseFloat(other_expense);
-        $('#expense-total').text(total.toFixed(2));
-    }
+
 </script>

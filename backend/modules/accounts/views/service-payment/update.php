@@ -20,6 +20,31 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="box-body">
         <?= Html::a('<span> Manage Accounts</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+        <section id="tabs1">
+            <div class="card1">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation">
+                        <?php
+                        echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 1</span>', ['service-payment/service-payment', 'id' => $id]);
+                        ?>
+                    </li>
+                    <li role="presentation" class="active">
+                        <?php
+                        echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 2</span>', ['service-payment/service-payment-update', 'id' => $id]);
+                        ?>
+                    </li>
+                    <li role="presentation">
+                        <?php
+                        if ($appointment->sub_status != '' && $appointment->sub_status > 1) {
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 3</span>', ['service-payment/payment', 'id' => $id]);
+                        } else {
+                            echo Html::a('<span class="visible-xs"><i class="fa-home"></i></span><span class="hidden-xs">Step 2</span>', ['service-payment/service-payment-update', 'id' => $id]);
+                        }
+                        ?>
+                    </li>
+                </ul>
+            </div>
+        </section>
         <div class="appointment-history">
             <table class="table table-responsive">
                 <tr>
@@ -126,6 +151,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         $grand_tot = 0;
                         $onetime_tot = 0;
                         $cheque_tot = 0;
+                        $cheque_tax_tot = 0;
                         foreach ($services as $service) {
                             ?>
                             <tr>
@@ -152,6 +178,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $grand_tot += $service->total;
                             if ($service->payment_type == 1) {
                                 $cheque_tot += $service->total;
+                                $cheque_tax_tot += $service->tax_amount;
                             } elseif ($service->payment_type == 2) {
                                 $onetime_tot += $service->total;
                             }
@@ -172,13 +199,19 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="row">
             <div class="col-md-6" style="border-right: 1px solid #c5c5c5;">
-                <div class="col-md-6">
-                    <div class="form-group field-debtor-company_name required">
+                <div class="col-md-4">
+                    <div class="form-group field-debtor-company_name">
                         <label class="control-label" for="debtor-company_name">Cheque Amount</label>
                         <input type="text" value="<?= $cheque_tot ?>" id="multiple-tot" class="form-control" readonly />
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <div class="form-group field-debtor-company_name">
+                        <label class="control-label" for="debtor-company_name">Tax Amount</label>
+                        <input type="text" value="<?= $cheque_tax_tot ?>" id="multiple-tax-tot" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <div class="form-group field-debtor-company_name">
                         <label class="control-label" for="debtor-company_name">No of Cheques</label>
                         <input style=" margin: 0px 0px;"type="number" id="multiple-cheque-count" class="form-control" step="1" max="15" />
@@ -250,6 +283,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $(document).on('change keyup', '#multiple-cheque-count', function (e) {
             var count = $(this).val();
             var tot_amt = $('#multiple-tot').val();
+            var tot_tax = $('#multiple-tax-tot').val();
             var cheque_count = $('#multiple-cheque-count').val();
             if (cheque_count > 0) {
                 $("#cmprivacy").remove();
@@ -263,7 +297,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 type: 'POST',
                 cache: false,
                 async: false,
-                data: {count: count, total_amt: tot_amt},
+                data: {count: count, total_amt: tot_amt, tax_amount: tot_tax},
                 url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/multiple-cheque-details',
                 success: function (data) {
                     $("#cheque-details-content-multiple").html(data);
@@ -310,7 +344,9 @@ $this->params['breadcrumbs'][] = $this->title;
             var mul_tot_amt = $('#multiple-tot').val();
             var cheque_count = $('#multiple-cheque-count').val();
             var tot = chequeAmountTotal();
-            if (mul_tot_amt != tot) {
+            var start = mul_tot_amt - 1;
+            var end = mul_tot_amt + 1;
+            if (tot < start || tot > end) {
                 if (mul_tot_amt > 0 && cheque_count <= 0) {
                     $('#multiple-cheque-count').after('<div id="cmprivacy" style="color:red;">Enter Valid No of Cheques.</div>');
                 } else {
@@ -354,7 +390,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 alert('Cheque amount total does not match with multiple total amount');
                 var bal = tot_amt - mul_tot_pre;
                 if (bal >= 0) {
-                    $('#mul_cheque_amt-' + i).val(bal);
+                    $('#mul_cheque_amt-' + i).val(bal.toFixed(2));
                 } else {
                     $('#mul_cheque_amt-' + i).val(0);
                 }

@@ -19,9 +19,9 @@ class ServiceChequeDetailsSearch extends ServiceChequeDetails {
      */
     public function rules() {
         return [
-            [['id', 'type', 'appointment_id', 'appointment_service_id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
-            [['cheque_number', 'cheque_date', 'DOC', 'DOU', 'created_at_range'], 'safe'],
-            [['amount'], 'number'],
+                [['id', 'type', 'appointment_id', 'appointment_service_id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
+                [['cheque_number', 'cheque_date', 'DOC', 'DOU', 'created_at_range', 'customer'], 'safe'],
+                [['amount'], 'number'],
         ];
     }
 
@@ -55,6 +55,16 @@ class ServiceChequeDetailsSearch extends ServiceChequeDetails {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
+        }
+//        var_dump($this->customer);
+//        exit;
+        if ($this->customer != '') {
+            $arr_data = [];
+            $appointments = Appointment::find()->where(['customer' => $this->customer])->all();
+            foreach ($appointments as $appointment) {
+                $arr_data[] = $appointment->id;
+            }
+            $query->andWhere(['appointment_id' => $arr_data]);
         }
 
         // grid filtering conditions

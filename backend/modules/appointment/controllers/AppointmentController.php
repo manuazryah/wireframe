@@ -93,6 +93,7 @@ class AppointmentController extends Controller {
                     $this->addLicencingMaster($model);
                 }
                 $this->AddNotification($model);
+                $this->SendNotificationMail($model);
                 return $this->redirect(['/appointment/appointment-service/add', 'id' => $model->id]);
             }
         } return $this->render('create', [
@@ -328,6 +329,14 @@ class AppointmentController extends Controller {
         ]);
     }
 
+    public function actionValidation() {
+        $model = new \common\models\Debtor();
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\bootstrap\ActiveForm::validate($model);
+        }
+    }
+
     /*
      * This function select supplier based on real estate space
      * return result to the view
@@ -370,10 +379,16 @@ class AppointmentController extends Controller {
             $id = $_POST['id'];
             $plot_arr = [];
             $licence_arr = [];
+            $plots = [];
+            $licenses = [];
             $model = Appointment::find()->where(['id' => $id])->one();
             if (empty($model)) {
-                if ($model->service_type != 5) {
+                if ($type != 5) {
                     $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
                                 return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                             }
                     );
@@ -382,15 +397,15 @@ class AppointmentController extends Controller {
                                 return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                             }
                     );
+                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
                 }
             } else {
-                if ($model->service_type != 5) {
+                if ($type != 5) {
                     if ($model->plot == '') {
-                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 0])->all(), 'id', function($model) {
-                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                                }
-                        );
-                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
                                     return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                                 }
                         );
@@ -399,13 +414,9 @@ class AppointmentController extends Controller {
                                     return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                                 }
                         );
-                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
-                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                                }
-                        );
                     }
                     if ($model->space_for_license == '') {
-                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 0])->all(), 'id', function($model) {
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
                                     return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                                 }
                         );
@@ -416,14 +427,28 @@ class AppointmentController extends Controller {
                         );
                     }
                 } else {
-                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 1])->all(), 'id', function($model) {
-                                return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                            }
-                    );
-                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 1])->all(), 'id', function($model) {
-                                return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                            }
-                    );
+                    if ($model->plot == '') {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    } else {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 1])->orWhere(['in', 'id', explode(',', $model->plot)])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    }
+                    if ($model->space_for_license == '') {
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    } else {
+                        $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'type' => 1])->orWhere(['in', 'id', explode(',', $model->space_for_license)])->all(), 'id', function($model) {
+                                    return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                                }
+                        );
+                    }
                 }
             }
             $options = '';
@@ -452,6 +477,33 @@ class AppointmentController extends Controller {
         $notification->date = $model->DOC;
         $notification->doc = date('Y-m-d');
         $notification->save();
+        return;
+    }
+
+    public function SendNotificationMail($model) {
+        if ($model->service_type == 2 || $model->service_type == 3) {
+            $users = \common\models\AdminUsers::find()->where(['status' => 1])->andWhere(['or', ['post_id' => 1], ['post_id' => 3], ['post_id' => 4],])->all();
+        } else {
+            $users = \common\models\AdminUsers::find()->where(['status' => 1])->andWhere(['or', ['post_id' => 1], ['post_id' => 3],])->all();
+        }
+        if (!empty($users)) {
+            foreach ($users as $user) {
+                if ($user->email != '') {
+                    $this->sendMail($user, $model);
+                }
+            }
+        }
+        return;
+    }
+
+    public function sendMail($user, $model) {
+        $to = $user->email;
+        $subject = 'New Appointment';
+        $message = $this->render('notification_mail', ['model' => $model, 'user' => $user]);
+        $headers = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= "Content-type: text/html; charset=iso-8859-1" . "\r\n" .
+                "From: 'noreplay@ublcsp.com";
+        mail($to, $subject, $message, $headers);
         return;
     }
 

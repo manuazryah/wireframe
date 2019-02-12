@@ -9,10 +9,15 @@ use common\models\Country;
 /* @var $model common\models\Debtor */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
 <div class="debtor-form form-inline">
     <?= \common\components\AlertMessageWidget::widget() ?>
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+    $form = ActiveForm::begin([
+                'id' => 'debtor-form',
+                'enableAjaxValidation' => true,
+                'validationUrl' => 'validation',
+    ]);
+    ?>
     <div class="row">
         <div class='col-md-4 col-xs-12 left_padd'>    
             <?= $form->field($model, 'company_name')->textInput(['maxlength' => true, 'placeholder' => 'Company Name']) ?>
@@ -31,6 +36,8 @@ use common\models\Country;
             <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => 'Email']) ?>
 
         </div>
+    </div>
+    <div class="row">
         <div class='col-md-4 col-xs-12 left_padd'>    
             <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'placeholder' => 'Phone Number']) ?>
 
@@ -43,6 +50,8 @@ use common\models\Country;
             <?= $form->field($model, 'contact_person')->textInput(['maxlength' => true, 'placeholder' => 'Contact Person']) ?>
 
         </div>
+    </div>
+    <div class="row">
         <div class='col-md-4 col-xs-12 left_padd'>    
             <?= $form->field($model, 'contact_person_email')->textInput(['maxlength' => true, 'placeholder' => 'Contact Person Email']) ?>
 
@@ -84,69 +93,70 @@ use common\models\Country;
 
 </div>
 <script>
+    $(document).ready(function () {
+        $('#add_customer').click(function (event) {
+            event.preventDefault();
+            if (valid()) {
+                var company_name = $('#debtor-company_name').val();
+                var reference_code = $('#debtor-reference_code').val();
+                var phone_number = $('#debtor-phone_number').val();
+                var email = $('#debtor-email').val();
+                var address = $('#debtor-address').val();
+                var contact_person = $('#debtor-contact_person').val();
+                var contact_person_email = $('#debtor-contact_person_email').val();
+                var contact_person_phone = $('#debtor-contact_person_phone').val();
+                var nationality = $('#debtor-nationality').val();
+                var comment = $('#debtor-comment').val();
+                var TRN = $('#debtor-trn').val();
+                $.ajax({
+                    url: '<?= Yii::$app->homeUrl ?>appointment/appointment/add-customer',
+                    type: "post",
+                    data: {TRN: TRN, comment: comment, nationality: nationality, contact_person_phone: contact_person_phone, contact_person_email: contact_person_email, reference_code: reference_code, company_name: company_name, email: email, address: address, phone_number: phone_number, contact_person: contact_person},
+                    success: function (data) {
+                        var $data = JSON.parse(data);
+                        if ($data.con === "1") {
+                            var newOption = $('<option value="' + $data.id + '">' + $data.name + '</option>');
+                            $('#appointment-customer').append(newOption);
+                            $("#appointment-customer").val($data.id);
+                            $('#modal').modal('hide');
+                        } else {
+                            alert($data.error);
+                        }
 
-    $('#add_customer').click(function (event) {
-        event.preventDefault();
-        if (valid()) {
-            var company_name = $('#debtor-company_name').val();
-            var reference_code = $('#debtor-reference_code').val();
-            var phone_number = $('#debtor-phone_number').val();
-            var email = $('#debtor-email').val();
-            var address = $('#debtor-address').val();
-            var contact_person = $('#debtor-contact_person').val();
-            var contact_person_email = $('#debtor-contact_person_email').val();
-            var contact_person_phone = $('#debtor-contact_person_phone').val();
-            var nationality = $('#debtor-nationality').val();
-            var comment = $('#debtor-comment').val();
-            var TRN = $('#debtor-trn').val();
-            $.ajax({
-                url: '<?= Yii::$app->homeUrl ?>appointment/appointment/add-customer',
-                type: "post",
-                data: {TRN: TRN, comment: comment, nationality: nationality, contact_person_phone: contact_person_phone, contact_person_email: contact_person_email, reference_code: reference_code, company_name: company_name, email: email, address: address, phone_number: phone_number, contact_person: contact_person},
-                success: function (data) {
-                    var $data = JSON.parse(data);
-                    if ($data.con === "1") {
-                        var newOption = $('<option value="' + $data.id + '">' + $data.name + '</option>');
-                        $('#appointment-customer').append(newOption);
-                        $("#appointment-customer").val($data.id);
-                        $('#modal').modal('hide');
-                    } else {
-                        alert($data.error);
+                    }, error: function () {
+
                     }
+                });
+            } else {
+//            alert('Please fill the Field');
+            }
 
-                }, error: function () {
-
+        });
+        function valid() {
+            var valid;
+            $("input").each(function () {
+                if (!$('#debtor-company_name').val()) {
+                    $('#debtor-company_name').focus();
+                    valid = false;
+                }
+                if (!$('#debtor-email').val()) {
+                    $('#debtor-email').focus();
+                    valid = false;
+                }
+                if (!$('#debtor-phone_number').val()) {
+                    $('#debtor-phone_number').focus();
+                    valid = false;
+                }
+                if (!$('#debtor-contact_person').val()) {
+                    $('#debtor-contact_person').focus();
+                    valid = false;
                 }
             });
-        } else {
-//            alert('Please fill the Field');
+            if (valid !== false) {
+                return true;
+            } else {
+                return false;
+            }
         }
-
     });
-    var valid = function () { //Validation Function - Sample, just checks for empty fields
-        var valid;
-        $("input").each(function () {
-            if (!$('#debtor-company_name').val()) {
-                $('#debtor-company_name').focus();
-                valid = false;
-            }
-            if (!$('#debtor-email').val()) {
-                $('#debtor-email').focus();
-                valid = false;
-            }
-            if (!$('#debtor-phone_number').val()) {
-                $('#debtor-phone_number').focus();
-                valid = false;
-            }
-            if (!$('#debtor-contact_person').val()) {
-                $('#debtor-contact_person').focus();
-                valid = false;
-            }
-        });
-        if (valid !== false) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 </script>

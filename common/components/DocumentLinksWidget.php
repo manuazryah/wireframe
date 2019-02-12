@@ -33,6 +33,7 @@ class DocumentLinksWidget extends Widget {
     }
 
     public function run() {
+        $license_master = \common\models\LicencingMaster::findOne($this->id);
         $initial_approval = \common\models\LiceTrdnameIntlapro::find()->where(['licensing_master_id' => $this->id])->one();
         $moa_documents = \common\models\Moa::find()->where(['licensing_master_id' => $this->id])->one();
         $payment_voucher = \common\models\PaymentVoucher::find()->where(['licensing_master_id' => $this->id])->one();
@@ -44,6 +45,7 @@ class DocumentLinksWidget extends Widget {
         $rta = \common\models\Rta::find()->where(['licensing_master_id' => $this->id])->one();
         $dps = \common\models\Dps::find()->where(['licensing_master_id' => $this->id])->one();
         $others = \common\models\Others::find()->where(['licensing_master_id' => $this->id])->one();
+        $partner_documents = \common\models\PartnerDocuments::find()->where(['appointment_id' => $license_master->appointment_id])->all();
         return $this->render('document_list', [
                     'initial_approval' => $initial_approval,
                     'moa_documents' => $moa_documents,
@@ -56,6 +58,7 @@ class DocumentLinksWidget extends Widget {
                     'rta' => $rta,
                     'dps' => $dps,
                     'others' => $others,
+                    'partner_documents' => $partner_documents,
         ]);
     }
 

@@ -111,8 +111,13 @@ class AdminUsersController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
-
+        $appointment = \common\models\Appointment::find()->where(['sales_man' => $id])->all();
+        if (empty($appointment)) {
+            $this->findModel($id)->delete();
+            Yii::$app->session->setFlash('success', "User removed successfully.");
+        } else {
+            Yii::$app->session->setFlash('error', "Can't remove. Because this user is used in appointmrnt");
+        }
         return $this->redirect(['index']);
     }
 

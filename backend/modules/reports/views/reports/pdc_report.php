@@ -44,8 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             'dataProvider' => $dataProvider,
                             'filterModel' => $searchModel,
                             'columns' => [
-                                ['class' => 'yii\grid\SerialColumn'],
-                                [
+                                    ['class' => 'yii\grid\SerialColumn'],
+                                    [
                                     'attribute' => 'appointment_id',
                                     'format' => 'raw',
                                     'value' => function ($data) {
@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         }
                                     },
                                     'filter' => Select2::widget([
-                                        'name' => 'RealEstateDetailsSearch[appointment_id]',
+                                        'name' => 'ServiceChequeDetailsSearch[appointment_id]',
                                         'model' => $searchModel,
                                         'value' => $searchModel->appointment_id,
                                         'data' => ArrayHelper::map(
@@ -72,8 +72,35 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ],
                                     ]),
                                 ],
+                                    [
+                                    'attribute' => 'customer',
+                                    'format' => 'raw',
+                                    'value' => function ($data) {
+                                        if (isset($data->appointment_id)) {
+                                            return $data->getCustomer($data->appointment_id);
+                                        } else {
+                                            return '';
+                                        }
+                                    },
+                                    'filter' => Select2::widget([
+                                        'name' => 'ServiceChequeDetailsSearch[customer]',
+                                        'model' => $searchModel,
+                                        'value' => $searchModel->customer,
+                                        'data' => ArrayHelper::map(
+                                                common\models\Debtor::find()->all(), 'id', 'company_name'
+                                        ),
+                                        'size' => Select2::MEDIUM,
+                                        'options' => [
+                                            'placeholder' => '-- Select --',
+                                            'style' => 'width: 300px;'
+                                        ],
+                                        'pluginOptions' => [
+                                            'allowClear' => true
+                                        ],
+                                    ]),
+                                ],
                                 'cheque_number',
-                                [
+                                    [
                                     'attribute' => 'cheque_date',
                                     'value' => function ($data) {
                                         return date("Y-m-d", strtotime($data->cheque_date));
@@ -91,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ])
                                 ],
                                 'amount',
-                                [
+                                    [
                                     'attribute' => 'status',
                                     'format' => 'raw',
                                     'value' => function ($data) {

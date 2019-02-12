@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         }
                                     },
                                     'filter' => Select2::widget([
-                                        'name' => 'ChequeDetails[master_id]',
+                                        'name' => 'ChequeDetailsSearch[master_id]',
                                         'model' => $searchModel,
                                         'value' => $searchModel->master_id,
                                         'data' => ArrayHelper::map(

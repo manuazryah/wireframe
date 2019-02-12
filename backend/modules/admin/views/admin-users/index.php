@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
         </div>
         <div class="box-body">
-            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+            <?= \common\components\AlertMessageWidget::widget() ?>
 
             <?= Html::a('<span> Create Admin Users</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
             <?=
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
                 'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+                    ['class' => 'yii\grid\SerialColumn'],
 //                            'id',
                     [
                         'attribute' => 'post_id',
@@ -38,7 +38,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'name',
                     'email:email',
                     'phone_number',
-                        ['class' => 'yii\grid\ActionColumn'],
+                    ['class' => 'yii\grid\ActionColumn',
+                        'template' => '{update}{delete}',
+                    ],
                 ],
             ]);
             ?>

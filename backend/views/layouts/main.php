@@ -8,8 +8,11 @@ use yii\db\Expression;
 
 AppAsset::register($this);
 $controler = Yii::$app->controller->id;
-//$new_notifications = \common\models\Notifications::find()->where(['status' => 0])->all();
-$new_notifications = common\models\Notifications::find()->where(new Expression('!FIND_IN_SET(:users, users)'))->addParams([':users' => Yii::$app->user->identity->id])->orWhere(['IS', 'users', (new Expression('Null'))])->all();
+if (Yii::$app->user->identity->post_id == 1 || Yii::$app->user->identity->post_id == 3) {
+    $new_notifications = common\models\Notifications::find()->where(new Expression('!FIND_IN_SET(:users, users)'))->addParams([':users' => Yii::$app->user->identity->id])->orWhere(['IS', 'users', (new Expression('Null'))])->all();
+} else {
+    $new_notifications = [];
+}
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -51,6 +54,7 @@ $new_notifications = common\models\Notifications::find()->where(new Expression('
 
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
+
                             <li class="dropdown notifications-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-bell-o"></i>
@@ -62,12 +66,14 @@ $new_notifications = common\models\Notifications::find()->where(new Expression('
                                         <!-- inner menu: contains the actual data -->
                                         <ul class="menu">
                                             <?php
-                                            foreach ($new_notifications as $notifications) {
-                                                ?>
-                                                <li>
-                                                    <?= Html::a('<i class="fa fa-credit-card text-aqua"></i> ' . $notifications->notification_content, ['/notifications/notifications/view', 'id' => $notifications->id], ['title' => $notifications->notification_content]) ?>
-                                                </li>
-                                                <?php
+                                            if (!empty($new_notifications)) {
+                                                foreach ($new_notifications as $notifications) {
+                                                    ?>
+                                                    <li>
+                                                        <?= Html::a('<i class="fa fa-credit-card text-aqua"></i> ' . $notifications->notification_content, ['/notifications/notifications/view', 'id' => $notifications->id], ['title' => $notifications->notification_content]) ?>
+                                                    </li>
+                                                    <?php
+                                                }
                                             }
                                             ?>
 

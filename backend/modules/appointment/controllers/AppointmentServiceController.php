@@ -95,6 +95,7 @@ class AppointmentServiceController extends Controller {
             }
             $model->total = $model->amount + $tax_amount;
             if ($model->save()) {
+                Yii::$app->SetValues->updateAppointment($appointment->id);
                 Yii::$app->session->setFlash('success', "Service Updated Successfully");
                 return $this->redirect(['add', 'id' => $id]);
             }
@@ -128,6 +129,7 @@ class AppointmentServiceController extends Controller {
                         $this->saveServices($appointment, $service);
                     }
                 }
+                Yii::$app->SetValues->updateAppointment($appointment->id);
             }
         }
         return;
@@ -309,6 +311,7 @@ class AppointmentServiceController extends Controller {
                     if ($apointment->status == 2) {
                         $this->setNotification($apointment);
                         $this->updateRealEstate($apointment);
+                        $this->SendNotificationMail($apointment);
                         Yii::$app->session->setFlash('success', "Appointment Completed");
                     } else {
                         Yii::$app->session->setFlash('success', "Services not completed");
@@ -331,6 +334,33 @@ class AppointmentServiceController extends Controller {
         $notification->date = date('Y-m-d');
         $notification->doc = date('Y-m-d');
         $notification->save();
+        return;
+    }
+
+    public function SendNotificationMail($apointment) {
+        if ($apointment->service_type == 2 || $apointment->service_type == 3) {
+            $users = \common\models\AdminUsers::find()->where(['status' => 1])->andWhere(['or', ['post_id' => 1], ['post_id' => 3], ['post_id' => 4],])->all();
+        } else {
+            $users = \common\models\AdminUsers::find()->where(['status' => 1])->andWhere(['or', ['post_id' => 1], ['post_id' => 3],])->all();
+        }
+        if (!empty($users)) {
+            foreach ($users as $user) {
+                if ($user->email != '') {
+                    $this->sendMail($user, $apointment);
+                }
+            }
+        }
+        return;
+    }
+
+    public function sendMail($user, $model) {
+        $to = $user->email;
+        $subject = 'New Appointment';
+        $message = $this->render('notification_mail', ['model' => $model, 'user' => $user]);
+        $headers = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= "Content-type: text/html; charset=iso-8859-1" . "\r\n" .
+                "From: 'noreplay@ublcsp.com";
+        mail($to, $subject, $message, $headers);
         return;
     }
 

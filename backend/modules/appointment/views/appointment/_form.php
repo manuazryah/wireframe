@@ -220,19 +220,21 @@ use common\components\ModalViewWidget;
             var idd = '<?php echo $model->id; ?>';
             $('#appointment-plot').val('').trigger('change');
             $('#appointment-space_for_license').val('').trigger('change');
-            $.ajax({
-                type: 'POST',
-                cache: false,
-                async: false,
-                data: {type: type, id: idd},
-                url: '<?= Yii::$app->homeUrl; ?>appointment/appointment/get-plots',
-                success: function (data) {
-                    var res = $.parseJSON(data);
-                    $("#appointment-plot").html(res.result['plots']);
-                    $("#appointment-space_for_license").html(res.result['license']);
-                    e.preventDefault();
-                }
-            });
+            if (type != '') {
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: {type: type, id: idd},
+                    url: '<?= Yii::$app->homeUrl; ?>appointment/appointment/get-plots',
+                    success: function (data) {
+                        var res = $.parseJSON(data);
+                        $("#appointment-plot").html(res.result['plots']);
+                        $("#appointment-space_for_license").html(res.result['license']);
+                        e.preventDefault();
+                    }
+                });
+            }
             if (type == 1) {
                 $(".field-appointment-service_cost .control-label").text("Estimate to  Office Rent");
                 $("#appointment-plot").prop("disabled", false);
@@ -282,7 +284,7 @@ use common\components\ModalViewWidget;
                         if (data === '') {
                             $("#appointment-sponsor").val(null).trigger("change");
                         } else {
-                            $('#appointment-sponsor').select2("val", data);
+                            $("#appointment-sponsor").val(data).trigger("change");
                         }
                         e.preventDefault();
                     }

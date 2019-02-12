@@ -17,9 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
         </div>
         <div class="box-body">
-            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+            <?= \common\components\AlertMessageWidget::widget() ?>
 
-            <?= Html::a('<span> Create Admin Posts</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
+            <?php // Html::a('<span> Create Admin Posts</span>', ['create'], ['class' => 'btn btn-block manage-btn']) ?>
             <?=
             GridView::widget([
                 'dataProvider' => $dataProvider,
@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
 //                            'id',
                     'post_name',
                     [
-                        'attribute' => 'admin',
+                        'attribute' => 'success',
                         'format' => 'raw',
                         'filter' => [1 => 'Yes', 0 => 'No'],
                         'value' => function ($model) {
@@ -44,11 +44,33 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $model->masters == 1 ? 'Yes' : 'No';
                         },
                     ],
-                    // 'CB',
-                    // 'UB',
-                    // 'DOC',
-                    // 'DOU',
-                    ['class' => 'yii\grid\ActionColumn'],
+                    [
+                        'attribute' => 'sales',
+                        'format' => 'raw',
+                        'filter' => [1 => 'Yes', 0 => 'No'],
+                        'value' => function ($model) {
+                            return $model->sales == 1 ? 'Yes' : 'No';
+                        },
+                    ],
+                    [
+                        'attribute' => 'accounts',
+                        'format' => 'raw',
+                        'filter' => [1 => 'Yes', 0 => 'No'],
+                        'value' => function ($model) {
+                            return $model->accounts == 1 ? 'Yes' : 'No';
+                        },
+                    ],
+                    [
+                        'attribute' => 'operations',
+                        'format' => 'raw',
+                        'filter' => [1 => 'Yes', 0 => 'No'],
+                        'value' => function ($model) {
+                            return $model->operations == 1 ? 'Yes' : 'No';
+                        },
+                    ],
+                    ['class' => 'yii\grid\ActionColumn',
+                        'template' => '{update}',
+                    ],
                 ],
             ]);
             ?>
