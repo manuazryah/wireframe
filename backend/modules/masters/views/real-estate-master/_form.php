@@ -75,6 +75,10 @@ use kartik\date\DatePicker;
 
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>
+            <?= $form->field($model, 'number_of_istadama')->textInput() ?>
+
+        </div>
+        <div class='col-md-4  col-xs-12 left_padd'>
             <?= $form->field($model, 'status')->dropDownList(['1' => 'Enabled', '0' => 'Disabled']) ?>
 
         </div>
@@ -184,20 +188,20 @@ use kartik\date\DatePicker;
 </div>
 <script>
     $("document").ready(function () {
+        $("#realestatemaster-number_of_istadama").prop("disabled", true);
         $(document).on('change', '#realestatemaster-type', function (e) {
+            var type = $("#realestatemaster-type").val();
+            if (type == 0) {
+                $("#realestatemaster-number_of_istadama").prop("disabled", true);
+            } else {
+                $("#realestatemaster-number_of_istadama").prop("disabled", false);
+            }
             $("#realestatemaster-total_square_feet").trigger("blur");
         });
         $("#realestatemaster-total_square_feet").blur(function () {
-            var type = $("#realestatemaster-type").val();
             var total = $(this).val();
             var res = total / 100;
-            if (type == 0) {
-                $("#realestatemaster-number_of_license").val(res);
-                $("#realestatemaster-number_of_license").prop("disabled", false);
-            } else {
-                $("#realestatemaster-number_of_license").val('');
-                $("#realestatemaster-number_of_license").prop("disabled", true);
-            }
+            $("#realestatemaster-number_of_license").val(res);
             $("#realestatemaster-number_of_plots").val(res);
         });
         $(document).on('keyup mouseup', '#realestatemaster-rent_total', function (e) {

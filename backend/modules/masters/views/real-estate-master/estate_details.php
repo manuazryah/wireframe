@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\RealEstateDetailsSearch */
@@ -46,8 +48,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
-//                    'id',
-//                    'master_id',
                     [
                         'attribute' => 'category',
                         'format' => 'raw',
@@ -70,6 +70,60 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value' => function ($model) {
                             return $model->availability == 1 ? 'Not Occupied' : 'Occupied';
                         },
+                    ],
+                    [
+                        'attribute' => 'appointment_id',
+                        'format' => 'raw',
+                        'value' => function ($data) {
+                            if (isset($data->appointment_id)) {
+                                return \yii\helpers\Html::a(\common\models\Appointment::findOne($data->appointment_id)->service_id, ['/appointment/appointment/view', 'id' => $data->appointment_id], ['target' => '_blank']);
+                            } else {
+                                return '';
+                            }
+                        },
+                        'filter' => Select2::widget([
+                            'name' => 'RealEstateDetailsSearch[appointment_id]',
+                            'model' => $searchModel,
+                            'value' => $searchModel->appointment_id,
+                            'data' => ArrayHelper::map(
+                                    common\models\Appointment::find()->all(), 'id', 'service_id'
+                            ),
+                            'size' => Select2::MEDIUM,
+                            'options' => [
+                                'placeholder' => '-- Select --',
+                                'style' => 'width: 300px;'
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]),
+                    ],
+                    [
+                        'attribute' => 'customer_id',
+                        'format' => 'raw',
+                        'value' => function ($data) {
+                            if (isset($data->customer_id)) {
+                                return \yii\helpers\Html::a(\common\models\Debtor::findOne($data->customer_id)->company_name, ['/masters/debtor/update', 'id' => $data->customer_id], ['target' => '_blank']);
+                            } else {
+                                return '';
+                            }
+                        },
+                        'filter' => Select2::widget([
+                            'name' => 'ServiceChequeDetailsSearch[customer_id]',
+                            'model' => $searchModel,
+                            'value' => $searchModel->customer_id,
+                            'data' => ArrayHelper::map(
+                                    common\models\Debtor::find()->all(), 'id', 'company_name'
+                            ),
+                            'size' => Select2::MEDIUM,
+                            'options' => [
+                                'placeholder' => '-- Select --',
+                                'style' => 'width: 300px;'
+                            ],
+                            'pluginOptions' => [
+                                'allowClear' => true
+                            ],
+                        ]),
                     ],
                     [
                         'class' => 'yii\grid\ActionColumn',

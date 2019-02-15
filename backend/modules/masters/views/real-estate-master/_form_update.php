@@ -80,11 +80,15 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
 
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>    
-            <?= $form->field($model, 'number_of_license')->textInput(['type' => 'number', 'min' => 1, 'readonly' => $model->type == 1 || $license_count > 0 ? TRUE : FALSE]) ?>
+            <?= $form->field($model, 'number_of_license')->textInput(['type' => 'number', 'min' => 1, 'readonly' => $license_count > 0 ? TRUE : FALSE]) ?>
 
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>    
             <?= $form->field($model, 'number_of_plots')->textInput(['type' => 'number', 'min' => 1, 'readonly' => $plot_count > 0 ? TRUE : FALSE]) ?>
+
+        </div>
+        <div class='col-md-4  col-xs-12 left_padd'>    
+            <?= $form->field($model, 'number_of_istadama')->textInput(['type' => 'number', 'min' => 1, 'readonly' => $model->type == 0 || $plot_count > 0 ? TRUE : FALSE]) ?>
 
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>    
@@ -105,13 +109,6 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
     </div>
     <div class="row">
         <div class='col-md-4  col-xs-12 left_padd'>    <?= $form->field($model, 'rent_total')->textInput(['maxlength' => true]) ?>
-
-        </div>
-        <div class='col-md-4  col-xs-12 left_padd'>
-            <?php
-            $numbers = Yii::$app->SetValues->Number(count($cheque_details));
-            ?>
-            <?= $form->field($model, 'no_of_cheques')->dropDownList($numbers, ['prompt' => '- select -']) ?>
 
         </div>
         <div class='col-md-4  col-xs-12 left_padd'>    
@@ -166,10 +163,15 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
                                     <input type="date" class="form-control" name="updatee[<?= $cheque_detail->id ?>][expiry_date][]" required value="<?= $cheque_detail->due_date ?>">
                                 </div>
                             </div>
-                            <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                            <div class='col-md-3 col-sm-12 col-xs-12 left_padd'>
                                 <div class="form-group">
                                     <label class="control-label" for="">Amount</label>
                                     <input class="form-control" type = "number" name = "updatee[<?= $cheque_detail->id ?>][amount][]" value="<?= $cheque_detail->amount ?>" required>
+                                </div>
+                            </div>
+                            <div class='col-md-1 col-sm-12 col-xs-12 left_padd'>
+                                <div class="form-group">
+                                    <a><i class="fa fa-times cheque-details-delete" id="<?= $cheque_detail->id ?>"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -182,6 +184,7 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
             <div id="cheque-details-content">
 
             </div>
+            <a href="" id="add_another_line"><i class="fa fa-plus" aria-hidden="true"></i> Add New Cheque</a>
         </div>
     </div>
     <div class="row">
@@ -253,7 +256,7 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
 </div>
 <script>
     $("document").ready(function () {
-
+        $('#realestatemaster-type').attr("disabled", true);
         $(document).on('keyup mouseup', '#realestatemaster-rent_total', function (e) {
             calculateTotal();
         });
@@ -276,19 +279,39 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
             calculateTotal();
         });
 
-        $(document).on('change', '#realestatemaster-no_of_cheques', function (e) {
-            var no_of_cheque = $(this).val();
-            var cheque_count = $('#cheque-count').val();
+        $(document).on('click', '#add_another_line', function (e) {
+            e.preventDefault();
             $.ajax({
                 type: 'POST',
                 cache: false,
                 async: false,
-                data: {no_of_cheque: no_of_cheque, cheque_count: cheque_count},
+                data: {},
                 url: '<?= Yii::$app->homeUrl; ?>masters/real-estate-master/update-cheque-details',
                 success: function (data) {
-                    $("#cheque-details-content").html(data);
+                    $('#cheque-details-content').append(data);
                 }
             });
+        });
+
+        $(document).on('click', '.cheque-details-delete', function (e) {
+            e.preventDefault();
+            var row_id = $(this).attr('id');
+            if (row_id) {
+                if (confirm('Are you sure you want to delete?')) {
+                    $.ajax({
+                        type: 'POST',
+                        cache: false,
+                        async: false,
+                        data: {id: row_id},
+                        url: '<?= Yii::$app->homeUrl; ?>masters/real-estate-master/remove-cheque-row',
+                        success: function (data) {
+                        }
+                    });
+                    $(this).closest("div.row").remove();
+                }
+            } else {
+                $(this).closest("div.row").remove();
+            }
         });
         function calculateTotal() {
             var rent_total = $("#realestatemaster-rent_total").val();

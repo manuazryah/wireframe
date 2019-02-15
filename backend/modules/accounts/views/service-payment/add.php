@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="inner"><button type="button" class="btn btn-block manage-btn side-agreement">Side Agreement</button></div>
             <div class="inner"><button type="button" class="btn btn-block manage-btn adding-agreement">Adding Agreement</button></div>
         </div>
-        <div class="appointment-history">
+         <div class="appointment-history">
             <table class="table table-responsive">
                 <tr>
                     <th>Customer Name</th>

@@ -156,12 +156,13 @@ class SiteController extends Controller {
                     $model->date = $cheques->due_date;
                     $model->status = 0;
                     $model->doc = date('Y-m-d');
-                    if ($model->validate())
+                    if ($model->validate()) {
                         if ($model->save()) {
-                            $this->SendNotificationMail($model->notification_content);
+//                            $this->SendNotificationMail($model->notification_content);
                         }
+                    }
                 } else {
-                    $this->SendNotificationMail($check_exist->notification_content);
+//                    $this->SendNotificationMail($check_exist->notification_content);
                 }
             }
         }
@@ -177,13 +178,12 @@ class SiteController extends Controller {
                     $model->date = $cheques->cheque_date;
                     $model->status = 0;
                     $model->doc = date('Y-m-d');
-                    if ($model->validate()) {
+                    if ($model->validate())
                         if ($model->save()) {
-//                            $this->SendNotificationMail($model->notification_content);
+                            $this->SendNotificationMail($model->notification_content);
                         }
-                    }
                 } else {
-//                    $this->SendNotificationMail($check_exist->notification_content);
+                    $this->SendNotificationMail($check_exist->notification_content);
                 }
             }
         }
@@ -257,7 +257,7 @@ class SiteController extends Controller {
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= "Content-type: text/html; charset=iso-8859-1" . "\r\n" .
                 "From: 'info@coralepitome.com";
-//        mail($to, $subject, $message, $headers);
+        mail($to, $subject, $message, $headers);
         return;
     }
 

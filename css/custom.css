@@ -762,3 +762,27 @@ input[type="file"] {
     background: #168cd8;
     border-color: #168cd8;
 }
+#add_another_line {
+    color: #2196F3;
+    font-size: 12px;
+    font-weight: bold;
+    float: left;
+    border: 1px solid;
+    padding: 5px 10px;
+    text-decoration: none;
+    background: #b8d9f3;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.cheque-details-delete {
+    margin-top: 21px;
+    font-size: 14px;
+    color: #F44336;
+    cursor: pointer;
+    padding: 9px 10px;
+    border: 1px solid #ef5f5f;
+    background: #dca4a6;
+}
+.s2-togall-button {
+    display: none;
+}

@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="table-responsive" style="height: 275px;">
+                    <div class="table-responsive">
                         <?=
                         GridView::widget([
                             'dataProvider' => $dataProvider,

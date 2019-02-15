@@ -107,24 +107,33 @@ class RealEstateMasterController extends Controller {
     public function EstateDetails($model) {
         if (isset($model->number_of_license) && $model->number_of_license >= 1) {
             for ($i = 1; $i <= $model->number_of_license; $i++) {
-                $this->SaveEstateDetails($model, 1, $i);
+                $this->SaveEstateDetails($model, 1, $i, 0);
             }
         }
         if (isset($model->number_of_plots) && $model->number_of_plots >= 1) {
             for ($i = 1; $i <= $model->number_of_plots; $i++) {
-                $this->SaveEstateDetails($model, 2, $i);
+                $this->SaveEstateDetails($model, 2, $i, 0);
+            }
+        }
+        if (isset($model->number_of_istadama) && $model->number_of_istadama >= 1) {
+            for ($i = 1; $i <= $model->number_of_istadama; $i++) {
+                $this->SaveEstateDetails($model, 2, $i, 1);
             }
         }
         return;
     }
 
-    public function SaveEstateDetails($model_master, $category, $code) {
+    public function SaveEstateDetails($model_master, $category, $code, $type) {
         $model = new \common\models\RealEstateDetails();
         $model->type = $model_master->type;
         $model->master_id = $model_master->id;
         $model->category = $category;
         if ($category == 2) {
-            $model->code = Yii::$app->SetValues->NumberAlphabet($code);
+            if ($type == 1) {
+                $model->code = 'IST-' . $code;
+            } else {
+                $model->code = Yii::$app->SetValues->NumberAlphabet($code);
+            }
         }
         if ($category == 1) {
             $model->code = $code;
@@ -458,16 +467,24 @@ class RealEstateMasterController extends Controller {
     public function actionUpdateChequeDetails() {
         $data = '';
         if (Yii::$app->request->isAjax) {
-            $no_of_cheque = $_POST['no_of_cheque'];
-            $cheque_count = $_POST['cheque_count'];
-            if ($cheque_count != '' && $cheque_count > 0 && $no_of_cheque > $cheque_count) {
-                $required_cheque = $no_of_cheque - $cheque_count;
-            }
             $data = $this->renderPartial('_form_update_cheque', [
-                'no_of_cheque' => $required_cheque,
             ]);
         }
         return $data;
+    }
+
+    public function actionRemoveChequeRow() {
+        $flag = 0;
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $details = \common\models\ChequeDetails::find()->where(['id' => $id])->one();
+            if (!empty($details)) {
+                if ($details->delete()) {
+                    $flag = 1;
+                }
+            }
+        }
+        return $flag;
     }
 
 }

@@ -48,13 +48,13 @@ class RealEstateMaster extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['number_of_license'], 'required', 'when' => function ($model) {
-                    
-                }, 'whenClient' => "function (attribute, value) {
-               return $('#realestatemaster-type').val() == '';
-            }"],
-            [['company', 'total_square_feet', 'sponsor', 'number_of_plots', 'reference_code', 'comany_name_for_ejari'], 'required'],
-            [['type', 'company', 'sponsor', 'number_of_license', 'number_of_plots', 'no_of_cheques', 'status', 'CB', 'UB'], 'integer'],
+//            [['number_of_license'], 'required', 'when' => function ($model) {
+//                    
+//                }, 'whenClient' => "function (attribute, value) {
+//               return $('#realestatemaster-type').val() == '';
+//            }"],
+            [['number_of_license', 'company', 'total_square_feet', 'sponsor', 'number_of_plots', 'reference_code', 'comany_name_for_ejari'], 'required'],
+            [['type', 'company', 'sponsor', 'number_of_license', 'number_of_plots', 'no_of_cheques', 'status', 'CB', 'UB', 'number_of_istadama'], 'integer'],
             [['comment'], 'string'],
             [['rent_total', 'commission', 'deposit', 'sponser_fee', 'furniture_expense', 'office_renovation_expense', 'other_expense'], 'number'],
             [['DOC', 'DOU', 'ejari_expiry'], 'safe'],

@@ -46,7 +46,7 @@ $sub_status = $appointment->sub_status;
                 </ul>
             </div>
         </section>
-        <div class="appointment-history">
+         <div class="appointment-history">
             <table class="table table-responsive">
                 <tr>
                     <th>Customer Name</th>

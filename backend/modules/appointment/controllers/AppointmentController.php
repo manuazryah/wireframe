@@ -377,8 +377,6 @@ class AppointmentController extends Controller {
         if (Yii::$app->request->isAjax) {
             $type = $_POST['type'];
             $id = $_POST['id'];
-            $plot_arr = [];
-            $licence_arr = [];
             $plots = [];
             $licenses = [];
             $model = Appointment::find()->where(['id' => $id])->one();
@@ -393,7 +391,7 @@ class AppointmentController extends Controller {
                             }
                     );
                 } else {
-                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1])->all(), 'id', function($model) {
                                 return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                             }
                     );
@@ -428,12 +426,12 @@ class AppointmentController extends Controller {
                     }
                 } else {
                     if ($model->plot == '') {
-                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1])->all(), 'id', function($model) {
                                     return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                                 }
                         );
                     } else {
-                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 1])->orWhere(['in', 'id', explode(',', $model->plot)])->all(), 'id', function($model) {
+                        $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2])->orWhere(['in', 'id', explode(',', $model->plot)])->all(), 'id', function($model) {
                                     return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                                 }
                         );
@@ -465,7 +463,7 @@ class AppointmentController extends Controller {
             }
             $arr_variable1 = array('plots' => $options, 'license' => $options1);
             $data['result'] = $arr_variable1;
-            echo json_encode($data);
+            return json_encode($data);
         }
     }
 

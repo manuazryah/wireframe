@@ -53,7 +53,7 @@ use common\components\ModalViewWidget;
                             }
                     );
                 } else {
-                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1])->all(), 'id', function($model) {
                                 return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                             }
                     );
@@ -72,7 +72,7 @@ use common\components\ModalViewWidget;
                         );
                     }
                 } else {
-                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'type' => 1])->all(), 'id', function($model) {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2])->all(), 'id', function($model) {
                                 return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                             }
                     );

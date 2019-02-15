@@ -178,12 +178,12 @@ class SetValues extends Component {
 
     public function Number($count = NULL) {
         $number_array = array();
-        if ($count != '') {
-            $j = $count + 1;
-        } else {
-            $j = 1;
-        }
-        for ($i = $j; $i <= 15; $i++) {
+//        if ($count != '') {
+//            $j = $count + 1;
+//        } else {
+//            $j = 1;
+//        }
+        for ($i = 1; $i <= 30; $i++) {
             $number_array[$i] = $i;
         }
         return $number_array;
