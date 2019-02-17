@@ -130,6 +130,7 @@ class RealEstateMasterController extends Controller {
         $model->category = $category;
         if ($category == 2) {
             if ($type == 1) {
+                $model->plot_status = 1;
                 $model->code = 'IST-' . $code;
             } else {
                 $model->code = Yii::$app->SetValues->NumberAlphabet($code);
@@ -143,7 +144,15 @@ class RealEstateMasterController extends Controller {
     }
 
     public function RemoveEstateDetails($model_master, $category) {
-        $model = \common\models\RealEstateDetails::find()->where(['category' => $category, 'master_id' => $model_master->id])->orderBy(['id' => SORT_DESC])->one();
+        if ($category == 1) {
+            $model = \common\models\RealEstateDetails::find()->where(['category' => $category, 'master_id' => $model_master->id])->orderBy(['id' => SORT_DESC])->one();
+        } elseif ($category == 2) {
+            $model = \common\models\RealEstateDetails::find()->where(['category' => $category, 'master_id' => $model_master->id, 'plot_status' => 0])->orderBy(['id' => SORT_DESC])->one();
+        } elseif ($category == 3) {
+            $model = \common\models\RealEstateDetails::find()->where(['category' => 2, 'master_id' => $model_master->id, 'plot_status' => 1])->orderBy(['id' => SORT_DESC])->one();
+        } else {
+            $model = '';
+        }
         if (!empty($model)) {
             $model->delete();
         }
@@ -311,18 +320,25 @@ class RealEstateMasterController extends Controller {
     public function UpdateRealEstateDetails($model, $model_) {
         $license_count = $model->number_of_license - $model_->number_of_license;
         $plot_count = $model->number_of_plots - $model_->number_of_plots;
+        $istadama_count = $model->number_of_istadama - $model_->number_of_istadama;
         if ($license_count >= 1) {
             for ($i = $model_->number_of_license + 1; $i <= $model->number_of_license; $i++) {
-                $this->SaveEstateDetails($model, 1, $i);
+                $this->SaveEstateDetails($model, 1, $i, 0);
             }
         }
         if ($plot_count >= 1) {
             for ($i = $model_->number_of_plots + 1; $i <= $model->number_of_plots; $i++) {
-                $this->SaveEstateDetails($model, 2, $i);
+                $this->SaveEstateDetails($model, 2, $i, 0);
+            }
+        }
+        if ($istadama_count >= 1) {
+            for ($i = $model_->number_of_istadama + 1; $i <= $model->number_of_istadama; $i++) {
+                $this->SaveEstateDetails($model, 2, $i, 1);
             }
         }
         $license_reduce_count = $model_->number_of_license - $model->number_of_license;
         $plot_reduce_count = $model_->number_of_plots - $model->number_of_plots;
+        $istadama_reduce_count = $model_->number_of_istadama - $model->number_of_istadama;
         if ($license_reduce_count >= 1) {
             for ($i = 1; $i <= $license_reduce_count; $i++) {
                 $this->RemoveEstateDetails($model, 1);
@@ -331,6 +347,11 @@ class RealEstateMasterController extends Controller {
         if ($plot_reduce_count >= 1) {
             for ($i = 1; $i <= $plot_reduce_count; $i++) {
                 $this->RemoveEstateDetails($model, 2);
+            }
+        }
+        if ($istadama_reduce_count >= 1) {
+            for ($i = 1; $i <= $istadama_reduce_count; $i++) {
+                $this->RemoveEstateDetails($model, 3);
             }
         }
         return;

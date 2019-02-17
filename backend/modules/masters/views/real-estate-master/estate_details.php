@@ -125,26 +125,26 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ]),
                     ],
-                    [
-                        'class' => 'yii\grid\ActionColumn',
-                        'contentOptions' => ['style' => 'width:50px;text-align:center;'],
-                        'header' => 'Actions',
-                        'template' => '{update}',
-                        'buttons' => [
-                            'update' => function ($url, $model) {
-                                return Html::a('<span><i class="fa fa-pencil" aria-hidden="true"></i></span>', $url, [
-                                            'title' => Yii::t('app', 'update'),
-                                            'class' => '',
-                                ]);
-                            },
-                        ],
-                        'urlCreator' => function ($action, $model) {
-                            if ($action === 'update') {
-                                $url = Url::to(['update-estate-details', 'id' => $model->id]);
-                                return $url;
-                            }
-                        }
-                    ],
+//                    [
+//                        'class' => 'yii\grid\ActionColumn',
+//                        'contentOptions' => ['style' => 'width:50px;text-align:center;'],
+//                        'header' => 'Actions',
+//                        'template' => '{update}',
+//                        'buttons' => [
+//                            'update' => function ($url, $model) {
+//                                return Html::a('<span><i class="fa fa-pencil" aria-hidden="true"></i></span>', $url, [
+//                                            'title' => Yii::t('app', 'update'),
+//                                            'class' => '',
+//                                ]);
+//                            },
+//                        ],
+//                        'urlCreator' => function ($action, $model) {
+//                            if ($action === 'update') {
+//                                $url = Url::to(['update-estate-details', 'id' => $model->id]);
+//                                return $url;
+//                            }
+//                        }
+//                    ],
                 ],
             ]);
             ?>
