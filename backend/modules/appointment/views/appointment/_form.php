@@ -47,10 +47,17 @@ use common\components\ModalViewWidget;
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?php
             if ($model->isNewRecord) {
-                $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1])->all(), 'id', function($model) {
-                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                        }
-                );
+                if ($model->service_type != 5) {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                } else {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                }
             } else {
                 if ($model->service_type != 5) {
                     if ($model->plot == '') {
@@ -92,10 +99,17 @@ use common\components\ModalViewWidget;
         <div class='col-md-3 col-sm-6 col-xs-12 left_padd'>
             <?php
             if ($model->isNewRecord) {
-                $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1])->all(), 'id', function($model) {
-                            return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
-                        }
-                );
+                if ($model->service_type != 5) {
+                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                } else {
+                    $licenses = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 1, 'availability' => 1, 'type' => 1])->all(), 'id', function($model) {
+                                return common\models\RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
+                            }
+                    );
+                }
             } else {
                 if ($model->service_type != 5) {
                     if ($model->space_for_license == '') {

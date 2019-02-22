@@ -1,5 +1,7 @@
 $("document").ready(function () {
 
+    SetDateFormateCreate();
+
     /********************** Account payment details page start **********************************************/
 
     $('#appointment-license_expiry_date').inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});
@@ -13,23 +15,17 @@ $("document").ready(function () {
         checkMultiplePayment();
         calculateTaxTotal();
     });
-
     $(document).on('change keyup', '.mul_cheque_amt', function (e) {
-        chequeAmountTotal();
+//        chequeAmountTotal();
     });
-
-    $(document).on('change keyup', '#one-time-tot', function (e) {
-        $("#cheque-details-content-multiple").html('');
-        $("#cheque-details-content-one-time").html('');
-        $("#multiple-cheque-count").val('');
-        $('#appointment-tax_to_onetime').prop('checked', false);
+    $(document).on('keyup', '#one-time-tot', function (e) {
+//        $(".mul_cheque_amt").val('');
     });
-
-    $(document).on('change keyup', '#multiple-tot', function (e) {
-        $("#cheque-details-content-multiple").html('');
-        $("#cheque-details-content-one-time").html('');
-        $("#multiple-cheque-count").val('');
-        $('#appointment-tax_to_onetime').prop('checked', false);
+    $(document).on('keyup', '#multiple-tot', function (e) {
+        if ($(this).val == '' || $(this).val <= 0) {
+            $("#cheque-details-content-multiple").html('');
+            $("#multiple-cheque-count").val('');
+        }
     });
 
     $(document).on('change keyup', '#one_time_amt', function (e) {
@@ -49,40 +45,44 @@ $("document").ready(function () {
             $('#one_time_amt').val(one_time_tot);
         }
     });
-
     $(document).on('change keyup', '#multiple-cheque-count', function (e) {
         var count = $(this).val();
-        var tot_amt = $('#multiple-tot').val();
-        var tot_tax = $('#multiple-tax-tot').val();
-        var cheque_count = $('#multiple-cheque-count').val();
-        if ($('#appointment-tax_to_onetime').is(':checked')) {
-            var check = 1;
-        } else {
-            var check = 0;
-        }
-
-        if (cheque_count > 0) {
+        var mul_tot = $('#multiple-tot').val();
+        var prev_count = $('#cheque_count').val();
+        if (count > 0) {
             $("#cmprivacy").remove();
         }
         if (count > 15) {
             count = 15;
             $('#multiple-cheque-count').val(count);
         }
-        showLoader();
-        $.ajax({
-            type: 'POST',
-            cache: false,
-            async: false,
-            data: {count: count, total_amt: tot_amt, tax_amount: tot_tax, check: check},
-            url: homeUrl + 'accounts/service-payment/multiple-cheque-details',
-            success: function (data) {
-                $("#cheque-details-content-multiple").html(data);
-                SetDateFormateCreate(count);
+        if (count > prev_count) {
+            if (mul_tot > 0) {
+                showLoader();
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: {count: count, prev_count: prev_count},
+                    url: homeUrl + 'accounts/service-payment/multiple-cheque-details',
+                    success: function (data) {
+                        $("#cheque-details-content-multiple").append(data);
+                        $('#cheque_count').val(count);
+                        SetDateFormateCreate();
+                    }
+                });
+                hideLoader();
+            } else {
+                $('#cheque-details-content-multiple').html('');
+                $('#multiple-cheque-count').val(0);
             }
-        });
-        hideLoader();
+        } else {
+            for (i = prev_count; i > count; i--) {
+                $('#multiple_cheque_row-' + prev_count).remove();
+                $('#cheque_count').val(prev_count - 1);
+            }
+        }
     });
-
     $(document).on('blur', '.service-amt-tot', function (e) {
         var amt_val = $(this).val();
         var service_id = $(this).attr('data-val').match(/\d+/); // 123456
@@ -97,7 +97,6 @@ $("document").ready(function () {
             }
         });
     });
-
     $(document).on('change', '#one-time-payment_type', function (e) {
         var type = $(this).val();
         var tot_amt = $('#one-time-tot').val();
@@ -117,7 +116,6 @@ $("document").ready(function () {
             $("#cheque-details-content-one-time").html('');
         }
     });
-
     $(document).on('submit', '#account-form', function (e) {
         var status = '<?php echo $sub_status; ?>';
         if (status > 1) {
@@ -178,7 +176,6 @@ $("document").ready(function () {
             }
         }
     });
-
     $('#security_cheque').change(function () {
         showLoader();
         if ($(this).is(":checked")) {
@@ -198,7 +195,6 @@ $("document").ready(function () {
         }
         hideLoader();
     });
-
     $('#appointment-tax_to_onetime').change(function ()
     {
         var tax_val = $('#multiple-tax-tot').val();
@@ -219,11 +215,9 @@ $("document").ready(function () {
         $("#cheque-details-content-one-time").html('');
         $("#multiple-cheque-count").val('');
     });
-
     /********************** Account payment details page end **********************************************/
 
 });
-
 /********************** Account payment details page **********************************************/
 
 function chequeAmountTotal() {
@@ -333,7 +327,8 @@ function checkMultiplePayment() {
     }
 }
 
-function SetDateFormateCreate(row_count) {
+function SetDateFormateCreate() {
+    var row_count = $('#multiple-cheque-count').val();
     if (row_count >= 0) {
         for (i = 1; i <= row_count; i++) {
             $('#create-' + i).inputmask('dd/mm/yyyy', {'placeholder': 'dd/mm/yyyy'});

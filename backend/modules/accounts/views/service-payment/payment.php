@@ -42,56 +42,56 @@ $this->params['breadcrumbs'][] = $this->title;
                     </ul>
                 </div>
             </section>
-             <div class="appointment-history">
-            <table class="table table-responsive">
-                <tr>
-                    <th>Customer Name</th>
-                    <td>: <?= $appointment->customer != '' ? \common\models\Debtor::findOne($appointment->customer)->company_name : '' ?></td>
-                    <th>Service Type</th>
-                    <td>: <?= $appointment->service_type != '' ? \common\models\AppointmentServices::findOne($appointment->service_type)->service : '' ?></td>
-                </tr>
-                <tr>
-                    <th>Service ID</th>
-                    <td>: <?= $appointment->service_id ?></td>
-                    <th>Sponsor</th>
-                    <td>: <?= $appointment->sponsor != '' ? \common\models\Sponsor::findOne($appointment->sponsor)->name : '' ?></td>
-                </tr>
-                <tr>
-                    <th>Office ID</th>
-                    <?php
-                    $plot_id = '';
-                    $licence_id = '';
-                    $off_id = '';
-                    if ($appointment->plot != '') {
-                        $plot_dtl = \common\models\RealEstateDetails::find()->where(['id' => $appointment->plot])->one();
-                        if (!empty($plot_dtl)) {
-                            $plot_id = common\models\RealEstateMaster::findOne($plot_dtl->master_id)->reference_code . ' - ' . $plot_dtl->code;
+            <div class="appointment-history">
+                <table class="table table-responsive">
+                    <tr>
+                        <th>Customer Name</th>
+                        <td>: <?= $appointment->customer != '' ? \common\models\Debtor::findOne($appointment->customer)->company_name : '' ?></td>
+                        <th>Service Type</th>
+                        <td>: <?= $appointment->service_type != '' ? \common\models\AppointmentServices::findOne($appointment->service_type)->service : '' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Service ID</th>
+                        <td>: <?= $appointment->service_id ?></td>
+                        <th>Sponsor</th>
+                        <td>: <?= $appointment->sponsor != '' ? \common\models\Sponsor::findOne($appointment->sponsor)->name : '' ?></td>
+                    </tr>
+                    <tr>
+                        <th>Office ID</th>
+                        <?php
+                        $plot_id = '';
+                        $licence_id = '';
+                        $off_id = '';
+                        if ($appointment->plot != '') {
+                            $plot_dtl = \common\models\RealEstateDetails::find()->where(['id' => $appointment->plot])->one();
+                            if (!empty($plot_dtl)) {
+                                $plot_id = common\models\RealEstateMaster::findOne($plot_dtl->master_id)->reference_code . ' - ' . $plot_dtl->code;
+                            }
                         }
-                    }
-                    if ($appointment->space_for_license != '') {
-                        $licence_dtl = \common\models\RealEstateDetails::find()->where(['id' => $appointment->space_for_license])->one();
-                        if (!empty($licence_dtl)) {
-                            $licence_id = common\models\RealEstateMaster::findOne($licence_dtl->master_id)->reference_code . ' - ' . $licence_dtl->code;
+                        if ($appointment->space_for_license != '') {
+                            $licence_dtl = \common\models\RealEstateDetails::find()->where(['id' => $appointment->space_for_license])->one();
+                            if (!empty($licence_dtl)) {
+                                $licence_id = common\models\RealEstateMaster::findOne($licence_dtl->master_id)->reference_code . ' - ' . $licence_dtl->code;
+                            }
                         }
-                    }
-                    if ($licence_id != '' && $plot_id != '') {
-                        $off_id = $plot_id . ', ' . $licence_id;
-                    } elseif ($licence_id == '' && $plot_id != '') {
-                        $off_id = $plot_id;
-                    } elseif ($licence_id != '' && $plot_id == '') {
-                        $off_id = $licence_id;
-                    }
-                    ?>
-                    <td>: <?= $off_id ?></td>
-                    <th></th>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
+                        if ($licence_id != '' && $plot_id != '') {
+                            $off_id = $plot_id . ', ' . $licence_id;
+                        } elseif ($licence_id == '' && $plot_id != '') {
+                            $off_id = $plot_id;
+                        } elseif ($licence_id != '' && $plot_id == '') {
+                            $off_id = $licence_id;
+                        }
+                        ?>
+                        <td>: <?= $off_id ?></td>
+                        <th></th>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
             <?= \common\components\AlertMessageWidget::widget() ?>
             <?php
             $form = ActiveForm::begin([
-                        'id' => 'account-form',
+                        'id' => 'account-form1',
             ]);
             ?>
             <?php if (!empty($security_cheque)) { ?>
@@ -345,14 +345,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                         <ul>
                             <li>Balance</li>
-                            <span style="color: #939b21"><?= sprintf('%0.2f', $total_balance); ?></span>
+                            <?php
+                            $balance_amount = common\models\ServiceChequeDetails::find()->where(['or', ['<>', 'status', 1], ['is', 'status', NULL]])->andWhere(['appointment_id' => $appointment->id])->andWhere(['>', 'cheque_date', date('Y-m-d')])->sum('amount');
+                            ?>
+                            <span style="color: #939b21"><?= sprintf('%0.2f', $balance_amount); ?></span>
                         </ul>
                     </div>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                         <ul>
                             <li>Pending</li>
                             <?php
-                            $pending_amount = common\models\ServiceChequeDetails::find()->where(['or', ['<>', 'status', 1], ['is', 'status', NULL]])->andWhere(['appointment_id' => $appointment->id])->sum('amount')
+                            $pending_cheque_amount = common\models\ServiceChequeDetails::find()->where(['or', ['<>', 'status', 1], ['is', 'status', NULL]])->andWhere(['appointment_id' => $appointment->id])->andWhere(['<=', 'cheque_date', date('Y-m-d')])->sum('amount');
+                            $pending_cash_amount = $total_cash_amount - $cash_paid;
+                            $pending_amount = $pending_cash_amount + $pending_cheque_amount;
                             ?>
                             <span style="color: #939b21"><?= sprintf('%0.2f', $pending_amount); ?></span>
                         </ul>
@@ -370,8 +375,53 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
             </div>
-
             <?php Pjax::end(); ?>
+            <?php $form3 = ActiveForm::begin(['action' => ['service-payment/check-files'], 'options' => ['method' => 'post', 'id' => 'cheque_files']]) ?>
+            <div class="row">
+                <?php
+                ?>
+                <div class='col-md-3  col-xs-12 left_padd'> 
+                    <input type="hidden" value="<?= $appointment->id ?>" id="chequefiles-appointment_id" class="form-control" name="ChequeFiles[appointment_id]" aria-invalid="false">
+                    <?= $form3->field($cheque_model, 'cheque_files[]')->fileInput(['multiple' => true]) ?>
+                </div>
+                <div class='col-md-3  col-xs-12 left_padd'> 
+                    <?= Html::submitButton('Upload File', ['class' => 'btn btn-success create-btn', 'style' => 'margin-top: 10px;']) ?>
+                </div>
+            </div>
+            <?php ActiveForm::end(); ?>
+            <div class="row">
+                <div class='col-md-12  col-xs-12 left_padd'> 
+                    <?php
+                    if (!$model->isNewRecord) {
+                        $path = Yii::getAlias('@paths') . '/accounts/cheque_files/' . $appointment->id;
+                        if (count(glob("{$path}/*")) > 0) {
+                            $k = 0;
+                            ?>
+                            <ul class="link-box">
+                                <?php
+                                foreach (glob("{$path}/*") as $file) {
+                                    $k++;
+                                    $arry = explode('/', $file);
+                                    $img_nmee = end($arry);
+
+                                    $img_nmees = explode('.', $img_nmee);
+                                    if ($img_nmees['1'] != '') {
+                                        ?>
+                                        <li>
+                                            <a class="acc-file" href="<?= Yii::$app->homeUrl ?>uploads/accounts/cheque_files/<?= $appointment->id ?>/<?= end($arry); ?>" target="_blank"><?= $img_nmees['0'] ?></a>
+                                            <?= Html::a('<i class="fa fa-remove"></i>', ['/accounts/service-payment/remove-file', 'file' => end($arry), 'id' => $appointment->id], ['class' => 'acc-file-remove']) ?>
+                                        </li>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </ul>
+                            <?php
+                        }
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
     </div>
     <!-- /.box-body -->

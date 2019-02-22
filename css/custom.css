@@ -491,7 +491,7 @@ h3.heading{
     margin-bottom: 0px;
 }
 input[type="file"] {
-    margin-bottom: 30px;
+    margin-bottom: 0px;
 }
 .btn-add{
     position: absolute;
@@ -786,3 +786,41 @@ input[type="file"] {
 .s2-togall-button {
     display: none;
 }
+.link-box{
+    list-style: none;
+    padding-left: 0px;
+}
+.link-box li{
+    float: left;
+    background: #9aa4b3;
+    margin-right: 10px;
+    padding: 5px 12px;
+    border-radius: 2px;
+}
+
+.real-estate-link.link-box li{
+    float: left;
+    background: #9aa4b3;
+    margin-right: 10px;
+    padding: 5px 12px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+.acc-file{
+    color: #fff;
+    padding-right: 10px;
+}
+.real-estate-link.link-box .acc-file-remove {
+    float: right;
+}
+.acc-file:hover{
+    color: #fff;
+}
+.acc-file-remove{
+    color: red;
+}
+.acc-file-remove:hover,.acc-file-remove:active{
+    color: red;
+}
+

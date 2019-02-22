@@ -46,7 +46,7 @@ $sub_status = $appointment->sub_status;
                 </ul>
             </div>
         </section>
-         <div class="appointment-history">
+        <div class="appointment-history">
             <table class="table table-responsive">
                 <tr>
                     <th>Customer Name</th>
@@ -281,41 +281,39 @@ $sub_status = $appointment->sub_status;
                 <div class="col-md-4">
                     <div class="form-group field-debtor-company_name">
                         <label class="control-label" for="debtor-company_name">Cheque Amount</label>
-                        <input type="text" value="<?= $appointment->multiple_total ?>" id="multiple-tot" name="multiple_total" class="form-control" />
+                        <input type="text" value="<?= $appointment->multiple_total ?>" id="multiple-tot" name="multiple_total" class="form-control"/>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group field-debtor-company_name">
-                        <label class="control-label" for="debtor-company_name">Tax Amount</label>
-                        <input type="text" value="<?= $cheque_tax_tot ?>" id="multiple-tax-tot" class="form-control" readonly />
+                        <label class="control-label" for="customer_credit">Customer Credit</label>
+                        <input type="text" value="<?= empty($payment_details) ? '' : $payment_details->customer_credit ?>" id="customer_credit" name="customer_credit" class="form-control" />
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group field-debtor-company_name required">
                         <label class="control-label" for="debtor-company_name">No of Cheques</label>
                         <input style=" margin: 0px 5px;"type="number" value="<?= count($multiple_cheque_details) ?>" id="multiple-cheque-count" class="form-control" step="1"/>
+                        <input type="hidden" name="cheque_count" id="cheque_count" value="<?= count($multiple_cheque_details) ?>"/>
                     </div>
                 </div>
                 <div class="col-md-12">
-                    <?= $form->field($appointment, "tax_to_onetime")->checkbox(); ?>
-                </div>
-                <div class="col-md-12">
+                    <div class="row">
+                        <div class='col-md-12 col-xs-12 expense-head'>
+                            <span class="sub-heading">Cheque Details</span>
+                            <div class="horizontal_line"></div>
+                        </div>
+                    </div>
                     <div id="cheque-details-content-multiple">
                         <?php
                         if (!empty($multiple_cheque_details)) {
                             ?>
-                            <div class="row">
-                                <div class="col-md-12 col-xs-12 expense-head">
-                                    <span class="sub-heading">Cheque Details</span>
-                                    <div class="horizontal_line"></div>
-                                </div>
-                            </div>
                             <?php
                             $j = 0;
                             foreach ($multiple_cheque_details as $multiple_cheque_detail) {
                                 $j++;
                                 ?>
-                                <div class="row">
+                                <div class="row" id="multiple_cheque_row-<?= $j ?>">
                                     <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
                                         <div class = "form-group">
                                             <label class="control-label" for="">Cheque Number</label>
@@ -374,16 +372,16 @@ $sub_status = $appointment->sub_status;
                     </div>
                 </div>
                 <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 expense-head">
+                            <span class="sub-heading">Cheque Details</span>
+                            <div class="horizontal_line"></div>
+                        </div>
+                    </div>
                     <div id="cheque-details-content-one-time">
                         <?php
                         if (!empty($onetime_cheque_details)) {
                             ?>
-                            <div class="row">
-                                <div class="col-md-12 col-xs-12 expense-head">
-                                    <span class="sub-heading">Cheque Details</span>
-                                    <div class="horizontal_line"></div>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
                                     <div class = "form-group">

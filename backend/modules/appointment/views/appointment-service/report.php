@@ -226,7 +226,7 @@ use yii\helpers\Html;
                                 }
                                 if ($apointment->service_type == 2) {
                                     $service_ministries = common\models\Services::find()->where(['type' => 3])->andWhere(['service_category' => 3])->all();
-                                    $service_ubl = common\models\Services::find()->where(['<>', 'type', 3])->andWhere(['service_category' => 3])->all();
+                                    $service_ubl = common\models\Services::find()->where(['<>', 'type', 3])->andWhere(['service_category' => [2, 3]])->all();
                                     $ministry_arr = [];
                                     $ubl_arr = [];
                                     if (!empty($service_ministries)) {

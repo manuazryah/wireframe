@@ -18,24 +18,22 @@ use Yii;
  * @property string $DOC
  * @property string $DOU
  */
-class PaymentMaster extends \yii\db\ActiveRecord
-{
+class PaymentMaster extends \yii\db\ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'payment_master';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['appointment_id', 'status', 'CB', 'UB'], 'integer'],
-            [['total_amount', 'amount_paid', 'balance_amount'], 'number'],
+            [['total_amount', 'amount_paid', 'balance_amount', 'customer_credit', 'one_time_tot', 'multiple_tot'], 'number'],
             [['DOC', 'DOU'], 'safe'],
         ];
     }
@@ -43,8 +41,7 @@ class PaymentMaster extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => 'ID',
             'appointment_id' => 'Appointment ID',
@@ -58,4 +55,5 @@ class PaymentMaster extends \yii\db\ActiveRecord
             'DOU' => 'D O U',
         ];
     }
+
 }

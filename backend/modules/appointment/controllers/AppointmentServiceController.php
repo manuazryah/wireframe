@@ -129,8 +129,8 @@ class AppointmentServiceController extends Controller {
                         $this->saveServices($appointment, $service);
                     }
                 }
-                Yii::$app->SetValues->updateAppointment($appointment->id);
             }
+            Yii::$app->SetValues->updateAppointment($appointment->id);
         }
         return;
     }

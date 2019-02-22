@@ -13,8 +13,6 @@
 <div class="modal-body">
     <form method="post" id="payment-submit">
         <input type="hidden" name="appointment_id" id="appointment_id" value="<?= $appointment_id ?>">
-        <input type="hidden" id="transaction-amount-tot" value="<?= $balnce_to_pay ?>">
-
         <div class="row">
             <div class="col-md-6 col-sm-12 col-xs-12 left_padd">
                 <div class="form-group">
@@ -28,9 +26,28 @@
                     <input type="date" id="transaction-date" class="form-control" name="transaction_date" value="<?= date('Y-m-d') ?>" aria-invalid="false" readonly>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 col-sm-12 col-xs-12 left_padd">
+            <div class="col-md-6 col-sm-12 col-xs-12 left_padd">
+                <div class="form-group">
+                    <label class="control-label" for="amount">Payment Type</label>
+                    <select id="payment-type" name="payment_type" class="form-control">
+                        <option value="1">Cash</option>
+                        <option value="2">Cheque</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12 left_padd">
+                <div class="form-group">
+                    <label class="control-label" for="amount">Cheque No</label>
+                    <input type="text" id="cheque-no" class="form-control" name="cheque_no" value="" aria-invalid="false" autocomplete="off">
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12 left_padd">
+                <div class="form-group">
+                    <label class="control-label" for="amount">Cheque Date</label>
+                    <input type="date" id="cheque-date" class="form-control" name="cheque_date" value="" aria-invalid="false">
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 left_padd">
                 <div class="form-group">
                     <label class="control-label" for="transaction-comment">Comment</label>
                     <input type="text" id="transaction-comment" class="form-control" name="comment" value="" aria-invalid="false">
@@ -46,34 +63,47 @@
 
 <script>
     $("document").ready(function () {
-
-        $(document).on('change keyup', '#transaction-amount', function (e) {
-            var amt = $(this).val();
-            var tot = $('#transaction-amount-tot').val();
-            if (amt == '') {
-                amt = 0;
-            }
-            if (parseFloat(amt) < parseFloat(tot)) {
-                var balance = tot - amt;
-                $('#bal-amount').remove();
-                $('#transaction-amount').after('<div id="bal-amount" style="color:red;">Balance Amount : <span id="bal-text"></span></div>');
-                $("#bal-text").text(balance);
+        $("#cheque-no").prop('disabled', true);
+        $("#cheque-date").prop('disabled', true);
+        $(document).on('change', '#payment-type', function (e) {
+            var type = $(this).val();
+            if (type == 2) {
+                $("#cheque-no").prop('disabled', false);
+                $("#cheque-date").prop('disabled', false);
             } else {
-                if (parseFloat(amt) > parseFloat(tot)) {
-                    if ($("#bal-amount").length > 0) {
-                        $('#bal-amount').remove();
-                        $('#transaction-amount').after('<div id="bal-amount" style="color:red;">Amount exeeds the total amount</div>');
-                    }
-                } else {
-                    $('#bal-amount').remove();
-                }
+                $("#cheque-no").val('');
+                $("#cheque-date").val('');
+                $("#cheque-no").prop('disabled', true);
+                $("#cheque-date").prop('disabled', true);
             }
         });
+//        $(document).on('change keyup', '#transaction-amount', function (e) {
+//            var amt = $(this).val();
+//            var tot = $('#transaction-amount-tot').val();
+//            if (amt == '') {
+//                amt = 0;
+//            }
+//            if (parseFloat(amt) < parseFloat(tot)) {
+//                var balance = tot - amt;
+//                $('#bal-amount').remove();
+//                $('#transaction-amount').after('<div id="bal-amount" style="color:red;">Balance Amount : <span id="bal-text"></span></div>');
+//                $("#bal-text").text(balance);
+//            } else {
+//                if (parseFloat(amt) > parseFloat(tot)) {
+//                    if ($("#bal-amount").length > 0) {
+//                        $('#bal-amount').remove();
+//                        $('#transaction-amount').after('<div id="bal-amount" style="color:red;">Amount exeeds the total amount</div>');
+//                    }
+//                } else {
+//                    $('#bal-amount').remove();
+//                }
+//            }
+//        });
         $("#payment-submit").submit(function (e) {
             var amt = $('#transaction-amount').val();
             var tot = $('#transaction-amount-tot').val();
             var str = $(this).serialize();
-            if ((parseFloat(amt) <= parseFloat(tot)) && amt > 0) {
+            if (amt > 0) {
                 $.ajax({
                     type: "POST",
                     url: '<?= Yii::$app->homeUrl; ?>accounts/service-payment/ajax-payment',

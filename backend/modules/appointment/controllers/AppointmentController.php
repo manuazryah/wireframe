@@ -379,14 +379,10 @@ class AppointmentController extends Controller {
             $id = $_POST['id'];
             $plots = [];
             $licenses = [];
-            if (isset($id) && $id != '') {
-                $model = Appointment::find()->where(['id' => $id])->one();
-            } else {
-                $model = '';
-            }
+            $model = Appointment::find()->where(['id' => $id])->one();
             if (empty($model)) {
                 if ($type != 5) {
-                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['statusd' => 1, 'category' => 2, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
+                    $plots = ArrayHelper::map(RealEstateDetails::find()->where(['status' => 1, 'category' => 2, 'availability' => 1, 'type' => 0])->all(), 'id', function($model) {
                                 return RealEstateMaster::findOne($model['master_id'])->reference_code . ' - ' . $model['code'];
                             }
                     );

@@ -145,11 +145,11 @@ use kartik\date\DatePicker;
     </div>
     <div class="row">
         <div class='col-md-3  col-xs-12 left_padd'>    
-            <?= $form->field($model, 'aggrement')->fileInput(['multiple' => true]) ?>
+            <?= $form->field($model, 'aggrement[]')->fileInput(['multiple' => true]) ?>
 
         </div>
         <div class='col-md-3  col-xs-12 left_padd'>    
-            <?= $form->field($model, 'ejari')->fileInput(['multiple' => true]) ?>
+            <?= $form->field($model, 'ejari')->fileInput() ?>
 
         </div>
         <div class='col-md-3  col-xs-12 left_padd'>   
@@ -172,7 +172,7 @@ use kartik\date\DatePicker;
 
         </div>
         <div class='col-md-3  col-xs-12 left_padd'>    
-            <?= $form->field($model, 'cheque_copy')->fileInput(['multiple' => true]) ?>
+            <?= $form->field($model, 'cheque_copy')->fileInput() ?>
 
         </div>
     </div>

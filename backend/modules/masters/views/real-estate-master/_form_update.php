@@ -195,22 +195,47 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
     </div>
     <div class="row">
         <div class='col-md-3 col-xs-12 left_padd'>    
-            <?= $form->field($model, 'aggrement')->fileInput(['multiple' => true]) ?>
+            <?= $form->field($model, 'aggrement[]')->fileInput(['multiple' => true]) ?>
             <?php
-            if (!empty($model->aggrement)) {
-                ?>
-                <a href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/aggrement.<?= $model->aggrement; ?>" target="_blank">Aggrement</a>
-                <?php
+            if (!$model->isNewRecord) {
+                $path = Yii::getAlias('@paths') . '/real_estate/aggrements/' . $model->id;
+                if (count(glob("{$path}/*")) > 0) {
+                    $k = 0;
+                    ?>
+                    <ul class="link-box real-estate-link">
+                        <?php
+                        foreach (glob("{$path}/*") as $file) {
+                            $k++;
+                            $arry = explode('/', $file);
+                            $img_nmee = end($arry);
+
+                            $img_nmees = explode('.', $img_nmee);
+                            if ($img_nmees['1'] != '') {
+                                ?>
+                                <li>
+                                    <a class="acc-file" href="<?= Yii::$app->homeUrl ?>uploads/real_estate/aggrements/<?= $model->id ?>/<?= end($arry); ?>" target="_blank"><?= $img_nmees['0'] ?></a>
+                                    <?= Html::a('<i class="fa fa-remove"></i>', ['/masters/real-estate-master/remove', 'file' => end($arry), 'id' => $model->id], ['class' => 'acc-file-remove']) ?>
+                                </li>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </ul>
+                    <?php
+                }
             }
             ?>
         </div>
         <div class='col-md-3 col-xs-12 left_padd'>    
-            <?= $form->field($model, 'ejari')->fileInput(['multiple' => true]) ?>
+            <?= $form->field($model, 'ejari')->fileInput() ?>
             <?php
             if (!empty($model->ejari)) {
-                ?>
-                <a href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/ejari.<?= $model->ejari; ?>" target="_blank">Ejari</a>
-                <?php
+                $ejarifile = Yii::$app->homeUrl . 'uploads/real_estate/' . $model->id . '/ejari.' . $model->ejari;
+                if (file_exists($ejarifile)) {
+                    ?>
+                    <a href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/ejari.<?= $model->ejari; ?>" target="_blank">Ejari</a>
+                    <?php
+                }
             }
             ?>
         </div>
@@ -234,12 +259,15 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
 
         </div>
         <div class='col-md-3 col-xs-12 left_padd'>    
-            <?= $form->field($model, 'cheque_copy')->fileInput(['multiple' => true]) ?>
+            <?= $form->field($model, 'cheque_copy')->fileInput() ?>
             <?php
             if (!empty($model->cheque_copy)) {
-                ?>
-                <a href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/cheque_copy.<?= $model->cheque_copy; ?>" target="_blank">Cheque Copy</a>
-                <?php
+                $check_filefile = Yii::$app->homeUrl . 'uploads/real_estate/' . $model->id . '/cheque_copy.' . $model->cheque_copy;
+                if (file_exists($ejarifile)) {
+                    ?>
+                    <a href="<?= Yii::$app->homeUrl ?>uploads/real_estate/<?= $model->id; ?>/cheque_copy.<?= $model->cheque_copy; ?>" target="_blank">Cheque Copy</a>
+                    <?php
+                }
             }
             ?>
         </div>
@@ -256,6 +284,7 @@ $license_count = common\models\Appointment::find()->where(['space_for_license' =
 </div>
 <script>
     $("document").ready(function () {
+        calculateTotal();
         $('#realestatemaster-type').attr("disabled", true);
         $(document).on('keyup mouseup', '#realestatemaster-rent_total', function (e) {
             calculateTotal();

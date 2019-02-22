@@ -52,7 +52,7 @@ class RealEstateDetails extends \yii\db\ActiveRecord {
             [['type', 'master_id', 'category', 'availability', 'customer_id', 'square_feet', 'status', 'CB', 'UB', 'appointment_id', 'sponsor', 'sales_person', 'office_type'], 'integer'],
             [['cost', 'rent_cost', 'off_rent'], 'number'],
             [['comment'], 'string'],
-            [['DOC', 'DOU', 'code', 'plot_status'], 'safe'],
+            [['DOC', 'DOU', 'code'], 'safe'],
             [['master_id'], 'exist', 'skipOnError' => true, 'targetClass' => RealEstateMaster::className(), 'targetAttribute' => ['master_id' => 'id']],
         ];
     }
