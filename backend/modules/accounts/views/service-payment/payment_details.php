@@ -13,6 +13,7 @@ $this->title = 'Service Payment';
 $this->params['breadcrumbs'][] = ['label' => 'Appointment Services', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 $sub_status = $appointment->sub_status;
+$banks = \common\models\Banks::find()->where(['status' => 1])->all();
 ?>
 <!-- Default box -->
 <div class="box">
@@ -118,7 +119,7 @@ $sub_status = $appointment->sub_status;
                             <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
                                 <div class = "form-group">
                                     <label class="control-label" for="">Cheque Number</label>
-                                    <input class="form-control" type = "text" name = "Security[cheque_num]" required value="<?= $security_cheque->cheque_no ?>" autofocus>
+                                    <input class="form-control" type = "text" name = "Security[cheque_num]" value="<?= $security_cheque->cheque_no ?>" autofocus>
 
                                 </div>
                             </div>
@@ -130,7 +131,7 @@ $sub_status = $appointment->sub_status;
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input id="security-cheque_date" name="Security[cheque_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask required value="<?= $security_cheque->cheque_date != '' ? date("d/m/Y", strtotime($security_cheque->cheque_date)) : '' ?>">
+                                        <input id="security-cheque_date" name="Security[cheque_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $security_cheque->cheque_date != '' ? date("d/m/Y", strtotime($security_cheque->cheque_date)) : '' ?>">
                                     </div>
                                     <!-- /.input group -->
                                 </div>
@@ -138,7 +139,7 @@ $sub_status = $appointment->sub_status;
                             <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
                                 <div class="form-group">
                                     <label class="control-label" for="">Amount</label>
-                                    <input class="form-control" type = "number" name = "Security[amount]" required min="1" value="<?= $security_cheque->amount ?>">
+                                    <input class="form-control" type = "number" name = "Security[amount]" min="1" value="<?= $security_cheque->amount ?>">
                                 </div>
                             </div>
                         </div>
@@ -293,7 +294,7 @@ $sub_status = $appointment->sub_status;
                 <div class="col-md-4">
                     <div class="form-group field-debtor-company_name required">
                         <label class="control-label" for="debtor-company_name">No of Cheques</label>
-                        <input style=" margin: 0px 5px;"type="number" value="<?= count($multiple_cheque_details) ?>" id="multiple-cheque-count" class="form-control" step="1"/>
+                        <input style=" margin: 0px 5px;"type="text" value="<?= count($multiple_cheque_details) ?>" id="multiple-cheque-count" class="form-control"/>
                         <input type="hidden" name="cheque_count" id="cheque_count" value="<?= count($multiple_cheque_details) ?>"/>
                     </div>
                 </div>
@@ -314,27 +315,42 @@ $sub_status = $appointment->sub_status;
                                 $j++;
                                 ?>
                                 <div class="row" id="multiple_cheque_row-<?= $j ?>">
-                                    <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                    <div class = 'col-md-3 col-sm-12 col-xs-12 left_padd'>
                                         <div class = "form-group">
                                             <label class="control-label" for="">Cheque Number</label>
                                             <input class="form-control" type = "text" name = "create[cheque_num][]" value="<?= $multiple_cheque_detail->cheque_number ?>" required>
 
                                         </div>
                                     </div>
-                                    <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                    <div class='col-md-3 col-sm-12 col-xs-12 left_padd'>
                                         <div class="form-group">
                                             <label class="control-label">Cheque Date</label>
-
                                             <div class="input-group">
-                                                <div class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
-                                                </div>
                                                 <input id="create-<?= $j ?>" name="create[cheque_date][]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $multiple_cheque_detail->cheque_date != '' ? date("d/m/Y", strtotime($multiple_cheque_detail->cheque_date)) : '' ?>" required>
                                             </div>
                                             <!-- /.input group -->
                                         </div>
                                     </div>
-                                    <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                    <div class='col-md-3 col-sm-12 col-xs-12 left_padd'>
+                                        <div class="form-group">
+                                            <label class="control-label" for="">Bank</label>
+                                            <select class="form-control mul_cheque_bank" id="mul_cheque_bank-<?= $j ?>" name="create[bank][]" value="<?= $multiple_cheque_detail->bank ?>">
+                                                <option value="">Choose Bank</option>
+                                                <?php
+                                                if (!empty($banks)) {
+                                                    foreach ($banks as $bank) {
+                                                        if ($bank->bank_name != '') {
+                                                            ?>
+                                                            <option value="<?= $bank->id ?>" <?= $multiple_cheque_detail->bank == $bank->id ? 'selected' : '' ?> ><?= $bank->bank_name ?></option>
+                                                            <?php
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class='col-md-3 col-sm-12 col-xs-12 left_padd'>
                                         <div class="form-group">
                                             <label class="control-label" for="">Amount</label>
                                             <input class="form-control mul_cheque_amt" id="mul_cheque_amt-<?= $j ?>" type="number" name="create[amount][]" value="<?= $multiple_cheque_detail->amount ?>" step="any" required>
@@ -383,27 +399,42 @@ $sub_status = $appointment->sub_status;
                         if (!empty($onetime_cheque_details)) {
                             ?>
                             <div class="row">
-                                <div class = 'col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                <div class = 'col-md-3 col-sm-12 col-xs-12 left_padd'>
                                     <div class = "form-group">
                                         <label class="control-label" for="">Cheque Number</label>
                                         <input class="form-control" type = "text" name = "createone[cheque_num]" value="<?= $onetime_cheque_details->cheque_number ?>" required>
 
                                     </div>
                                 </div>
-                                <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                <div class='col-md-3 col-sm-12 col-xs-12 left_padd'>
                                     <div class="form-group">
                                         <label class="control-label">Cheque Date</label>
-
                                         <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
                                             <input id="createone-cheque_date" name="createone[cheque_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $onetime_cheque_details->cheque_date != '' ? date("d/m/Y", strtotime($onetime_cheque_details->cheque_date)) : '' ?>" required>
                                         </div>
                                         <!-- /.input group -->
                                     </div>
                                 </div>
-                                <div class='col-md-4 col-sm-12 col-xs-12 left_padd'>
+                                <div class='col-md-3 col-sm-12 col-xs-12 left_padd'>
+                                    <div class="form-group">
+                                        <label class="control-label" for="">Bank</label>
+                                        <select class="form-control" id="createone_bank" name="createone[bank]" value="<?= $onetime_cheque_details->bank ?>">
+                                            <option value="">Choose Bank</option>
+                                            <?php
+                                            if (!empty($banks)) {
+                                                foreach ($banks as $bank) {
+                                                    if ($bank->bank_name != '') {
+                                                        ?>
+                                                        <option value="<?= $bank->id ?>" <?= $onetime_cheque_details->bank == $bank->id ? 'selected' : '' ?> ><?= $bank->bank_name ?></option>
+                                                        <?php
+                                                    }
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class='col-md-3 col-sm-12 col-xs-12 left_padd'>
                                     <div class="form-group">
                                         <label class="control-label" for="">Amount</label>
                                         <input class="form-control" id="one_time_amt" type="number" name="createone[amount]" value="<?= $onetime_cheque_details->amount ?>" step="any" required>

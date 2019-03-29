@@ -261,6 +261,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <th></th>
                     <th>Cheque Number</th>
+                    <th>Bank</th>
                     <th>Amount</th>
                     <th>Paid</th>
                     <th>Balance</th>
@@ -270,6 +271,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <tr>
                         <td></td>
                         <td>Cash Payment</td>
+                        <td></td>
                         <td><?= $total_cash_amount ?></td>
                         <td><?= sprintf('%0.2f', $cash_paid) ?></td>
                         <td><?= sprintf('%0.2f', $total_cash_amount - $cash_paid) ?></td>
@@ -291,6 +293,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             ?>
 
                                             <td><?= $service_cheque->cheque_number ?></td>
+                                            <td><?= $service_cheque->bank ?></td>
                                             <td><?= $service_cheque->amount ?></td>
                                             <td>
                                                 <?php

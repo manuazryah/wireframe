@@ -92,6 +92,9 @@ class SponsorController extends Controller {
             if (!empty($photo)) {
                 $model->photo = $photo->extension;
             }
+            $model->emirate_id_expiry = $model->emirate_id != '' ? $model->emirate_id_expiry : '';
+            $model->passport_expiry = $model->passport != '' ? $model->passport_expiry : '';
+            $model->family_book_expiry = $model->family_book != '' ? $model->family_book_expiry : '';
             $model->others = '';
             if ($model->save()) {
                 $paths = Yii::$app->basePath . '/../uploads/sponsers/' . $model->id;
@@ -163,10 +166,13 @@ class SponsorController extends Controller {
             if (!empty($model)) {
                 if ($type == 1) {
                     $model->emirate_id = '';
+                    $model->emirate_id_expiry = '';
                 } elseif ($type == 2) {
                     $model->passport = '';
+                    $model->passport_expiry = '';
                 } elseif ($type == 3) {
                     $model->family_book = '';
+                    $model->family_book_expiry = '';
                 } elseif ($type == 4) {
                     $model->photo = '';
                 }
@@ -224,6 +230,9 @@ class SponsorController extends Controller {
             } else {
                 $model->photo = $photo_;
             }
+            $model->emirate_id_expiry = $model->emirate_id != '' ? $model->emirate_id_expiry : '';
+            $model->passport_expiry = $model->passport != '' ? $model->passport_expiry : '';
+            $model->family_book_expiry = $model->family_book != '' ? $model->family_book_expiry : '';
             $model->others = '';
             if ($model->save()) {
                 $paths = Yii::$app->basePath . '/../uploads/sponsers/' . $model->id;

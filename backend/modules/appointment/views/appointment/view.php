@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="box-body">
             <?= Html::a('<span> Manage Appointment</span>', ['index'], ['class' => 'btn btn-warning mrg-bot-15']) ?>
+            <?= Html::a('<span> Remove Appointment</span>', ['remove', 'id' => $model->id], ['class' => 'btn btn-block btn-danger', 'style' => 'display: inline-block;margin-left: 15px;', 'id' => 'app-remove']) ?>
             <?= Html::a('<span> Generate Quotation</span>', ['/appointment/appointment-service/quotation', 'id' => $model->id], ['class' => 'btn btn-block manage-btn', 'style' => 'float:right;', 'target' => '_blank']) ?>
             <h4>Appointment Details</h4>
             <div class="appointment-history">
@@ -115,5 +116,10 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <!-- /.box -->
+        <script type="text/javascript">
+            $('#app-remove').on('click', function () {
+                return confirm('Are you sure want to continue?');
+            });
+        </script>
 
 

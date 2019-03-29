@@ -125,6 +125,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                         ]),
                     ],
+                    [
+                        'attribute' => 'cost',
+                        'format' => 'raw',
+                        'value' => function ($data) {
+                            return \yii\helpers\Html::textInput('cost', $data->cost, ['class' => 'form-control est_price', 'id' => $data->id]);
+                        },
+                    ],
 //                    [
 //                        'class' => 'yii\grid\ActionColumn',
 //                        'contentOptions' => ['style' => 'width:50px;text-align:center;'],
@@ -153,4 +160,26 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- /.box-body -->
 </div>
 <!-- /.box -->
+<script>
+    $("document").ready(function () {
+
+        $(document).on('blur', '.est_price', function (e) {
+            var price = $(this).val();
+            var id = $(this).attr('id');
+            if (id != '' && price != '')
+                $.ajax({
+                    type: 'POST',
+                    cache: false,
+                    async: false,
+                    data: {price: price, id: id},
+                    url: '<?= Yii::$app->homeUrl; ?>masters/real-estate-master/update-estate-price',
+                    success: function (data) {
+                        if (data == 1) {
+                            $(this).val(price.toFixed(2));
+                        }
+                    }
+                });
+        });
+    });
+</script>
 

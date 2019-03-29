@@ -10,15 +10,14 @@ use common\models\RealEstateMaster;
 /**
  * RealEstateMasterSearch represents the model behind the search form about `common\models\RealEstateMaster`.
  */
-class RealEstateMasterSearch extends RealEstateMaster
-{
+class RealEstateMasterSearch extends RealEstateMaster {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['id', 'company', 'total_square_feet', 'sponsor', 'number_of_license', 'number_of_plots', 'no_of_cheques', 'status', 'CB', 'UB'], 'integer'],
+            [['id', 'company', 'total_square_feet', 'sponsor', 'number_of_license', 'number_of_plots', 'no_of_cheques', 'status', 'CB', 'UB', 'type'], 'integer'],
             [['reference_code', 'comany_name_for_ejari', 'comment', 'attachments', 'DOC', 'DOU'], 'safe'],
             [['rent_total', 'commission', 'deposit', 'sponser_fee', 'furniture_expense', 'office_renovation_expense', 'other_expense'], 'number'],
         ];
@@ -27,8 +26,7 @@ class RealEstateMasterSearch extends RealEstateMaster
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -40,8 +38,7 @@ class RealEstateMasterSearch extends RealEstateMaster
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = RealEstateMaster::find();
 
         // add conditions that should always apply here
@@ -62,6 +59,7 @@ class RealEstateMasterSearch extends RealEstateMaster
         $query->andFilterWhere([
             'id' => $this->id,
             'company' => $this->company,
+            'type' => $this->type,
             'total_square_feet' => $this->total_square_feet,
             'sponsor' => $this->sponsor,
             'number_of_license' => $this->number_of_license,
@@ -82,10 +80,11 @@ class RealEstateMasterSearch extends RealEstateMaster
         ]);
 
         $query->andFilterWhere(['like', 'reference_code', $this->reference_code])
-            ->andFilterWhere(['like', 'comany_name_for_ejari', $this->comany_name_for_ejari])
-            ->andFilterWhere(['like', 'comment', $this->comment])
-            ->andFilterWhere(['like', 'attachments', $this->attachments]);
+                ->andFilterWhere(['like', 'comany_name_for_ejari', $this->comany_name_for_ejari])
+                ->andFilterWhere(['like', 'comment', $this->comment])
+                ->andFilterWhere(['like', 'attachments', $this->attachments]);
 
         return $dataProvider;
     }
+
 }

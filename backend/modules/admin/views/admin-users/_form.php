@@ -31,13 +31,13 @@ use common\models\AdminPosts;
             <?= $form->field($model, 'phone_number')->textInput(['maxlength' => true, 'placeholder' => 'Phone number']) ?>
 
         </div>
-        <?php if ($model->isNewRecord) { ?>
-            <div class='col-md-4 col-sm-6 col-xs-12'>
+        <?php // if ($model->isNewRecord) { ?>
+        <div class='col-md-4 col-sm-6 col-xs-12'>
 
-                <?= $form->field($model, 'user_name')->textInput(['maxlength' => true, 'placeholder' => 'User Name']) ?>
+            <?= $form->field($model, 'user_name')->textInput(['maxlength' => true, 'placeholder' => 'User Name']) ?>
 
-            </div>
-        <?php } ?>
+        </div>
+        <?php // } ?>
         <?php if ($model->isNewRecord) { ?>
             <div class='col-md-4 col-sm-6 col-xs-12'>
 

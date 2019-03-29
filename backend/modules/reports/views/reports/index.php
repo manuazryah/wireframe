@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row">
                 <div class="col-md-12">
                     <?php
-                    $summary = RealEstateDetails::instance()->getSummary($dataProvider->models);
+//                    $summary = RealEstateDetails::instance()->getSummary($dataProvider->models);
                     ?>
                     <table class="table table-bordered table-responsive">
                         <tbody>
@@ -337,7 +337,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return $model->getNextPaymentDate($model->appointment_id);
                                     },
                                 ],
-//                    ['class' => 'yii\grid\ActionColumn'],
                             ],
                         ]);
                         ?>

@@ -16,11 +16,14 @@ $this->params['breadcrumbs'][] = 'Update';
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
-        <?=  Html::a('<span> Manage Admin Users</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+        <?= Html::a('<span> Manage Admin Users</span>', ['index'], ['class' => 'btn btn-block manage-btn', 'style' => 'display: inline-block;']) ?>
+        <?= Html::a('<span> Change Password</span>', ['change-password', 'id' => Yii::$app->EncryptDecrypt->Encrypt('encrypt', $model->id)], ['class' => 'btn btn-block manage-btn', 'style' => 'display: inline-block;margin-top: 0px;']) ?>
         <div class="admin-users-update">
-            <?= $this->render('_form', [
-            'model' => $model,
-            ]) ?>
+            <?=
+            $this->render('_form', [
+                'model' => $model,
+            ])
+            ?>
         </div>
     </div>
     <!-- /.box-body -->

@@ -164,6 +164,9 @@ class AppointmentController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
+//        if ($model->status == 2) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        }
         $service_type = $model->service_type;
         if ($model->load(Yii::$app->request->post()) && Yii::$app->SetValues->Attributes($model)) {
             $model->sales_employee_id = Yii::$app->user->identity->post_id;
@@ -503,6 +506,212 @@ class AppointmentController extends Controller {
                 "From: 'noreplay@ublcsp.com";
         mail($to, $subject, $message, $headers);
         return;
+    }
+
+    public function actionRemove($id) {
+        $appointment = Appointment::findOne($id);
+        if (!empty($appointment)) {
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                if ($this->RemoveAppointmentServices($appointment) && $this->RemoveRealestate($appointment) && $this->RemoveChequeDetails($appointment) && $this->RemovePayment($appointment) && $this->RemoveLicenseDetails($appointment) && $appointment->delete()) {
+                    $transaction->commit();
+                    Yii::$app->session->setFlash('success', "Appointment removed successfully");
+                    return $this->redirect(Yii::$app->request->referrer);
+                } else {
+                    $transaction->rollBack();
+                    Yii::$app->session->setFlash('error', "There was a problem removing appointment. Please try again.");
+                    return $this->redirect(Yii::$app->request->referrer);
+                }
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error', "There was a problem removing appointment. Please try again.");
+                return $this->redirect(Yii::$app->request->referrer);
+            }
+        }
+        return $this->redirect(['index']);
+    }
+
+    /*
+     * Remove appointment services when deleting the appointment
+     */
+
+    public function RemoveAppointmentServices($appointment) {
+        $flag = 0;
+        $appointment_services = \common\models\AppointmentService::find()->where(['appointment_id' => $appointment->id])->all();
+        if (empty($appointment_services)) {
+            $flag = 1;
+        } else {
+            foreach ($appointment_services as $appointment_service) {
+                if ($appointment_service->delete()) {
+                    $flag = 1;
+                } else {
+                    $flag = 0;
+                    break;
+                }
+            }
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function RemoveRealestate($appointment) {
+        $plots = '';
+        $licenses = '';
+        $estate_arr = [];
+        if ($appointment->plot != '') {
+            $plots = explode(',', $appointment->plot);
+            if (!empty($plots) && $plots != '') {
+                foreach ($plots as $plot) {
+                    $estate_arr[] = $plot;
+                }
+            }
+        }
+        if ($appointment->space_for_license != '') {
+            $licenses = explode(',', $appointment->space_for_license);
+            if (!empty($licenses) && $licenses != '') {
+                foreach ($licenses as $license) {
+                    $estate_arr[] = $license;
+                }
+            }
+        }
+        $realestate_details = RealEstateDetails::find()->where(['id' => $estate_arr])->all();
+        if (!empty($realestate_details)) {
+            foreach ($realestate_details as $realestate_detail) {
+                $realestate_detail->availability = 1;
+                $realestate_detail->status = 1;
+                $realestate_detail->customer_id = '';
+                $realestate_detail->appointment_id = '';
+                $realestate_detail->sponsor = '';
+                $realestate_detail->sales_person = '';
+                $realestate_detail->office_type = '';
+                $realestate_detail->status = 1;
+
+                $realestate_detail->update();
+            }
+        }
+        return TRUE;
+    }
+
+    public function RemoveChequeDetails($appointment) {
+        $flag = 0;
+        $service_cheque_details = \common\models\ServiceChequeDetails::find()->where(['appointment_id' => $appointment->id])->all();
+        if (!empty($service_cheque_details)) {
+            foreach ($service_cheque_details as $service_cheque_detail) {
+                if ($service_cheque_detail->delete()) {
+                    $flag = 1;
+                } else {
+                    $flag = 0;
+                    break;
+                }
+            }
+        } else {
+            $flag = 1;
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function RemovePayment($appointment) {
+        $flag = 0;
+        $payment_master = \common\models\PaymentMaster::find()->where(['appointment_id' => $appointment->id])->one();
+        $payment_details = \common\models\PaymentDetails::find()->where(['appointment_id' => $appointment->id])->all();
+        if (!empty($payment_master)) {
+            if ($payment_master->delete()) {
+                if (!empty($payment_details)) {
+                    foreach ($payment_details as $payment_detail) {
+                        if ($payment_detail->delete()) {
+                            $flag = 1;
+                        } else {
+                            $flag = 0;
+                            break;
+                        }
+                    }
+                } else {
+                    $flag = 1;
+                }
+            } else {
+                $flag = 0;
+            }
+        } else {
+            $flag = 1;
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function RemoveLicenseDetails($appointment) {
+        $flag = 0;
+        $licencing_master = \common\models\LicencingMaster::find()->where(['appointment_id' => $appointment->id])->one();
+        if (!empty($licencing_master)) {
+            $lice_trdname_intlapro = \common\models\LiceTrdnameIntlapro::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $moa = \common\models\Moa::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $municipality_approval = \common\models\MunicipalityApproval::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $new_stamp = \common\models\NewStamp::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $others = \common\models\Others::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $payment_voucher = \common\models\PaymentVoucher::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $police_noc = \common\models\PoliceNoc::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $rta = \common\models\Rta::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $company_establishment_card = \common\models\CompanyEstablishmentCard::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $dps = \common\models\Dps::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            $licence = \common\models\Licence::find()->where(['licensing_master_id' => $licencing_master->id])->one();
+            if ($licencing_master->delete()) {
+                $flag = 1;
+                $this->DeleteLicenseDatas($lice_trdname_intlapro, $moa, $municipality_approval, $new_stamp, $others, $payment_voucher, $police_noc, $rta, $company_establishment_card, $dps, $licence);
+            }
+        } else {
+            $flag = 1;
+        }
+        if ($flag == 1) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function DeleteLicenseDatas($lice_trdname_intlapro, $moa, $municipality_approval, $new_stamp, $others, $payment_voucher, $police_noc, $rta, $company_establishment_card, $dps, $licence) {
+        if (!empty($lice_trdname_intlapro)) {
+            $lice_trdname_intlapro->delete();
+        }
+        if (!empty($moa)) {
+            $moa->delete();
+        }
+        if (!empty($municipality_approval)) {
+            $municipality_approval->delete();
+        }
+        if (!empty($new_stamp)) {
+            $new_stamp->delete();
+        }
+        if (!empty($others)) {
+            $others->delete();
+        }
+        if (!empty($payment_voucher)) {
+            $payment_voucher->delete();
+        }
+        if (!empty($police_noc)) {
+            $police_noc->delete();
+        }
+        if (!empty($rta)) {
+            $rta->delete();
+        }
+        if (!empty($company_establishment_card)) {
+            $company_establishment_card->delete();
+        }
+        if (!empty($dps)) {
+            $dps->delete();
+        }
+        if (!empty($licence)) {
+            $licence->delete();
+        }
+        return TRUE;
     }
 
 }

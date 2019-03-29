@@ -104,7 +104,7 @@ use yii\helpers\Html;
         }
     </style>
     <table class="main-tabl" border="0" >
-        <thead>
+<!--        <thead>
             <tr>
                 <th>
                     <div class="quation-head">
@@ -112,7 +112,7 @@ use yii\helpers\Html;
                     </div>
                 </th>
             </tr>
-        </thead>
+        </thead>-->
         <tbody>
             <tr>
                 <td>
@@ -165,6 +165,7 @@ use yii\helpers\Html;
                             </tr>
                             <?php
                             if (!empty($services)) {
+                                $grand_tot = 0;
                                 $i = 0;
                                 if ($apointment->service_type == 1 || $apointment->service_type == 3) {
                                     $i++;
@@ -220,6 +221,7 @@ use yii\helpers\Html;
                                                     <td class="txt-align-right"><?= $space_service->total ?> </td>
                                                 </tr>
                                                 <?php
+                                                $grand_tot += $space_service->total;
                                             }
                                         }
                                     }
@@ -269,6 +271,7 @@ use yii\helpers\Html;
                                                     <td class="txt-align-right"><?= $ubl_service->total ?> </td>
                                                 </tr>
                                                 <?php
+                                                $grand_tot += $ubl_service->total;
                                             }
                                         }
                                     }
@@ -300,6 +303,7 @@ use yii\helpers\Html;
                                                     <td class="txt-align-right"><?= $ministry_service->total ?> </td>
                                                 </tr>
                                                 <?php
+                                                $grand_tot += $ministry_service->total;
                                             }
                                         }
                                     }
@@ -342,6 +346,7 @@ use yii\helpers\Html;
                                                     <td class="txt-align-right"><?= $space_service->total ?> </td>
                                                 </tr>
                                                 <?php
+                                                $grand_tot += $space_service->total;
                                             }
                                         }
                                     }
@@ -387,6 +392,7 @@ use yii\helpers\Html;
                                                     <td class="txt-align-right"><?= $ubl_service->total ?> </td>
                                                 </tr>
                                                 <?php
+                                                $grand_tot += $ubl_service->total;
                                             }
                                         }
                                     }
@@ -418,14 +424,41 @@ use yii\helpers\Html;
                                                     <td class="txt-align-right"><?= $ministry_service->total ?> </td>
                                                 </tr>
                                                 <?php
+                                                $grand_tot += $ministry_service->total;
                                             }
                                         }
                                     }
                                 }
-                                ?>
-                                <?php
+                                if ($apointment->service_type == 5) {
+                                    $k = 0;
+                                    foreach ($services as $service) {
+                                        if (!empty($service)) {
+                                            $k++;
+                                            ?>
+                                            <tr>
+                                                <td><?= $k ?></td>
+                                                <td><strong><?= $service->service != '' ? common\models\Services::findOne($service->service)->service_name : '' ?></strong>
+                                                    <?php
+                                                    if ($service->comment != '') {
+                                                        echo '<br><span class="cmmd-span">' . $service->comment . '</span>';
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td class="txt-align-right"><?= $service->total ?> </td>
+                                            </tr>
+                                            <?php
+                                            $grand_tot += $service->total;
+                                        }
+                                    }
+                                    ?>
+                                    <?php
+                                }
                             }
                             ?>
+                            <tr>
+                                <td colspan="2" style="text-align:center;font-weight: 600;text-transform: uppercase;">Total</td>
+                                <td class="txt-align-right"><strong><?= sprintf('%0.2f', $grand_tot) ?></strong></td>
+                            </tr>
                         </table>
                     </div>
                 </td>
@@ -453,7 +486,7 @@ use yii\helpers\Html;
                     </div>
                 </td>
             </tr>
-            <tr>
+<!--            <tr>
                 <td>
                     <div class="declaration">
                         <p class="head">I understand the above terms and conditions and I hereby authorize UBL to start my license processing as per above rules and regulations.</p>
@@ -471,7 +504,7 @@ use yii\helpers\Html;
                         </div>
                     </div>
                 </td>
-            </tr>
+            </tr>-->
         </tbody>
         <tfoot>
         </tfoot>

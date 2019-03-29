@@ -16,7 +16,8 @@ $this->params['breadcrumbs'][] = 'Update';
         <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
     </div>
     <div class="box-body">
-        <?= Html::a('<span> Manage Appointment</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
+        <?= Html::a('<span> Manage Appointment</span>', ['index'], ['class' => 'btn btn-block manage-btn', 'style' => 'display:inline-block']) ?>
+        <?= Html::a('<span> Remove Appointment</span>', ['remove', 'id' => $model->id], ['class' => 'btn btn-block btn-danger', 'style' => 'display: inline-block;margin-bottom: 34px;margin-left: 15px;', 'id' => 'app-remove']) ?>
         <section id="tabs">
             <div class="card1">
                 <ul class="nav nav-tabs" role="tablist">
@@ -46,3 +47,8 @@ $this->params['breadcrumbs'][] = 'Update';
     <!-- /.box-body -->
 </div>
 <!-- /.box -->
+<script type="text/javascript">
+    $('#app-remove').on('click', function () {
+        return confirm('Are you sure want to continue?');
+    });
+</script>

@@ -329,4 +329,50 @@ class ReportsController extends \yii\web\Controller {
         }
     }
 
+    public function actionRealestateReport() {
+        $searchModel = new \common\models\RealEstateMasterSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['type' => 0]);
+        $dataProvider->pagination = FALSE;
+        return $this->render('realestate-report', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionIstadamaReport() {
+        $model = \common\models\RealEstateMaster::find()->where(['type' => 1])->all();
+        return $this->render('istadama-report', [
+                    'model' => $model,
+        ]);
+    }
+
+    public function actionSponsorDocumentExpiry() {
+        $model = \common\models\Sponsor::find()->where(['>=', 'emirate_id_expiry', date('Y-m-d')])->orWhere(['>=', 'passport_expiry', date('Y-m-d')])->orWhere(['>=', 'family_book_expiry', date('Y-m-d')])->all();
+        $expiry_data = [];
+        if (!empty($model)) {
+            $i = 0;
+            foreach ($model as $value) {
+                if ($value->emirate_id != '' && $value->emirate_id_expiry != '') {
+                    $expiry_data[] = array('id' => $value->id, 'name' => $value->name, 'document' => 'Emirate ID', 'expiry' => $value->emirate_id_expiry);
+                }
+                if ($value->passport != '' && $value->passport_expiry != '') {
+                    $expiry_data[] = array('id' => $value->id, 'name' => $value->name, 'document' => 'Passport', 'expiry' => $value->passport_expiry);
+                }
+                if ($value->family_book != '' && $value->family_book_expiry != '') {
+                    $expiry_data[] = array('id' => $value->id, 'name' => $value->name, 'document' => 'Family Book', 'expiry' => $value->family_book_expiry);
+                }
+            }
+        }
+        if (!empty($expiry_data)) {
+            foreach ($expiry_data as $key => $row) {
+                $volume[$key] = $row['expiry'];
+            }
+            array_multisort($volume, SORT_ASC, $expiry_data);
+        }
+        return $this->render('sponsor-expiry-report', [
+                    'expiry_data' => $expiry_data,
+        ]);
+    }
+
 }

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Sponsor */
@@ -56,6 +57,7 @@ use yii\widgets\ActiveForm;
                     <tr>
                         <th style="width: 20%">Title</th>
                         <th>Choose File</th>
+                        <th style="width: 20%">Expiry Date</th>
                         <th style="width: 10%">Action</th>
                     </tr>
                 </thead>
@@ -67,6 +69,18 @@ use yii\widgets\ActiveForm;
                                 <?= $form->field($model, 'emirate_id')->fileInput(['maxlength' => true])->label(FALSE) ?>
                                 <span class="uplod-file-span" id="emirate_id"></span>
                             </label> 
+                        </td>
+                        <td>
+                            <?=
+                            $form->field($model, 'emirate_id_expiry')->widget(DatePicker::classname(), [
+                                'type' => DatePicker::TYPE_INPUT,
+                                'options' => ['placeholder' => ''],
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'yyyy-mm-dd'
+                                ]
+                            ])->label(FALSE);
+                            ?>
                         </td>
                         <td>
                             <?php
@@ -91,6 +105,18 @@ use yii\widgets\ActiveForm;
                             </label> 
                         </td>
                         <td>
+                            <?=
+                            $form->field($model, 'passport_expiry')->widget(DatePicker::classname(), [
+                                'type' => DatePicker::TYPE_INPUT,
+                                'options' => ['placeholder' => ''],
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'yyyy-mm-dd'
+                                ]
+                            ])->label(FALSE);
+                            ?>
+                        </td>
+                        <td>
                             <?php
                             if ($model->passport != '') {
                                 $dirPath = Yii::getAlias(Yii::$app->params['uploadPath']) . '/uploads/sponsers/' . $model->id . '/passport.' . $model->passport;
@@ -111,6 +137,18 @@ use yii\widgets\ActiveForm;
                                 <?= $form->field($model, 'family_book')->fileInput(['maxlength' => true])->label(FALSE) ?>
                                 <span class="uplod-file-span" id="familybook"></span>
                             </label>
+                        </td>
+                        <td>
+                            <?=
+                            $form->field($model, 'family_book_expiry')->widget(DatePicker::classname(), [
+                                'type' => DatePicker::TYPE_INPUT,
+                                'options' => ['placeholder' => '', 'autocomplete' => 'off'],
+                                'pluginOptions' => [
+                                    'format' => 'yyyy-mm-dd',
+                                    'autoclose' => true,
+                                ]
+                            ])->label(FALSE);
+                            ?>
                         </td>
                         <td>
                             <?php
@@ -134,6 +172,7 @@ use yii\widgets\ActiveForm;
                                 <span class="uplod-file-span" id="photo"></span>
                             </label>
                         </td>
+                        <td></td>
                         <td>
                             <?php
                             if ($model->photo != '') {
@@ -188,8 +227,8 @@ use yii\widgets\ActiveForm;
                             }
                             ?>
                         </td>
-                        <td>
-                        </td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -226,7 +265,6 @@ use yii\widgets\ActiveForm;
         $("#sponsor-others").change(function () {
             var fp = $("#sponsor-others");
             var lg = fp[0].files.length; // get length
-            alert(lg);
             $("#other_filed").text(lg + ' files');
         });
     });

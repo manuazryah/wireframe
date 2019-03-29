@@ -136,4 +136,17 @@ class AdminUsersController extends Controller {
         }
     }
 
+    public function actionChangePassword($id) {
+        $model = new \common\models\ChangePassword();
+        $user = $this->findModel(Yii::$app->EncryptDecrypt->Encrypt('decrypt', $id));
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            Yii::$app->session->setFlash('success', 'Password changed successfully.');
+            $model = new \common\models\ChangePassword();
+        }
+        return $this->render('change_password', [
+                    'model' => $model,
+                    'user' => $user,
+        ]);
+    }
+
 }

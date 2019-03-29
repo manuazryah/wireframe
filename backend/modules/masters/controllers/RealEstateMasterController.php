@@ -131,6 +131,7 @@ class RealEstateMasterController extends Controller {
         if ($category == 2) {
             if ($type == 1) {
                 $model->code = 'IST-' . $code;
+                $model->plot_status = 1;
             } else {
                 $model->code = Yii::$app->SetValues->NumberAlphabet($code);
             }
@@ -491,6 +492,26 @@ class RealEstateMasterController extends Controller {
             }
         }
         return $flag;
+    }
+
+    public function actionUpdateEstatePrice() {
+        if (Yii::$app->request->isAjax) {
+            $id = $_POST['id'];
+            $price = $_POST['price'];
+            if (isset($id) && $id != '') {
+                $estate_details = \common\models\RealEstateDetails::find()->where(['id' => $id])->one();
+                if (!empty($estate_details)) {
+                    $estate_details->cost = $price;
+                    if ($estate_details->update()) {
+                        echo 1;
+                    } else {
+                        echo 2;
+                    }
+                } else {
+                    echo 3;
+                }
+            }
+        }
     }
 
 }

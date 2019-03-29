@@ -69,7 +69,7 @@ class RealEstateDetails extends \yii\db\ActiveRecord {
             'availability' => 'Availability',
             'customer_id' => 'Customer ID',
             'appointment_id' => 'Appointment ID',
-            'cost' => 'Cost',
+            'cost' => 'Price',
             'rent_cost' => 'Rent Cost',
             'off_rent' => 'Off Rent',
             'square_feet' => 'Square Feet',

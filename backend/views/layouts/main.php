@@ -190,7 +190,16 @@ if (Yii::$app->user->identity->post_id == 1 || Yii::$app->user->identity->post_i
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> PDC Report', ['/reports/reports/pdc-report'], ['class' => 'title']) ?>
                                 </li>
                                 <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Realestate Report', ['/reports/reports/realestate-report'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Istadama Report', ['/reports/reports/istadama-report'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Realestate Cheque Report', ['/reports/reports/realestate-cheque-report'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Sponsor Document Expiry', ['/reports/reports/sponsor-document-expiry'], ['class' => 'title']) ?>
                                 </li>
                             </ul>
                         </li>
@@ -224,6 +233,9 @@ if (Yii::$app->user->identity->post_id == 1 || Yii::$app->user->identity->post_i
                                     </li>
                                     <li>
                                         <?= Html::a('<i class="fa fa-angle-double-right"></i> Suppliers', ['/masters/supplier/index'], ['class' => 'title']) ?>
+                                    </li>
+                                    <li>
+                                        <?= Html::a('<i class="fa fa-angle-double-right"></i> Banks', ['/masters/banks/index'], ['class' => 'title']) ?>
                                     </li>
                                     <li>
                                         <?= Html::a('<i class="fa fa-angle-double-right"></i> Nationality', ['/masters/country/index'], ['class' => 'title']) ?>

@@ -180,10 +180,10 @@ class SiteController extends Controller {
                     $model->doc = date('Y-m-d');
                     if ($model->validate())
                         if ($model->save()) {
-                            $this->SendNotificationMail($model->notification_content);
+//                            $this->SendNotificationMail($model->notification_content);
                         }
                 } else {
-                    $this->SendNotificationMail($check_exist->notification_content);
+//                    $this->SendNotificationMail($check_exist->notification_content);
                 }
             }
         }

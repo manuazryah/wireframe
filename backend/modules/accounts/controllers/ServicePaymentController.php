@@ -281,6 +281,14 @@ class ServicePaymentController extends \yii\web\Controller {
                 }
             }
             $i = 0;
+
+            if (!empty($creatematerial['bank'])) {
+                foreach ($creatematerial['bank'] as $val) {
+                    $arr[$i]['bank'] = $val;
+                    $i++;
+                }
+            }
+            $i = 0;
             if (!empty($creatematerial['amount'])) {
                 foreach ($creatematerial['amount'] as $val) {
                     $arr[$i]['amount'] = $val;
@@ -314,6 +322,7 @@ class ServicePaymentController extends \yii\web\Controller {
                 $aditional->type = 2;
                 $aditional->cheque_number = $creatematerial['cheque_num'];
                 $aditional->cheque_date = $this->ChangeDateFormate($creatematerial['cheque_date']);
+                $aditional->bank = $creatematerial['bank'];
                 $aditional->amount = $creatematerial['amount'];
                 Yii::$app->SetValues->Attributes($aditional);
                 if ($aditional->save()) {
@@ -433,6 +442,7 @@ class ServicePaymentController extends \yii\web\Controller {
                 $aditional->type = 1;
                 $aditional->cheque_number = $val['cheque_num'];
                 $aditional->cheque_date = $val['cheque_date'];
+                $aditional->bank = $val['bank'];
                 $aditional->amount = $val['amount'];
                 Yii::$app->SetValues->Attributes($aditional);
                 if ($aditional->save()) {
@@ -794,10 +804,12 @@ class ServicePaymentController extends \yii\web\Controller {
             $count = $_POST['count'];
             $prev_count = $_POST['prev_count'];
             $count_diff = $count - $prev_count;
+            $banks = \common\models\Banks::find()->where(['status' => 1])->all();
             $data = $this->renderPartial('_form_cheque_multiple', [
                 'count' => $count,
                 'prev_count' => $prev_count,
                 'count_diff' => $count_diff,
+                'banks' => $banks,
             ]);
         }
         return $data;
@@ -806,8 +818,10 @@ class ServicePaymentController extends \yii\web\Controller {
     public function actionOneTimeChequeDetails() {
         if (Yii::$app->request->isAjax) {
             $total_amt = $_POST['total_amt'];
+            $banks = \common\models\Banks::find()->where(['status' => 1])->all();
             $data = $this->renderPartial('_form_cheque_one_time', [
                 'total_amt' => $total_amt,
+                'banks' => $banks,
             ]);
         }
         return $data;

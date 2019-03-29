@@ -37,10 +37,10 @@ class ServiceChequeDetails extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-                [['type', 'appointment_id', 'appointment_service_id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
-                [['cheque_date', 'DOC', 'DOU'], 'safe'],
-                [['amount'], 'number'],
-                [['cheque_number'], 'string', 'max' => 100],
+            [['type', 'appointment_id', 'appointment_service_id', 'service_id', 'status', 'CB', 'UB'], 'integer'],
+            [['cheque_date', 'DOC', 'DOU', 'bank'], 'safe'],
+            [['amount'], 'number'],
+            [['cheque_number'], 'string', 'max' => 100],
         ];
     }
 

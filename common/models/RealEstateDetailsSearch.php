@@ -47,7 +47,7 @@ class RealEstateDetailsSearch extends RealEstateDetails {
      */
     public function search($params) {
         $query = RealEstateDetails::find();
-        $query->joinWith(['master']);
+//        $query->joinWith(['master']);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
