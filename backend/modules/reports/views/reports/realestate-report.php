@@ -24,6 +24,12 @@ $this->params['breadcrumbs'][] = $this->title;
     .summary{
         display: none;
     }
+    td{
+        white-space: nowrap;
+    }
+    th{
+        white-space: nowrap;
+    }
 </style>
 <!-- Default box -->
 <div class="box table-responsive">
@@ -35,10 +41,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-responsive">
+                        <?php echo $this->render('_search', ['model' => $searchModel]); ?>
                         <table class="table table-responsive table-bordered">
                             <thead>
                                 <tr>
                                     <th>Building Name</th>
+                                    <th>Office ID</th>
+                                    <th>Sponsor</th>
                                     <?php
                                     foreach (range('A', 'Z') as $x) {
                                         ?>

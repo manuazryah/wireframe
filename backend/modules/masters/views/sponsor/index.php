@@ -31,18 +31,27 @@ $this->params['breadcrumbs'][] = $this->title;
                     'reference_code',
                     'email:email',
                     'phone_number',
-                    // 'address:ntext',
-                    // 'comment:ntext',
-                    // 'emirate_id',
-                    // 'passport',
-                    // 'family_book',
-                    // 'photo',
-                    // 'others',
-                    // 'status',
-                    // 'CB',
-                    // 'UB',
-                    // 'DOC',
-                    // 'DOU',
+                    [
+                        'attribute' => 'total',
+                        'format' => 'raw',
+                        'value' => function($data, $key, $index, $column) {
+                            return $data->getTotal($data->id);
+                        },
+                    ],
+                    [
+                        'attribute' => 'paid',
+                        'format' => 'raw',
+                        'value' => function($data, $key, $index, $column) {
+                            return $data->getPaid($data->id);
+                        },
+                    ],
+                    [
+                        'attribute' => 'balance',
+                        'format' => 'raw',
+                        'value' => function($data, $key, $index, $column) {
+                            return $data->getBalance($data->id);
+                        },
+                    ],
                     [
                         'class' => 'yii\grid\ActionColumn',
                         'contentOptions' => ['style' => 'width:30px;'],

@@ -80,7 +80,7 @@ class Appointment extends \yii\db\ActiveRecord {
 //               return $('#appointment-service_type').val() == '5';
 //            }"],
             [['customer', 'service_type', 'sponsor', 'tax', 'supplier', 'no_partners', 'approval_status', 'sales_employee_id', 'accounts_employee_id', 'operations_employee_id', 'status', 'CB', 'UB', 'sub_status'], 'integer'],
-            [['estimated_cost', 'service_cost'], 'number'],
+            [['estimated_cost', 'service_cost', 'sales_person_commission'], 'number'],
             [['start_date', 'expiry_date', 'DOC', 'DOU', 'paid_amount', 'license_expiry_date', 'contract_start_date', 'contract_end_date', 'plot', 'space_for_license', 'service_cost', 'sub_total', 'tax_total', 'multiple_total', 'one_time_total', 'tax_to_onetime'], 'safe'],
             [['service_id', 'total_amount',], 'string', 'max' => 100],
             [['comment'], 'string', 'max' => 1000],

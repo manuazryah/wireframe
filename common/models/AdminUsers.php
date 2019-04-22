@@ -30,6 +30,9 @@ class AdminUsers extends ActiveRecord implements IdentityInterface {
     public $rememberMe = true;
     public $created_at;
     public $updated_at;
+    public $paid;
+    public $balance;
+    public $commission;
 
     /**
      * @inheritdoc
@@ -43,20 +46,20 @@ class AdminUsers extends ActiveRecord implements IdentityInterface {
      */
     public function rules() {
         return [
-                [['post_id', 'user_name', 'password', 'name', 'email', 'phone_number'], 'required', 'on' => 'create'],
-                [['post_id', 'name', 'email', 'phone_number'], 'required', 'on' => 'update'],
-                [['user_name'], 'unique', 'message' => 'Username must be unique.', 'on' => 'create'],
-                [['user_name'], 'unique', 'message' => 'Username must be unique.', 'on' => 'update'],
-                [['email'], 'email'],
-                [['post_id', 'status', 'CB', 'UB'], 'integer'],
-                [['DOC', 'DOU'], 'safe'],
-                [['user_name'], 'string', 'max' => 30],
-                [['password'], 'string', 'max' => 300],
-                [['name', 'email'], 'string', 'max' => 100],
-                [['phone_number'], 'integer'],
-                [['post_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminPosts::className(), 'targetAttribute' => ['post_id' => 'id']],
-                [['user_name', 'password'], 'required', 'on' => 'login'],
-                [['password'], 'validatePassword', 'on' => 'login'],
+            [['post_id', 'user_name', 'password', 'name', 'email', 'phone_number'], 'required', 'on' => 'create'],
+            [['post_id', 'name', 'email', 'phone_number'], 'required', 'on' => 'update'],
+            [['user_name'], 'unique', 'message' => 'Username must be unique.', 'on' => 'create'],
+            [['user_name'], 'unique', 'message' => 'Username must be unique.', 'on' => 'update'],
+            [['email'], 'email'],
+            [['post_id', 'status', 'CB', 'UB'], 'integer'],
+            [['DOC', 'DOU', ''], 'safe'],
+            [['user_name'], 'string', 'max' => 30],
+            [['password'], 'string', 'max' => 300],
+            [['name', 'email'], 'string', 'max' => 100],
+            [['phone_number'], 'integer'],
+            [['post_id'], 'exist', 'skipOnError' => true, 'targetClass' => AdminPosts::className(), 'targetAttribute' => ['post_id' => 'id']],
+            [['user_name', 'password'], 'required', 'on' => 'login'],
+            [['password'], 'validatePassword', 'on' => 'login'],
         ];
     }
 
@@ -170,6 +173,41 @@ class AdminUsers extends ActiveRecord implements IdentityInterface {
      */
     public function getPost() {
         return $this->hasOne(AdminPosts::className(), ['id' => 'post_id']);
+    }
+
+    public static function getTotal($id) {
+        if ($id != '') {
+            $sales_total = Appointment::find()->where(['sales_man' => $id])->sum('sales_person_commission');
+            if ($sales_total < 1) {
+                $sales_total = 0;
+            }
+        } else {
+            $sales_total = 0;
+        }
+        return $sales_total;
+    }
+
+    public static function getPaid($id) {
+        if ($id != '') {
+            $paid_total = SalesPayment::find()->where(['salesman' => $id, 'type' => 2])->sum('amount');
+            if ($paid_total < 1) {
+                $paid_total = 0;
+            }
+        } else {
+            $paid_total = 0;
+        }
+        return $paid_total;
+    }
+
+    public static function getBalance($id) {
+        if ($id != '') {
+            $sales_total = Appointment::find()->where(['sales_man' => $id])->sum('sales_person_commission');
+            $paid_total = SalesPayment::find()->where(['salesman' => $id, 'type' => 2])->sum('amount');
+            $sponsor_balance = $sales_total - $paid_total;
+        } else {
+            $sponsor_balance = 0;
+        }
+        return $sponsor_balance;
     }
 
 }

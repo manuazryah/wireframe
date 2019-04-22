@@ -183,23 +183,83 @@ if (Yii::$app->user->identity->post_id == 1 || Yii::$app->user->identity->post_i
                                 </span>
                             </a>
                             <ul class="treeview-menu">
+                                <li class="treeview">
+                                    <a href="#"><i class="fa fa-angle-double-right"></i> Real Estate
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> Space / Adding Report', ['/reports/reports/realestate-report'], ['class' => 'title']) ?>
+                                        </li>
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> License / Virtual Report', ['/reports/reports/license-report'], ['class' => 'title']) ?>
+                                        </li>
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> Istadama Report', ['/reports/reports/istadama-report'], ['class' => 'title']) ?>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="treeview">
+                                    <a href="#"><i class="fa fa-angle-double-right"></i> Sponsor
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> Sponsor report', ['/masters/sponsor/index'], ['class' => 'title']) ?>
+                                        </li>
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> Office Wise Report', ['/reports/reports/sponsor-office-report'], ['class' => 'title']) ?>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="treeview">
+                                    <a href="#"><i class="fa fa-angle-double-right"></i> Account Manager
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> Sales report', ['/admin/admin-users/index'], ['class' => 'title']) ?>
+                                        </li>
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> Office Wise Report', ['/reports/reports/salesman-office-report'], ['class' => 'title']) ?>
+                                        </li>
+                                    </ul>
+                                </li>
                                 <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Full Report', ['/reports/reports/index'], ['class' => 'title']) ?>
                                 </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> PDC Report', ['/reports/reports/pdc-report'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Realestate Report', ['/reports/reports/realestate-report'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Istadama Report', ['/reports/reports/istadama-report'], ['class' => 'title']) ?>
-                                </li>
-                                <li>
-                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Realestate Cheque Report', ['/reports/reports/realestate-cheque-report'], ['class' => 'title']) ?>
+                                <li class="treeview">
+                                    <a href="#"><i class="fa fa-angle-double-right"></i> PDC Report
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> PDC Report', ['/reports/reports/pdc-report'], ['class' => 'title']) ?>
+                                        </li>
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> Realestate Cheque Report', ['/reports/reports/realestate-cheque-report'], ['class' => 'title']) ?>
+                                        </li>
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-circle-o"></i> Security Cheque Report', ['/reports/reports/security-cheque-report'], ['class' => 'title']) ?>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li>
                                     <?= Html::a('<i class="fa fa-angle-double-right"></i> Sponsor Document Expiry', ['/reports/reports/sponsor-document-expiry'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> Contract Expiry Report', ['/reports/reports/contract-expiry'], ['class' => 'title']) ?>
+                                </li>
+                                <li>
+                                    <?= Html::a('<i class="fa fa-angle-double-right"></i> License Expiry Report', ['/reports/reports/license-expiry'], ['class' => 'title']) ?>
                                 </li>
                             </ul>
                         </li>

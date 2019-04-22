@@ -348,6 +348,7 @@ class RealEstateMasterController extends Controller {
         $searchModel = new \common\models\RealEstateDetailsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['master_id' => $id]);
+        $dataProvider->query->orderBy(['category' => SORT_DESC]);
         $dataProvider->pagination = false;
 
         return $this->render('estate_details', [

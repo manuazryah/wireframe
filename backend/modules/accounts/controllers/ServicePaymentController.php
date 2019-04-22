@@ -386,6 +386,7 @@ class ServicePaymentController extends \yii\web\Controller {
             $appointment->license_expiry_date = $this->ChangeDateFormate($updateappointment['license_expiry_date']);
             $appointment->contract_start_date = $this->ChangeDateFormate($updateappointment['contract_start_date']);
             $appointment->contract_end_date = $this->ChangeDateFormate($updateappointment['contract_end_date']);
+            $appointment->sales_person_commission = $updateappointment['sales_person_commission'];
             $appointment->multiple_total = $data['multiple_total'];
             $appointment->one_time_total = $data['one_time_total'];
             $appointment->save(FALSE);
@@ -399,6 +400,7 @@ class ServicePaymentController extends \yii\web\Controller {
             $appointment->license_expiry_date = $this->ChangeDateFormate($updateappointment['license_expiry_date']);
             $appointment->contract_start_date = $this->ChangeDateFormate($updateappointment['contract_start_date']);
             $appointment->contract_end_date = $this->ChangeDateFormate($updateappointment['contract_end_date']);
+            $appointment->sales_person_commission = $updateappointment['sales_person_commission'];
             $appointment->save(FALSE);
         }
         return TRUE;
@@ -651,7 +653,7 @@ class ServicePaymentController extends \yii\web\Controller {
                         $result = 0;
                     }
                 } else {
-                    $cheque_data->status = 2;
+                    $cheque_data->status = $data['status'];
                     $cheque_data->update();
                     $result = 1;
                 }

@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <h3 class="box-title"><?= Html::encode($this->title) ?></h3>
         </div>
         <div class="box-body table-responsive">
+            <?= Html::a('<span> Manage Real Estate</span>', ['index'], ['class' => 'btn btn-block manage-btn']) ?>
             <section id="tabs">
                 <div class="card1">
                     <ul class="nav nav-tabs" role="tablist">

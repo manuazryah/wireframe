@@ -21,7 +21,7 @@ $estate_details = \common\models\RealEstateDetails::find()->where(['master_id' =
     }
     for ($i = 1; $i <= $new_count; $i++) {
         ?>
-        <td></td>
+        <td style="background-image: url('<?= Yii::$app->homeUrl; ?>img/slash.png')"></td>
     <?php }
     ?>
 </tr>

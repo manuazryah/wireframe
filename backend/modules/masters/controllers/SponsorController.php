@@ -275,17 +275,65 @@ class SponsorController extends Controller {
 
     public function actionSponsorPayment($id) {
         $sponsor = $this->findModel($id);
-        $sponsor_payments = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->all();
-        $sponsor_balance = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->orderBy(['id' => SORT_DESC])->one();
-        $sponsor_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 1])->sum('amount');
-        $paid_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 2])->sum('amount');
+        $qry = new yii\db\Query();
+        $qry->select(['*'])
+                ->from('appointment')
+                ->where(['sponsor' => $id]);
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post();
+            if (isset($data['contract_from']) && $data['contract_from'] != '') {
+                $contract_from = $data['contract_from'];
+                $new_from_date = $this->changeDateFormate($contract_from);
+                if ($new_from_date != '') {
+                    $qry->andWhere(['>=', 'contract_start_date', $new_from_date]);
+                }
+            }
+            if (isset($data['contract_to']) && $data['contract_to'] != '') {
+                $contract_to = $data['contract_to'];
+                $new_to_date = $this->changeDateFormate($contract_to);
+                if ($new_to_date != '') {
+                    $qry->andWhere(['<=', 'contract_start_date', $new_to_date]);
+                }
+            }
+        }
+        $command = $qry->createCommand();
+        $sponsor_appointments = $command->queryAll();
+        $arr = [];
+        if (!empty($sponsor_appointments)) {
+            foreach ($sponsor_appointments as $sponsor_appointment) {
+                $arr[] = $sponsor_appointment['id'];
+            }
+        }
+        if (empty($arr)) {
+            $sponsor_payments = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->all();
+            $sponsor_balance = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->orderBy(['id' => SORT_DESC])->one();
+            $sponsor_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 1])->sum('amount');
+            $paid_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 2])->sum('amount');
+        } else {
+            $sponsor_payments = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->andWhere(['or', ['appointment_id' => $arr], ['type' => 2]])->all();
+            $sponsor_balance = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->orderBy(['id' => SORT_DESC])->one();
+            $sponsor_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 1])->sum('amount');
+            $paid_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 2])->sum('amount');
+        }
         return $this->render('sponsor-payment', [
                     'sponsor' => $sponsor,
                     'sponsor_payments' => $sponsor_payments,
                     'sponsor_balance' => $sponsor_balance,
                     'sponsor_total' => $sponsor_total,
                     'paid_total' => $paid_total,
+                    'contract_to' => $contract_to,
+                    'contract_from' => $contract_from,
+                    'id' => $id,
         ]);
+    }
+
+    public function changeDateFormate($date) {
+        $newDate = '';
+        if ($date != '') {
+            $date_arr = explode('/', $date);
+            $newDate = $date_arr[2] . '-' . $date_arr[1] . '-' . $date_arr[0];
+        }
+        return $newDate;
     }
 
     public function actionGetPayment() {
@@ -325,6 +373,57 @@ class SponsorController extends Controller {
             }
             return $result;
         }
+    }
+
+    public function actionSponsorReport($id, $from = NULL, $to = NULL) {
+        $sponsor = $this->findModel($id);
+        $qry = new yii\db\Query();
+        $qry->select(['*'])
+                ->from('appointment')
+                ->where(['sponsor' => $id]);
+        if (isset($from) && $from != '') {
+            $contract_from = $from;
+            $new_from_date = $this->changeDateFormate($contract_from);
+            if ($new_from_date != '') {
+                $qry->andWhere(['>=', 'contract_start_date', $new_from_date]);
+            }
+        }
+        if (isset($to) && $to != '') {
+            $contract_to = $to;
+            $new_to_date = $this->changeDateFormate($contract_to);
+            if ($new_to_date != '') {
+                $qry->andWhere(['<=', 'contract_start_date', $new_to_date]);
+            }
+        }
+        $command = $qry->createCommand();
+        $sponsor_appointments = $command->queryAll();
+        $arr = [];
+        if (!empty($sponsor_appointments)) {
+            foreach ($sponsor_appointments as $sponsor_appointment) {
+                $arr[] = $sponsor_appointment['id'];
+            }
+        }
+        if (empty($arr)) {
+            $sponsor_payments = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->all();
+            $sponsor_balance = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->orderBy(['id' => SORT_DESC])->one();
+            $sponsor_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 1])->sum('amount');
+            $paid_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 2])->sum('amount');
+        } else {
+            $sponsor_payments = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->andWhere(['or', ['appointment_id' => $arr], ['type' => 2]])->all();
+            $sponsor_balance = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id])->orderBy(['id' => SORT_DESC])->one();
+            $sponsor_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 1])->sum('amount');
+            $paid_total = \common\models\SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 2])->sum('amount');
+        }
+        $data = $this->renderPartial('sponsor-report', [
+            'sponsor' => $sponsor,
+            'sponsor_payments' => $sponsor_payments,
+            'sponsor_total' => $sponsor_total,
+            'contract_to' => $contract_to,
+            'contract_from' => $contract_from,
+            'id' => $id,
+        ]);
+        echo $data;
+        exit;
     }
 
 }

@@ -24,6 +24,16 @@ class ReportsController extends \yii\web\Controller {
     public function actionIndex() {
         $searchModel = new RealEstateDetailsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $appointments = \common\models\Appointment::find()->where(['status' => 0])->all();
+        if (!empty($appointments)) {
+            $arr = [];
+            foreach ($appointments as $appointment) {
+                $arr[] = $appointment->id;
+            }
+            if (!empty($arr)) {
+                $dataProvider->query->andWhere(['not in', 'appointment_id', $arr]);
+            }
+        }
         $contract_from = $contract_to = $total_from = $total_to = $paid_from = $paid_to = $balance_from = $balance_to = '';
         if (Yii::$app->request->post()) {
             $data = Yii::$app->request->post();
@@ -319,7 +329,7 @@ class ReportsController extends \yii\web\Controller {
                         $result = 0;
                     }
                 } else {
-                    $cheque_data->status = 2;
+                    $cheque_data->status = $data['status'];
                     $cheque_data->update();
                     $result = 1;
                 }
@@ -341,9 +351,22 @@ class ReportsController extends \yii\web\Controller {
     }
 
     public function actionIstadamaReport() {
-        $model = \common\models\RealEstateMaster::find()->where(['type' => 1])->all();
+        $searchModel = new \common\models\RealEstateMasterSearch();
+        $query = new yii\db\Query();
+        $query->select('*')
+                ->from('real_estate_master')
+                ->where(['type' => 1]);
+        if (isset($_GET['RealEstateMasterSearch']['company']) && $_GET['RealEstateMasterSearch']['company'] != '') {
+            $query->andWhere(['company' => $_GET['RealEstateMasterSearch']['company']]);
+        }
+        if (isset($_GET['RealEstateMasterSearch']['sponsor']) && $_GET['RealEstateMasterSearch']['sponsor'] != '') {
+            $query->andWhere(['sponsor' => $_GET['RealEstateMasterSearch']['sponsor']]);
+        }
+        $command = $query->createCommand();
+        $model = $command->queryAll();
         return $this->render('istadama-report', [
                     'model' => $model,
+                    'searchModel' => $searchModel,
         ]);
     }
 
@@ -372,6 +395,127 @@ class ReportsController extends \yii\web\Controller {
         }
         return $this->render('sponsor-expiry-report', [
                     'expiry_data' => $expiry_data,
+        ]);
+    }
+
+    public function actionSponsorOfficeReport() {
+        $searchModel = new RealEstateDetailsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination = FALSE;
+        return $this->render('sponsor_office_report', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionSalesmanOfficeReport() {
+        $searchModel = new RealEstateDetailsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['!=', 'appointment_id', 0]);
+        $dataProvider->pagination = FALSE;
+        return $this->render('salesman_office_report', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionLicenseReport() {
+        $searchModel = new \common\models\RealEstateMasterSearch();
+        $query = new yii\db\Query();
+        $query->select('*')
+                ->from('real_estate_master')
+                ->where(['type' => 0]);
+        if (isset($_GET['RealEstateMasterSearch']['company']) && $_GET['RealEstateMasterSearch']['company'] != '') {
+            $query->andWhere(['company' => $_GET['RealEstateMasterSearch']['company']]);
+        }
+        if (isset($_GET['RealEstateMasterSearch']['sponsor']) && $_GET['RealEstateMasterSearch']['sponsor'] != '') {
+            $query->andWhere(['sponsor' => $_GET['RealEstateMasterSearch']['sponsor']]);
+        }
+        $command = $query->createCommand();
+        $model = $command->queryAll();
+        return $this->render('license-report', [
+                    'model' => $model,
+                    'searchModel' => $searchModel,
+        ]);
+    }
+
+    /*
+     * Cotrat Expiry report
+     */
+
+    public function actionContractExpiry() {
+        $searchModel = new \common\models\AppointmentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['!=', 'status', 0]);
+        $contract_from = $contract_to = '';
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post();
+            if (isset($data['contract_from']) && $data['contract_from'] != '') {
+                $contract_from = $data['contract_from'];
+                $new_from_date = $this->changeDateFormate($contract_from);
+                if ($new_from_date != '') {
+                    $dataProvider->query->andWhere(['>=', 'contract_end_date', $new_from_date]);
+                }
+            }
+            if (isset($data['contract_to']) && $data['contract_to'] != '') {
+                $contract_to = $data['contract_to'];
+                $new_to_date = $this->changeDateFormate($contract_to);
+                if ($new_to_date != '') {
+                    $dataProvider->query->andWhere(['<=', 'contract_end_date', $new_to_date]);
+                }
+            }
+        }
+        $dataProvider->pagination = FALSE;
+        return $this->render('contract-expiry', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'contract_to' => $contract_to,
+                    'contract_from' => $contract_from,
+        ]);
+    }
+
+    /*
+     * License Expiry report
+     */
+
+    public function actionLicenseExpiry() {
+        $searchModel = new \common\models\AppointmentSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['!=', 'status', 0]);
+        $contract_from = $contract_to = '';
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post();
+            if (isset($data['contract_from']) && $data['contract_from'] != '') {
+                $contract_from = $data['contract_from'];
+                $new_from_date = $this->changeDateFormate($contract_from);
+                if ($new_from_date != '') {
+                    $dataProvider->query->andWhere(['>=', 'license_expiry_date', $new_from_date]);
+                }
+            }
+            if (isset($data['contract_to']) && $data['contract_to'] != '') {
+                $contract_to = $data['contract_to'];
+                $new_to_date = $this->changeDateFormate($contract_to);
+                if ($new_to_date != '') {
+                    $dataProvider->query->andWhere(['<=', 'license_expiry_date', $new_to_date]);
+                }
+            }
+        }
+        $dataProvider->pagination = FALSE;
+        return $this->render('license-expiry', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'contract_to' => $contract_to,
+                    'contract_from' => $contract_from,
+        ]);
+    }
+
+    public function actionSecurityChequeReport() {
+        $searchModel = new \common\models\SecurityChequeSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andWhere(['>=', 'cheque_date', date('Y-m-d')]);
+        return $this->render('security-cheque-report', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 

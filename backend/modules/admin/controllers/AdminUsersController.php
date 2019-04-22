@@ -149,4 +149,163 @@ class AdminUsersController extends Controller {
         ]);
     }
 
+    public function actionSalesPayment($id) {
+        $salesman = $this->findModel($id);
+        $contract_from = $contract_to = '';
+        $qry = new yii\db\Query();
+        $qry->select(['*'])
+                ->from('appointment')
+                ->where(['sales_man' => $id]);
+        if (Yii::$app->request->post()) {
+            $data = Yii::$app->request->post();
+            if (isset($data['contract_from']) && $data['contract_from'] != '') {
+                $contract_from = $data['contract_from'];
+                $new_from_date = $this->changeDateFormate($contract_from);
+                if ($new_from_date != '') {
+                    $qry->andWhere(['>=', 'contract_start_date', $new_from_date]);
+                }
+            }
+            if (isset($data['contract_to']) && $data['contract_to'] != '') {
+                $contract_to = $data['contract_to'];
+                $new_to_date = $this->changeDateFormate($contract_to);
+                if ($new_to_date != '') {
+                    $qry->andWhere(['<=', 'contract_start_date', $new_to_date]);
+                }
+            }
+        }
+        $command = $qry->createCommand();
+        $sales_appointments = $command->queryAll();
+//        $sales_total = $qry->sum('sales_person_commission');
+        $sales_total = \common\models\Appointment::find()->where(['sales_man' => $id])->sum('sales_person_commission');
+        $sales_payment = \common\models\SalesPayment::find()->where(['salesman' => $id])->all();
+//        $sales_appointments = \common\models\Appointment::find()->where(['sales_man' => $id])->all();
+        $sales_balance = \common\models\SalesPayment::find()->where(['salesman' => $id])->orderBy(['id' => SORT_DESC])->one();
+        $paid_total = \common\models\SalesPayment::find()->where(['salesman' => $id, 'type' => 2])->sum('amount');
+        return $this->render('sales-payment', [
+                    'salesman' => $salesman,
+                    'sales_payment' => $sales_payment,
+                    'sales_balance' => $sales_balance,
+                    'paid_total' => $paid_total,
+                    'sales_total' => $sales_total,
+                    'sales_appointments' => $sales_appointments,
+                    'contract_to' => $contract_to,
+                    'contract_from' => $contract_from,
+                    'id' => $id,
+        ]);
+    }
+
+    public function changeDateFormate($date) {
+        $newDate = '';
+        if ($date != '') {
+            $date_arr = explode('/', $date);
+            $newDate = $date_arr[2] . '-' . $date_arr[1] . '-' . $date_arr[0];
+        }
+        return $newDate;
+    }
+
+    public function actionGetPayment() {
+
+        $data = '';
+        if (Yii::$app->request->post()) {
+
+            $salesman = $_POST['salesman'];
+            $sales_total = \common\models\Appointment::find()->where(['sales_man' => $salesman])->sum('sales_person_commission');
+            $paid_total = \common\models\SalesPayment::find()->where(['salesman' => $salesman, 'type' => 2])->sum('amount');
+            $payment = $sales_total - $paid_total;
+            $data = $this->renderPartial('_form_pay', [
+                'salesman' => $salesman,
+                'payment' => $payment,
+            ]);
+        }
+        return $data;
+    }
+
+    public function actionAjaxPayment() {
+        if (Yii::$app->request->isAjax) {
+            $salesman = $_POST['sponsor_id'];
+            $balance_amount = $_POST['balance_amount'];
+            $amount = $_POST['amount'];
+            if (!empty($salesman) && !empty($amount)) {
+                $model = new \common\models\SalesPayment();
+                $model->salesman = $salesman;
+                $model->amount = $amount;
+                $model->balance = $balance_amount - $amount;
+                $model->type = 2;
+                Yii::$app->SetValues->Attributes($model);
+                if ($model->save()) {
+                    $result = 1;
+                } else {
+                    $result = 0;
+                }
+            } else {
+                $result = 0;
+            }
+            return $result;
+        }
+    }
+
+    /*
+     * Save Sales person Commission
+     */
+
+    public function actionSaveCommission() {
+        if (Yii::$app->request->isAjax) {
+            $app_id = $_POST['appid'];
+            $amount = $_POST['amount'];
+            $result = 0;
+            if ($app_id != '' && $amount != '') {
+                $appointment = \common\models\Appointment::find()->where(['id' => $app_id])->one();
+                if (!empty($appointment)) {
+                    if ($amount >= 0) {
+                        $appointment->sales_person_commission = $amount;
+                        if ($appointment->save()) {
+                            $result = 1;
+                        } else {
+                            $result = 0;
+                        }
+                    }
+                }
+            }
+            return $result;
+        }
+    }
+
+    public function actionSalesReport($id, $from = NULL, $to = NULL) {
+        $salesman = $this->findModel($id);
+        $contract_from = $contract_to = '';
+        $qry = new yii\db\Query();
+        $qry->select(['*'])
+                ->from('appointment')
+                ->where(['sales_man' => $id]);
+        if (isset($from) && $from != '') {
+            $contract_from = $from;
+            $new_from_date = $this->changeDateFormate($contract_from);
+            if ($new_from_date != '') {
+                $qry->andWhere(['>=', 'contract_start_date', $new_from_date]);
+            }
+        }
+        if (isset($to) && $to != '') {
+            $contract_to = $to;
+            $new_to_date = $this->changeDateFormate($contract_to);
+            if ($new_to_date != '') {
+                $qry->andWhere(['<=', 'contract_start_date', $new_to_date]);
+            }
+        }
+        $command = $qry->createCommand();
+        $sales_appointments = $command->queryAll();
+        $sales_total = $qry->sum('sales_person_commission');
+        $sales_payment = \common\models\SalesPayment::find()->where(['salesman' => $id])->all();
+        $data = $this->renderPartial('sales_report', [
+            'salesman' => $salesman,
+            'sales_payment' => $sales_payment,
+            'sales_total' => $sales_total,
+            'sales_appointments' => $sales_appointments,
+            'contract_to' => $contract_to,
+            'contract_from' => $contract_from,
+            'id' => $id,
+        ]);
+        echo $data;
+        exit;
+    }
+
 }

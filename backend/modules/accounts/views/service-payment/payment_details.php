@@ -88,8 +88,8 @@ $banks = \common\models\Banks::find()->where(['status' => 1])->all();
                     }
                     ?>
                     <td>: <?= $off_id ?></td>
-                    <th></th>
-                    <td></td>
+                    <th>Sales Person</th>
+                    <td>: <?= $appointment->sales_man != '' ? \common\models\AdminUsers::findOne($appointment->sales_man)->name : '' ?></td>
                 </tr>
             </table>
         </div>
@@ -99,12 +99,6 @@ $banks = \common\models\Banks::find()->where(['status' => 1])->all();
                     'id' => 'account-form',
         ]);
         ?>
-        <div class="form-group field-appointment-id">
-
-            <input type="hidden" name="security_cheque" value="0"><label><input type="checkbox" id="security_cheque" name="security_cheque" value="1"> Security Cheque</label>
-
-            <div class="help-block"></div>
-        </div>
         <?php if (!empty($security_cheque)) { ?>
             <div class="row">
                 <div class="col-md-12">
@@ -147,6 +141,12 @@ $banks = \common\models\Banks::find()->where(['status' => 1])->all();
                 </div>
             </div>
         <?php } else { ?>
+            <div class="form-group field-appointment-id">
+
+                <input type="hidden" name="security_cheque" value="0"><label><input type="checkbox" id="security_cheque" name="security_cheque" value="1"> Security Cheque</label>
+
+                <div class="help-block"></div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <div id="security-cheque-details">
@@ -165,7 +165,7 @@ $banks = \common\models\Banks::find()->where(['status' => 1])->all();
             <div class="col-md-12">
                 <div id="expiry-details">
                     <div class="row">
-                        <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                        <div class="col-md-3 col-sm-12 col-xs-12 left_padd">
                             <div class="form-group">
                                 <label class="control-label">License Expiry Date</label>
 
@@ -173,12 +173,12 @@ $banks = \common\models\Banks::find()->where(['status' => 1])->all();
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input id="appointment-license_expiry_date" name="Appointment[license_expiry_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="" autofocus>
+                                    <input id="appointment-license_expiry_date" name="Appointment[license_expiry_date]"  value="<?= date("d-m-Y", strtotime($appointment->license_expiry_date)) ?>" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="" autofocus>
                                 </div>
                                 <!-- /.input group -->
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                        <div class="col-md-3 col-sm-12 col-xs-12 left_padd">
                             <div class="form-group">
                                 <label class="control-label">Contract Start Date</label>
 
@@ -186,12 +186,12 @@ $banks = \common\models\Banks::find()->where(['status' => 1])->all();
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input id="appointment-contract_start_date" name="Appointment[contract_start_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask >
+                                    <input id="appointment-contract_start_date" name="Appointment[contract_start_date]" value="<?= date("d-m-Y", strtotime($appointment->contract_start_date)) ?>" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask >
                                 </div>
                                 <!-- /.input group -->
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                        <div class="col-md-3 col-sm-12 col-xs-12 left_padd">
                             <div class="form-group">
                                 <label class="control-label">Contract End Date</label>
 
@@ -199,8 +199,15 @@ $banks = \common\models\Banks::find()->where(['status' => 1])->all();
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
                                     </div>
-                                    <input id="appointment-contract_end_date" name="Appointment[contract_end_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask >
+                                    <input id="appointment-contract_end_date" name="Appointment[contract_end_date]" value="<?= date("d-m-Y", strtotime($appointment->contract_end_date)) ?>" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask >
                                 </div>
+                                <!-- /.input group -->
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-12 col-xs-12 left_padd">
+                            <div class="form-group">
+                                <label class="control-label">Sales Person Commission</label>
+                                <input id="appointment-sales_person_commission" name="Appointment[sales_person_commission]" value="<?= $appointment->sales_person_commission ?>" type="text" class="form-control">
                                 <!-- /.input group -->
                             </div>
                         </div>

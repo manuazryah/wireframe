@@ -145,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md-12">
                     <div id="expiry-details">
                         <div class="row">
-                            <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                            <div class="col-md-3 col-sm-12 col-xs-12 left_padd">
                                 <div class="form-group">
                                     <label class="control-label">License Expiry Date</label>
 
@@ -158,7 +158,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <!-- /.input group -->
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                            <div class="col-md-3 col-sm-12 col-xs-12 left_padd">
                                 <div class="form-group">
                                     <label class="control-label">Contract Start Date</label>
 
@@ -171,7 +171,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <!-- /.input group -->
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-12 col-xs-12 left_padd">
+                            <div class="col-md-3 col-sm-12 col-xs-12 left_padd">
                                 <div class="form-group">
                                     <label class="control-label">Contract End Date</label>
 
@@ -181,6 +181,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </div>
                                         <input id="appointment-contract_end_date" name="Appointment[contract_end_date]" type="text" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask value="<?= $appointment->contract_end_date != '' ? date("d/m/Y", strtotime($appointment->contract_end_date)) : '' ?>">
                                     </div>
+                                    <!-- /.input group -->
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-12 col-xs-12 left_padd">
+                                <div class="form-group">
+                                    <label class="control-label">Sales Person Commission</label>
+                                    <input id="appointment-sales_person_commission" name="Appointment[sales_person_commission]" value="<?= $appointment->sales_person_commission ?>" type="text" class="form-control">
                                     <!-- /.input group -->
                                 </div>
                             </div>
@@ -308,6 +315,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     echo 0;
                                                 } elseif ($service_cheque->status == 2) {
                                                     echo $service_cheque->amount;
+                                                } elseif ($service_cheque->status == 3) {
+                                                    echo $service_cheque->amount;
                                                 }
                                                 ?>
                                             </td>
@@ -316,7 +325,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                 if ($service_cheque->status == 1) {
                                                     echo 'Cleared';
                                                 } else {
-                                                    echo Html::dropDownList('status', $service_cheque->status, ['1' => 'Cleared', '2' => 'Pending'], ['class' => 'cheque_payment form-control', 'id' => $service_cheque->id, 'prompt' => '--Change Status--']);
+                                                    echo Html::dropDownList('status', $service_cheque->status, ['1' => 'Cleared', '2' => 'Pending', '3' => 'Bounced'], ['class' => 'cheque_payment form-control', 'id' => $service_cheque->id, 'prompt' => '--Change Status--']);
                                                 }
                                                 ?>
                                             </td>

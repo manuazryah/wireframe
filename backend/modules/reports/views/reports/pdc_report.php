@@ -37,15 +37,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="table-responsive" style="height: 275px;">
+                    <div class="table-responsive">
                         <?php Pjax::begin(['id' => 'products-table']); ?>
                         <?=
                         GridView::widget([
                             'dataProvider' => $dataProvider,
                             'filterModel' => $searchModel,
                             'columns' => [
-                                    ['class' => 'yii\grid\SerialColumn'],
-                                    [
+                                ['class' => 'yii\grid\SerialColumn'],
+                                [
                                     'attribute' => 'appointment_id',
                                     'format' => 'raw',
                                     'value' => function ($data) {
@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ],
                                     ]),
                                 ],
-                                    [
+                                [
                                     'attribute' => 'customer',
                                     'format' => 'raw',
                                     'value' => function ($data) {
@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ]),
                                 ],
                                 'cheque_number',
-                                    [
+                                [
                                     'attribute' => 'cheque_date',
                                     'value' => function ($data) {
                                         return date("Y-m-d", strtotime($data->cheque_date));
@@ -118,11 +118,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ])
                                 ],
                                 'amount',
-                                    [
+                                [
                                     'attribute' => 'status',
                                     'format' => 'raw',
                                     'value' => function ($data) {
-                                        return \yii\helpers\Html::dropDownList('status', null, ['' => 'Change Status', '1' => 'Cleared', '2' => 'Pending'], ['class' => 'form-control admin_status_field cheque_payment', 'id' => $data->id,]);
+                                        return \yii\helpers\Html::dropDownList('status', null, ['' => 'Change Status', '1' => 'Cleared', '2' => 'Pending', '3' => 'Bounced'], ['class' => 'form-control admin_status_field cheque_payment', 'id' => $data->id,]);
                                     },
                                 ],
                             ],

@@ -27,6 +27,10 @@ use Yii;
  */
 class Sponsor extends \yii\db\ActiveRecord {
 
+    public $total;
+    public $paid;
+    public $balance;
+
     /**
      * {@inheritdoc}
      */
@@ -74,6 +78,41 @@ class Sponsor extends \yii\db\ActiveRecord {
             'DOC' => 'D O C',
             'DOU' => 'D O U',
         ];
+    }
+
+    public static function getTotal($id) {
+        if ($id != '') {
+            $sponsor_total = SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 1])->sum('amount');
+            if ($sponsor_total < 1) {
+                $sponsor_total = 0;
+            }
+        } else {
+            $sponsor_total = 0;
+        }
+        return $sponsor_total;
+    }
+
+    public static function getPaid($id) {
+        if ($id != '') {
+            $paid_total = SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 2])->sum('amount');
+            if ($paid_total < 1) {
+                $paid_total = 0;
+            }
+        } else {
+            $paid_total = 0;
+        }
+        return $paid_total;
+    }
+
+    public static function getBalance($id) {
+        if ($id != '') {
+            $sponsor_total = SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 1])->sum('amount');
+            $paid_total = SponsorPayment::find()->where(['sponsor_id' => $id, 'type' => 2])->sum('amount');
+            $sponsor_balance = $sponsor_total - $paid_total;
+        } else {
+            $sponsor_balance = 0;
+        }
+        return $sponsor_balance;
     }
 
 }
